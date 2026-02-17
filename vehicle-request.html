@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedersen Toyota - Vehicle Build/Request Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #eb0a1e 0%, #c4081a 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(235, 10, 30, 0.3);
+        }
+
+        header h1 {
+            color: white;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eb0a1e;
+        }
+
+        .panel-header h2 {
+            font-size: 1.1rem;
+            color: #1a1a2e;
+        }
+
+        .panel-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #eb0a1e 0%, #c4081a 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-section h3 {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .form-row-4 {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.8rem;
+            color: #555;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #eb0a1e;
+            box-shadow: 0 0 0 3px rgba(235, 10, 30, 0.1);
+        }
+
+        .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #eb0a1e;
+            box-shadow: 0 0 0 3px rgba(235, 10, 30, 0.1);
+        }
+
+        .code-display {
+            padding: 10px 12px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #eb0a1e;
+            text-align: center;
+        }
+
+        .code-display.empty {
+            color: #aaa;
+            font-weight: normal;
+            font-family: inherit;
+        }
+
+        /* Quick Parse Section */
+        .quick-fill-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px dashed #ddd;
+        }
+
+        .quick-fill-section h4 {
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .quick-fill-section p {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .quick-fill-section textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            min-height: 100px;
+            margin-bottom: 10px;
+        }
+
+        .btn-parse {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .btn-parse:hover {
+            background: #218838;
+        }
+
+        /* Accessory/Package Items */
+        .item-list {
+            margin-bottom: 10px;
+        }
+
+        .item-entry {
+            display: grid;
+            grid-template-columns: 1fr 80px 30px;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .item-entry input {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        .btn-add {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #eb0a1e 0%, #c4081a 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            flex: 1;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(235, 10, 30, 0.4);
+        }
+
+        .btn-print {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .btn-clear {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Printable Form Styles */
+        .print-form {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container, header, .panel:not(.print-form) {
+                display: none !important;
+            }
+
+            .print-form {
+                display: block !important;
+                width: 100%;
+                max-width: 8.5in;
+                margin: 0 auto;
+                padding: 0.5in;
+                font-family: Arial, sans-serif;
+                font-size: 11pt;
+                color: black;
+            }
+
+            .print-header {
+                text-align: center;
+                margin-bottom: 20px;
+                border-bottom: 2px solid black;
+                padding-bottom: 15px;
+            }
+
+            .print-header h1 {
+                font-size: 24pt;
+                font-family: 'Brush Script MT', cursive;
+                margin-bottom: 5px;
+            }
+
+            .print-header h2 {
+                font-size: 12pt;
+                font-weight: normal;
+                letter-spacing: 2px;
+            }
+
+            .print-header .date-sales {
+                display: flex;
+                justify-content: flex-end;
+                gap: 40px;
+                margin-top: 10px;
+                font-size: 10pt;
+            }
+
+            .print-title {
+                text-align: center;
+                font-size: 14pt;
+                font-weight: bold;
+                margin: 15px 0;
+            }
+
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 15px;
+            }
+
+            .print-table td {
+                border: 1px solid black;
+                padding: 6px 8px;
+                vertical-align: top;
+            }
+
+            .print-table .label {
+                font-weight: bold;
+                background: #f0f0f0;
+                width: 120px;
+            }
+
+            .print-table .section-header {
+                font-weight: bold;
+                background: #e0e0e0;
+                text-align: center;
+            }
+
+            .print-table .value {
+                min-height: 20px;
+            }
+
+            .print-sidebar {
+                width: 140px;
+                vertical-align: top;
+            }
+
+            .print-main {
+                vertical-align: top;
+            }
+
+            .checkbox-row {
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+            }
+
+            .checkbox-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .checkbox-box {
+                width: 14px;
+                height: 14px;
+                border: 1px solid black;
+                display: inline-block;
+            }
+        }
+
+        /* Preview Mode */
+        .preview-container {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .preview-container.show {
+            display: block;
+        }
+
+        .preview-frame {
+            border: 2px solid #333;
+            padding: 30px;
+            background: white;
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid black;
+        }
+
+        .preview-header h1 {
+            font-size: 28px;
+            font-family: 'Brush Script MT', cursive;
+            margin-bottom: 3px;
+        }
+
+        .preview-header h2 {
+            font-size: 11px;
+            font-weight: normal;
+            letter-spacing: 3px;
+        }
+
+        .preview-header .meta-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 30px;
+            margin-top: 8px;
+            font-size: 10px;
+        }
+
+        .preview-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 12px 0;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .preview-table td {
+            border: 1px solid black;
+            padding: 5px 8px;
+            vertical-align: top;
+            font-size: 10px;
+        }
+
+        .preview-table .label {
+            font-weight: bold;
+            background: #f5f5f5;
+        }
+
+        .preview-table .section-header {
+            font-weight: bold;
+            background: #e8e8e8;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .preview-table .value {
+            min-width: 100px;
+        }
+
+        .preview-actions {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        /* Back to Command Center */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Command Center</a>
+        
+        <header>
+            <h1>🚗 Pedersen Toyota - Vehicle Build/Request Form</h1>
+            <p>Enter customer info and Toyota Build details to generate a printable form</p>
+        </header>
+
+        <!-- Customer & Vehicle Input Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-icon">1</div>
+                <h2>Customer Information</h2>
+            </div>
+
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Buyer's Name *</label>
+                        <input type="text" id="buyerName" placeholder="Enter buyer's full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Co-Buyer's Name</label>
+                        <input type="text" id="coBuyerName" placeholder="Enter co-buyer's name (optional)">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Address</label>
+                    <input type="text" id="address" placeholder="Street address">
+                </div>
+
+                <div class="form-row-4">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="city" placeholder="City">
+                    </div>
+                    <div class="form-group">
+                        <label>County</label>
+                        <input type="text" id="county" placeholder="County">
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" id="state" placeholder="ST" maxlength="2" style="text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
+                        <label>Zip</label>
+                        <input type="text" id="zip" placeholder="Zip" maxlength="10">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="customer@email.com">
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Information Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-icon">2</div>
+                <h2>Vehicle Information (from Toyota Build)</h2>
+            </div>
+
+            <!-- Quick Parse Section -->
+            <div class="quick-fill-section">
+                <h4>📋 Quick Parse Toyota Build Summary</h4>
+                <p>Paste the text from a Toyota Build page to auto-fill packages and accessories:</p>
+                <textarea id="quickParseText" placeholder="Paste Toyota Build summary text here..."></textarea>
+                <button class="btn-parse" onclick="parseQuickFill()">Parse & Fill</button>
+            </div>
+
+            <div class="form-section">
+                <h3>Vehicle Selection</h3>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <select id="year">
+                            <option value="2026" selected>2026</option>
+                            <option value="2025">2025</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Model</label>
+                        <select id="model" onchange="updateModelCode()">
+                            <option value="">Select Model</option>
+                            <optgroup label="RAV4">
+                                <option value="RAV4 LE (FWD)|4521">RAV4 LE (FWD)</option>
+                                <option value="RAV4 LE (AWD)|4435">RAV4 LE (AWD)</option>
+                                <option value="RAV4 XLE Premium (FWD)|4527">RAV4 XLE Premium (FWD)</option>
+                                <option value="RAV4 XLE Premium (AWD)|4444">RAV4 XLE Premium (AWD)</option>
+                                <option value="RAV4 Hybrid Woodland|4437">RAV4 Hybrid Woodland</option>
+                                <option value="RAV4 Hybrid SE (FWD)|4523">RAV4 Hybrid SE (FWD)</option>
+                                <option value="RAV4 Hybrid SE (AWD)|4524">RAV4 Hybrid SE (AWD)</option>
+                                <option value="RAV4 Hybrid XSE (AWD)|4530">RAV4 Hybrid XSE (AWD)</option>
+                                <option value="RAV4 Limited (AWD)|4534">RAV4 Limited (AWD)</option>
+                            </optgroup>
+                            <optgroup label="Camry">
+                                <option value="Camry LE|2514">Camry LE</option>
+                                <option value="Camry SE|2516">Camry SE</option>
+                                <option value="Camry XLE|2540">Camry XLE</option>
+                                <option value="Camry XSE|2546">Camry XSE</option>
+                            </optgroup>
+                            <optgroup label="Highlander">
+                                <option value="Highlander LE|6942">Highlander LE</option>
+                                <option value="Highlander XLE|6946">Highlander XLE</option>
+                                <option value="Highlander Limited|6952">Highlander Limited</option>
+                                <option value="Highlander Platinum|6956">Highlander Platinum</option>
+                            </optgroup>
+                            <optgroup label="4Runner">
+                                <option value="4Runner SR5|8642">4Runner SR5</option>
+                                <option value="4Runner TRD Off-Road|8646">4Runner TRD Off-Road</option>
+                                <option value="4Runner Limited|8650">4Runner Limited</option>
+                                <option value="4Runner TRD Pro|8652">4Runner TRD Pro</option>
+                            </optgroup>
+                            <optgroup label="Tacoma">
+                                <option value="Tacoma SR5|7596">Tacoma SR5</option>
+                                <option value="Tacoma TRD Sport|7598">Tacoma TRD Sport</option>
+                                <option value="Tacoma TRD Off-Road|7544">Tacoma TRD Off-Road</option>
+                                <option value="Tacoma Limited|7546">Tacoma Limited</option>
+                            </optgroup>
+                            <optgroup label="Tundra">
+                                <option value="Tundra SR5|8352">Tundra SR5</option>
+                                <option value="Tundra Limited|8354">Tundra Limited</option>
+                                <option value="Tundra Platinum|8358">Tundra Platinum</option>
+                                <option value="Tundra TRD Pro|8362">Tundra TRD Pro</option>
+                            </optgroup>
+                            <optgroup label="Corolla">
+                                <option value="Corolla LE|1852">Corolla LE</option>
+                                <option value="Corolla SE|1864">Corolla SE</option>
+                                <option value="Corolla XLE|1856">Corolla XLE</option>
+                                <option value="Corolla XSE|1866">Corolla XSE</option>
+                            </optgroup>
+                            <optgroup label="Sienna">
+                                <option value="Sienna LE|5360">Sienna LE</option>
+                                <option value="Sienna XLE|5370">Sienna XLE</option>
+                                <option value="Sienna Limited|5380">Sienna Limited</option>
+                                <option value="Sienna Platinum|5390">Sienna Platinum</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Model Code</label>
+                        <div id="modelCodeDisplay" class="code-display empty">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Colors</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Exterior Color</label>
+                        <select id="exteriorColor" onchange="updateExteriorCode()">
+                            <option value="">Select Color</option>
+                            <optgroup label="Whites & Silvers">
+                                <option value="Super White|0040">Super White</option>
+                                <option value="Wind Chill Pearl|0089">Wind Chill Pearl</option>
+                                <option value="Ice Cap|0040">Ice Cap</option>
+                                <option value="Celestial Silver Metallic|01J9">Celestial Silver Metallic</option>
+                            </optgroup>
+                            <optgroup label="Grays">
+                                <option value="Magnetic Gray Metallic|01G3">Magnetic Gray Metallic</option>
+                                <option value="Storm Cloud|01L6">Storm Cloud</option>
+                                <option value="Meteor Shower|04V8">Meteor Shower</option>
+                                <option value="Urban Rock|01M6">Urban Rock</option>
+                            </optgroup>
+                            <optgroup label="Blacks">
+                                <option value="Midnight Black Metallic|0218">Midnight Black Metallic</option>
+                                <option value="Black|0202">Black</option>
+                            </optgroup>
+                            <optgroup label="Reds">
+                                <option value="Ruby Flare Pearl|03T3">Ruby Flare Pearl</option>
+                                <option value="Supersonic Red|03U5">Supersonic Red</option>
+                            </optgroup>
+                            <optgroup label="Blues">
+                                <option value="Blueprint|08X8">Blueprint</option>
+                                <option value="Cavalry Blue|08W2">Cavalry Blue</option>
+                            </optgroup>
+                            <optgroup label="Greens">
+                                <option value="Army Green|06V7">Army Green</option>
+                                <option value="Everest|06X7">Everest</option>
+                            </optgroup>
+                            <optgroup label="Two-Tone">
+                                <option value="Storm Cloud/Black Roof|0M22">Storm Cloud/Black Roof</option>
+                                <option value="Wind Chill Pearl/Black Roof|02VP">Wind Chill Pearl/Black Roof</option>
+                                <option value="Meteor Shower/Black Roof|02SQ">Meteor Shower/Black Roof</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Exterior Code</label>
+                        <div id="exteriorCodeDisplay" class="code-display empty">—</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Interior Color</label>
+                        <select id="interiorColor" onchange="updateInteriorCode()">
+                            <option value="">Select Color</option>
+                            <optgroup label="Fabric">
+                                <option value="Black Fabric|FB20">Black Fabric</option>
+                                <option value="Black/Blue Fabric|FC20">Black/Blue Fabric</option>
+                            </optgroup>
+                            <optgroup label="SofTex">
+                                <option value="Black SofTex|EE20">Black SofTex</option>
+                                <option value="Light Gray SofTex|EE10">Light Gray SofTex</option>
+                                <option value="Harvest Beige SofTex|EA40">Harvest Beige SofTex</option>
+                                <option value="Mineral SofTex|EB60">Mineral SofTex</option>
+                            </optgroup>
+                            <optgroup label="SofTex Mixed Media">
+                                <option value="Black/Blue SofTex Mixed Media|EC20">Black/Blue SofTex Mixed Media</option>
+                            </optgroup>
+                            <optgroup label="Leather">
+                                <option value="Black Leather|EA">Black Leather</option>
+                                <option value="Harvest Beige Leather|EH">Harvest Beige Leather</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Interior Code</label>
+                        <div id="interiorCodeDisplay" class="code-display empty">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Packages</h3>
+                <div class="item-list" id="packagesContainer">
+                    <div class="item-entry">
+                        <input type="text" placeholder="Package name" class="pkg-name">
+                        <input type="text" placeholder="Code" class="pkg-code">
+                        <button class="btn-remove" onclick="removeItem(this)">×</button>
+                    </div>
+                </div>
+                <button class="btn-add" onclick="addPackage()">+ Add Package</button>
+            </div>
+
+            <div class="form-section">
+                <h3>Accessories</h3>
+                <div class="item-list" id="accessoriesContainer">
+                    <div class="item-entry">
+                        <input type="text" placeholder="Accessory name" class="acc-name">
+                        <input type="text" placeholder="Code" class="acc-code">
+                        <button class="btn-remove" onclick="removeItem(this)">×</button>
+                    </div>
+                </div>
+                <button class="btn-add" onclick="addAccessory()">+ Add Accessory</button>
+            </div>
+
+            <div class="form-section">
+                <h3>Additional Info</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>VIN (if known)</label>
+                        <input type="text" id="vin" placeholder="Vehicle Identification Number">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock #</label>
+                        <input type="text" id="stockNum" placeholder="Dealer stock number">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="notes" placeholder="Any additional notes about the build request..."></textarea>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-generate" onclick="generatePreview()">👁️ Preview Form</button>
+                <button class="btn-print" onclick="printForm()">🖨️ Print Form</button>
+                <button class="btn-clear" onclick="clearAll()">Clear</button>
+            </div>
+        </div>
+
+        <!-- Preview Container -->
+        <div class="preview-container" id="previewContainer">
+            <div class="panel-header">
+                <div class="panel-icon">👁️</div>
+                <h2>Form Preview</h2>
+            </div>
+            <div class="preview-frame" id="previewFrame">
+                <!-- Preview content generated here -->
+            </div>
+            <div class="preview-actions">
+                <button class="btn-print" onclick="printForm()">🖨️ Print This Form</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Printable Form (hidden, shown only during print) -->
+    <div class="print-form panel" id="printForm">
+        <!-- Content populated by JavaScript -->
+    </div>
+
+    <div id="toast" class="toast">Saved!</div>
+
+    <script>
+        // Update code displays
+        function updateModelCode() {
+            const select = document.getElementById('model');
+            const display = document.getElementById('modelCodeDisplay');
+            if (select.value) {
+                const [name, code] = select.value.split('|');
+                display.textContent = code;
+                display.classList.remove('empty');
+            } else {
+                display.textContent = '—';
+                display.classList.add('empty');
+            }
+        }
+
+        function updateExteriorCode() {
+            const select = document.getElementById('exteriorColor');
+            const display = document.getElementById('exteriorCodeDisplay');
+            if (select.value) {
+                const [name, code] = select.value.split('|');
+                display.textContent = code;
+                display.classList.remove('empty');
+            } else {
+                display.textContent = '—';
+                display.classList.add('empty');
+            }
+        }
+
+        function updateInteriorCode() {
+            const select = document.getElementById('interiorColor');
+            const display = document.getElementById('interiorCodeDisplay');
+            if (select.value) {
+                const [name, code] = select.value.split('|');
+                display.textContent = code;
+                display.classList.remove('empty');
+            } else {
+                display.textContent = '—';
+                display.classList.add('empty');
+            }
+        }
+
+        // Add/Remove items
+        function addPackage() {
+            const container = document.getElementById('packagesContainer');
+            const div = document.createElement('div');
+            div.className = 'item-entry';
+            div.innerHTML = `
+                <input type="text" placeholder="Package name" class="pkg-name">
+                <input type="text" placeholder="Code" class="pkg-code">
+                <button class="btn-remove" onclick="removeItem(this)">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addAccessory() {
+            const container = document.getElementById('accessoriesContainer');
+            const div = document.createElement('div');
+            div.className = 'item-entry';
+            div.innerHTML = `
+                <input type="text" placeholder="Accessory name" class="acc-name">
+                <input type="text" placeholder="Code" class="acc-code">
+                <button class="btn-remove" onclick="removeItem(this)">×</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeItem(btn) {
+            btn.parentElement.remove();
+        }
+
+        // Quick Parse
+        function parseQuickFill() {
+            const text = document.getElementById('quickParseText').value;
+            if (!text.trim()) {
+                showToast('Please paste Toyota Build text first');
+                return;
+            }
+
+            // Clear existing
+            document.getElementById('packagesContainer').innerHTML = '';
+            document.getElementById('accessoriesContainer').innerHTML = '';
+
+            const lines = text.split('\n');
+            let inPackages = false;
+            let inAccessories = false;
+            let packagesFound = [];
+            let accessoriesFound = [];
+
+            // Common package/accessory code patterns
+            const codePattern = /\b([A-Z0-9]{2,4})\b/;
+
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+
+                // Skip ToyotaCare
+                if (line.toLowerCase().includes('toyotacare')) continue;
+
+                // Detect sections
+                if (line.toLowerCase().includes('package')) {
+                    inPackages = true;
+                    inAccessories = false;
+                    continue;
+                }
+                if (line.toLowerCase().includes('accessor')) {
+                    inPackages = false;
+                    inAccessories = true;
+                    continue;
+                }
+
+                // Look for items with codes
+                const match = line.match(/^(.+?)\s+([A-Z0-9]{2,4})\s*[\$\d,]*$/);
+                if (match) {
+                    const name = match[1].trim();
+                    const code = match[2];
+                    
+                    if (inPackages) {
+                        packagesFound.push({ name, code });
+                    } else if (inAccessories) {
+                        accessoriesFound.push({ name, code });
+                    }
+                }
+            }
+
+            // Add found items
+            packagesFound.forEach(pkg => {
+                const container = document.getElementById('packagesContainer');
+                const div = document.createElement('div');
+                div.className = 'item-entry';
+                div.innerHTML = `
+                    <input type="text" placeholder="Package name" class="pkg-name" value="${pkg.name}">
+                    <input type="text" placeholder="Code" class="pkg-code" value="${pkg.code}">
+                    <button class="btn-remove" onclick="removeItem(this)">×</button>
+                `;
+                container.appendChild(div);
+            });
+
+            accessoriesFound.forEach(acc => {
+                const container = document.getElementById('accessoriesContainer');
+                const div = document.createElement('div');
+                div.className = 'item-entry';
+                div.innerHTML = `
+                    <input type="text" placeholder="Accessory name" class="acc-name" value="${acc.name}">
+                    <input type="text" placeholder="Code" class="acc-code" value="${acc.code}">
+                    <button class="btn-remove" onclick="removeItem(this)">×</button>
+                `;
+                container.appendChild(div);
+            });
+
+            // Add empty row if nothing found
+            if (packagesFound.length === 0) addPackage();
+            if (accessoriesFound.length === 0) addAccessory();
+
+            showToast(`Found ${packagesFound.length} packages, ${accessoriesFound.length} accessories`);
+        }
+
+        // Get form data
+        function getFormData() {
+            const modelSelect = document.getElementById('model');
+            const extSelect = document.getElementById('exteriorColor');
+            const intSelect = document.getElementById('interiorColor');
+
+            let modelName = '', modelCode = '';
+            if (modelSelect.value) {
+                [modelName, modelCode] = modelSelect.value.split('|');
+            }
+
+            let extName = '', extCode = '';
+            if (extSelect.value) {
+                [extName, extCode] = extSelect.value.split('|');
+            }
+
+            let intName = '', intCode = '';
+            if (intSelect.value) {
+                [intName, intCode] = intSelect.value.split('|');
+            }
+
+            // Get packages
+            const packages = [];
+            document.querySelectorAll('#packagesContainer .item-entry').forEach(row => {
+                const name = row.querySelector('.pkg-name').value.trim();
+                const code = row.querySelector('.pkg-code').value.trim();
+                if (name || code) packages.push({ name, code });
+            });
+
+            // Get accessories
+            const accessories = [];
+            document.querySelectorAll('#accessoriesContainer .item-entry').forEach(row => {
+                const name = row.querySelector('.acc-name').value.trim();
+                const code = row.querySelector('.acc-code').value.trim();
+                if (name || code) accessories.push({ name, code });
+            });
+
+            return {
+                salesman: 'Jeff Lee',
+                date: new Date().toLocaleDateString(),
+                buyerName: document.getElementById('buyerName').value,
+                coBuyerName: document.getElementById('coBuyerName').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                county: document.getElementById('county').value,
+                state: document.getElementById('state').value.toUpperCase(),
+                zip: document.getElementById('zip').value,
+                email: document.getElementById('email').value,
+                year: document.getElementById('year').value,
+                modelName,
+                modelCode,
+                extName,
+                extCode,
+                intName,
+                intCode,
+                packages,
+                accessories,
+                vin: document.getElementById('vin').value,
+                stockNum: document.getElementById('stockNum').value,
+                notes: document.getElementById('notes').value
+            };
+        }
+
+        // Generate preview
+        function generatePreview() {
+            const data = getFormData();
+            
+            const packagesHtml = data.packages.map(p => `${p.name} (${p.code})`).join('<br>') || '—';
+            const accessoriesHtml = data.accessories.map(a => `${a.name} (${a.code})`).join('<br>') || '—';
+
+            const html = `
+                <div class="preview-header">
+                    <h1>Pedersen</h1>
+                    <h2>TOYOTA • VOLVO</h2>
+                    <div class="meta-row">
+                        <span><strong>Salesman:</strong> ${data.salesman}</span>
+                        <span><strong>Date:</strong> ${data.date}</span>
+                    </div>
+                </div>
+                <div class="preview-title">Vehicle Build/Request Form</div>
+                <table class="preview-table">
+                    <tr>
+                        <td class="label" rowspan="5" style="width: 100px; vertical-align: top;">
+                            <strong>MODEL #:</strong><br>${data.modelCode || '—'}<br><br>
+                            <strong>Exterior Color:</strong><br>1. ${data.extName} (${data.extCode})<br>2.<br><br>
+                            <strong>Interior Color:</strong><br>1. ${data.intName} (${data.intCode})<br><br>
+                            <strong>Packages:</strong><br>${packagesHtml}<br><br>
+                            <strong>Accessories:</strong><br>${accessoriesHtml}
+                        </td>
+                        <td class="section-header" colspan="4">Buyer Information</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Buyer's Name:</td>
+                        <td class="value" colspan="3">${data.buyerName || '—'}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Co-Buyer:</td>
+                        <td class="value" colspan="3">${data.coBuyerName || '—'}</td>
+                    </tr>
+                    <tr>
+                        <td class="section-header" colspan="4">Physical Address</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Address:</td>
+                        <td class="value" colspan="3">${data.address || '—'}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="label">City:</td>
+                        <td class="value">${data.city || '—'}</td>
+                        <td class="label">County:</td>
+                        <td class="value">${data.county || '—'}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="label">State:</td>
+                        <td class="value">${data.state || '—'}</td>
+                        <td class="label">Zip:</td>
+                        <td class="value">${data.zip || '—'}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="label">E-mail:</td>
+                        <td class="value" colspan="3">${data.email || '—'}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="section-header" colspan="4">Vehicle Information</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="label">Make:</td>
+                        <td class="value">Toyota</td>
+                        <td class="label">Year:</td>
+                        <td class="value">${data.year}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="label">Model:</td>
+                        <td class="value">${data.modelName || '—'}</td>
+                        <td class="label">Color:</td>
+                        <td class="value">${data.extName || '—'}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="label">Interior:</td>
+                        <td class="value">${data.intName || '—'}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="label">VIN NO:</td>
+                        <td class="value">${data.vin || '—'}</td>
+                        <td class="label">Stock #</td>
+                        <td class="value">${data.stockNum || '—'}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td class="label">Notes:</td>
+                        <td class="value" colspan="3">${data.notes || '—'}</td>
+                    </tr>
+                </table>
+            `;
+
+            document.getElementById('previewFrame').innerHTML = html;
+            document.getElementById('previewContainer').classList.add('show');
+            showToast('Preview generated!');
+        }
+
+        // Print form
+        function printForm() {
+            const data = getFormData();
+            
+            const packagesHtml = data.packages.map(p => `${p.name} (${p.code})`).join('<br>') || '';
+            const accessoriesHtml = data.accessories.map(a => `${a.name} (${a.code})`).join('<br>') || '';
+
+            const printHtml = `
+                <div class="print-header">
+                    <h1>Pedersen</h1>
+                    <h2>TOYOTA • VOLVO</h2>
+                    <div class="date-sales">
+                        <span><strong>Salesman:</strong> ${data.salesman}</span>
+                        <span><strong>Date:</strong> ${data.date}</span>
+                    </div>
+                </div>
+                <div class="print-title">Vehicle Build/Request Form</div>
+                <table class="print-table">
+                    <tr>
+                        <td class="label" rowspan="14" style="width: 140px; vertical-align: top;">
+                            <strong>MODEL #:</strong><br>${data.modelCode}<br><br>
+                            <strong>Exterior Color:</strong><br>1. ${data.extName}<br>&nbsp;&nbsp;&nbsp;(${data.extCode})<br>2.<br><br>
+                            <strong>Interior Color:</strong><br>1. ${data.intName}<br>&nbsp;&nbsp;&nbsp;(${data.intCode})<br><br>
+                            <strong>Packages:</strong><br>${packagesHtml}<br><br>
+                            <strong>Accessories:</strong><br>${accessoriesHtml}
+                        </td>
+                        <td class="section-header" colspan="4">Buyer Information</td>
+                    </tr>
+                    <tr>
+                        <td class="label" style="width: 100px;">Buyer's Name:</td>
+                        <td class="value" colspan="3">${data.buyerName}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Co-Buyer's Name:</td>
+                        <td class="value" colspan="3">${data.coBuyerName}</td>
+                    </tr>
+                    <tr>
+                        <td class="section-header" colspan="4">Physical Address</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Address:</td>
+                        <td class="value" colspan="3">${data.address}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">City:</td>
+                        <td class="value">${data.city}</td>
+                        <td class="label">County:</td>
+                        <td class="value">${data.county}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">State:</td>
+                        <td class="value">${data.state}</td>
+                        <td class="label">Zip:</td>
+                        <td class="value">${data.zip}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">E-mail:</td>
+                        <td class="value" colspan="3">${data.email}</td>
+                    </tr>
+                    <tr>
+                        <td class="section-header" colspan="4">Vehicle Information</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Make:</td>
+                        <td class="value">Toyota</td>
+                        <td class="label">Year:</td>
+                        <td class="value">${data.year}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Model:</td>
+                        <td class="value">${data.modelName}</td>
+                        <td class="label">Color:</td>
+                        <td class="value">${data.extName}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Interior:</td>
+                        <td class="value">${data.intName}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="label">VIN NO:</td>
+                        <td class="value">${data.vin}</td>
+                        <td class="label">Stock #</td>
+                        <td class="value">${data.stockNum}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Notes:</td>
+                        <td class="value" colspan="3">${data.notes}</td>
+                    </tr>
+                </table>
+            `;
+
+            document.getElementById('printForm').innerHTML = printHtml;
+            window.print();
+        }
+
+        // Clear form
+        function clearAll() {
+            document.getElementById('buyerName').value = '';
+            document.getElementById('coBuyerName').value = '';
+            document.getElementById('address').value = '';
+            document.getElementById('city').value = '';
+            document.getElementById('county').value = '';
+            document.getElementById('state').value = '';
+            document.getElementById('zip').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('model').value = '';
+            document.getElementById('exteriorColor').value = '';
+            document.getElementById('interiorColor').value = '';
+            document.getElementById('vin').value = '';
+            document.getElementById('stockNum').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('quickParseText').value = '';
+
+            updateModelCode();
+            updateExteriorCode();
+            updateInteriorCode();
+
+            document.getElementById('packagesContainer').innerHTML = `
+                <div class="item-entry">
+                    <input type="text" placeholder="Package name" class="pkg-name">
+                    <input type="text" placeholder="Code" class="pkg-code">
+                    <button class="btn-remove" onclick="removeItem(this)">×</button>
+                </div>
+            `;
+
+            document.getElementById('accessoriesContainer').innerHTML = `
+                <div class="item-entry">
+                    <input type="text" placeholder="Accessory name" class="acc-name">
+                    <input type="text" placeholder="Code" class="acc-code">
+                    <button class="btn-remove" onclick="removeItem(this)">×</button>
+                </div>
+            `;
+
+            document.getElementById('previewContainer').classList.remove('show');
+            showToast('Form cleared!');
+        }
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Start with empty form
+        window.onload = function() {
+            clearAll();
+        };
+    </script>
+</body>
+</html>
