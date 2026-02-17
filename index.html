@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +46,7 @@
             height: 100%;
             z-index: 0;
             opacity: 0.03;
-            background: 
+            background:
                 linear-gradient(90deg, var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px,
                 linear-gradient(var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px;
             animation: gridMove 20s linear infinite;
@@ -993,11 +994,219 @@
             padding: 20px 24px;
             border-top: 1px solid var(--border-color);
         }
+
+        /* Quick Action Chips in Chat */
+        .chat-quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .quick-chip {
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-chip:hover {
+            border-color: var(--primary-red);
+            color: var(--primary-red);
+            background: rgba(230, 57, 70, 0.1);
+        }
+
+        .quick-chip i {
+            font-size: 11px;
+        }
+
+        /* Appointment Styles */
+        .calendar-day.has-customer {
+            position: relative;
+        }
+        .calendar-day.has-customer::before {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: var(--primary-red);
+            border-radius: 50%;
+        }
+        .calendar-day.has-personal::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: calc(50% + 5px);
+            width: 6px;
+            height: 6px;
+            background: #3b82f6;
+            border-radius: 50%;
+        }
+        .calendar-day.has-customer.has-personal::before {
+            left: calc(50% - 5px);
+        }
+        .calendar-day.today.has-customer::before,
+        .calendar-day.today.has-personal::after {
+            bottom: 2px;
+        }
+
+        /* Appointments List */
+        .appointments-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        .appointments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .appointments-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .appointment-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--primary-red);
+        }
+        .appointment-item.personal {
+            border-left-color: #3b82f6;
+        }
+        .appointment-time {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 50px;
+        }
+        .appointment-details {
+            flex: 1;
+        }
+        .appointment-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        .appointment-type {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .appointment-delete {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .appointment-item:hover .appointment-delete {
+            opacity: 1;
+        }
+        .appointment-delete:hover {
+            color: var(--danger);
+        }
+        .no-appointments {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .calendar-legend {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .legend-dot.customer { background: var(--primary-red); }
+        .legend-dot.personal { background: #3b82f6; }
+
+        /* Add Appointment Modal */
+        .appointment-type-select {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .type-option {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-dark);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .type-option:hover {
+            border-color: var(--text-muted);
+        }
+        .type-option.selected {
+            border-color: var(--primary-red);
+            background: rgba(230, 57, 70, 0.1);
+        }
+        .type-option.personal.selected {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .type-option i {
+            font-size: 20px;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .type-option.customer i { color: var(--primary-red); }
+        .type-option.personal i { color: #3b82f6; }
+        .type-option span {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Selected calendar day */
+        .calendar-day.selected {
+            background: rgba(230, 57, 70, 0.2);
+            border: 1px solid var(--primary-red);
+        }
     </style>
 </head>
 <body>
     <div class="bg-animation"></div>
-    
+
     <button class="mobile-menu-toggle" onclick="toggleSidebar()">
         <i class="fas fa-bars"></i>
     </button>
@@ -1008,20 +1217,20 @@
             <div class="sidebar-header">
                 <div class="logo">
                     <div class="logo-main">SVEN</div>
-                    <div class="logo-sub">Jeff's Personal Assistant</div>
+                    <div class="logo-sub">Pedersen Toyota</div>
                 </div>
             </div>
 
             <nav class="nav-menu">
-                <a href="dashboard.html" class="nav-item active">
+                <a href="index.html" class="nav-item active">
                     <i class="fas fa-th-large"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="clienthub.html" class="nav-item">
+                <a href="https://toyota-client-tools.preview.emergentagent.com/hub" target="_blank" class="nav-item">
                     <i class="fas fa-users"></i>
                     <span>Jeff's Client Hub</span>
                 </a>
-                <a href="calendar.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('Calendar')">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Calendar</span>
                 </a>
@@ -1029,8 +1238,8 @@
                     <i class="fas fa-user-clock"></i>
                     <span>Lead Follow Up</span>
                 </a>
-                <a href="vehicle-comparison.html" class="nav-item">
-                    <i class="fas fa-balance-scale"></i>
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Comparison')">
+                    <i class="fas fa-car-side"></i>
                     <span>Vehicle Comparison</span>
                 </a>
                 <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Request')">
@@ -1087,8 +1296,8 @@
                     <button class="btn btn-secondary" onclick="openModal()">
                         <i class="fas fa-plus"></i> Add Task
                     </button>
-                    <button class="btn btn-primary" onclick="openChat()">
-                        <i class="fab fa-telegram"></i> Chat with Sven
+                    <button class="btn btn-primary" onclick="toggleChatPanel()">
+                        <i class="fas fa-comments"></i> Chat with Sven
                     </button>
                 </div>
             </div>
@@ -1149,6 +1358,27 @@
                             <div class="calendar-grid" id="calendarGrid">
                                 <!-- Calendar will be populated by JavaScript -->
                             </div>
+                            <div class="calendar-legend">
+                                <div class="legend-item">
+                                    <div class="legend-dot customer"></div>
+                                    <span>Customer</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot personal"></div>
+                                    <span>Personal</span>
+                                </div>
+                            </div>
+                            <div class="appointments-section">
+                                <div class="appointments-header">
+                                    <span class="appointments-title" id="appointmentsDateLabel">Today's Appointments</span>
+                                    <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="openAppointmentModal()">
+                                        <i class="fas fa-plus"></i> Add
+                                    </button>
+                                </div>
+                                <div id="appointmentsList">
+                                    <!-- Appointments will be populated by JavaScript -->
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1162,10 +1392,10 @@
                         </div>
                         <div class="card-body">
                             <div class="quick-actions">
-                                <button class="action-btn primary" onclick="window.location.href='index.html'">
+                                <button class="action-btn primary" onclick="window.location.href='clienthub.html'">
                                     <i class="fas fa-user-plus"></i> Start New Lead Engagement
                                 </button>
-                                <button class="action-btn secondary" onclick="showComingSoon('Appointments')">
+                                <button class="action-btn secondary" onclick="showTodaysAppointments()">
                                     <i class="fas fa-calendar-check"></i> View Upcoming Appointments
                                 </button>
                                 <button class="action-btn secondary" onclick="showComingSoon('Daily Report')">
@@ -1179,11 +1409,12 @@
         </main>
     </div>
 
-    <!-- Chat Panel -->
-    <button class="chat-toggle" id="chatToggle" onclick="openChat()" title="Chat with Sven on Telegram">
-        <i class="fab fa-telegram"></i>
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chatToggle" onclick="toggleChatPanel()" title="Chat with Sven">
+        <i class="fas fa-comments"></i>
     </button>
 
+    <!-- Chat Panel -->
     <div class="chat-panel" id="chatPanel">
         <div class="chat-header">
             <div class="chat-header-info">
@@ -1193,8 +1424,30 @@
                     <span>Your AI Assistant</span>
                 </div>
             </div>
-            <button class="chat-close" onclick="closeChat()">
-                <i class="fas fa-times"></i>
+            <div style="display: flex; gap: 8px;">
+                <button class="chat-close" onclick="clearChatHistory()" title="Clear chat history" style="background: rgba(255,255,255,0.1);">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button class="chat-close" onclick="closeChat()" title="Close chat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="chat-quick-actions" id="chatQuickActions">
+            <button class="quick-chip" onclick="sendQuickAction('Find me the best Toyota vehicles for a family of 4 with a budget of $40,000')">
+                <i class="fas fa-car"></i> Find Vehicles
+            </button>
+            <button class="quick-chip" onclick="sendQuickAction('Help me draft a follow-up message for a customer who came in for a test drive yesterday')">
+                <i class="fas fa-envelope"></i> Draft Follow-up
+            </button>
+            <button class="quick-chip" onclick="sendQuickAction('Compare the RAV4, Highlander, and Camry for me')">
+                <i class="fas fa-balance-scale"></i> Compare Models
+            </button>
+            <button class="quick-chip" onclick="sendQuickAction('What are the key selling points of the 2024 Toyota lineup?')">
+                <i class="fas fa-star"></i> Selling Points
+            </button>
+            <button class="quick-chip" onclick="sendQuickAction('Help me handle a customer objection about price')">
+                <i class="fas fa-comments-dollar"></i> Handle Objection
             </button>
         </div>
         <div class="chat-messages" id="chatMessages">
@@ -1252,6 +1505,54 @@
         </div>
     </div>
 
+    <!-- Add Appointment Modal -->
+    <div class="modal-overlay" id="appointmentModalOverlay" onclick="closeAppointmentModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Add Appointment</h3>
+                <button class="modal-close" onclick="closeAppointmentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="appointment-type-select">
+                    <div class="type-option customer selected" onclick="selectAppointmentType('customer')">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Customer</span>
+                    </div>
+                    <div class="type-option personal" onclick="selectAppointmentType('personal')">
+                        <i class="fas fa-user"></i>
+                        <span>Personal</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="appointmentTitle" placeholder="e.g., Test Drive - John Smith">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="appointmentDate">
+                </div>
+                <div class="form-group">
+                    <label>Time</label>
+                    <input type="time" id="appointmentTime" value="09:00">
+                </div>
+                <div class="form-group" id="customerNameGroup">
+                    <label>Customer Name (optional)</label>
+                    <input type="text" id="appointmentCustomer" placeholder="e.g., John Smith">
+                </div>
+                <div class="form-group">
+                    <label>Notes (optional)</label>
+                    <input type="text" id="appointmentNotes" placeholder="e.g., Interested in RAV4 Hybrid">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAppointmentModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="addAppointment()">Add Appointment</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Data Management
         let dashboardData = JSON.parse(localStorage.getItem('svenDashboard')) || {
@@ -1263,37 +1564,42 @@
                 monthlySales: 0,
                 salesTarget: 20
             },
-            tasks: []
+            tasks: [],
+            appointments: []
         };
+        
+        // Ensure appointments array exists for older data
+        if (!dashboardData.appointments) {
+            dashboardData.appointments = [];
+        }
+        
+        let selectedDate = new Date(); // Track selected date for appointments view
+        let selectedAppointmentType = 'customer';
 
         // Initialize Dashboard
         function initDashboard() {
             updateKPIs();
             renderTasks();
             renderCalendar();
+            renderAppointments();
         }
 
         // KPI Management
         function updateKPIs() {
             document.getElementById('activeLeads').textContent = dashboardData.kpis.activeLeads;
-            document.getElementById('leadsChange').innerHTML = `<i class="fas fa-arrow-up"></i> +${dashboardData.kpis.leadsChange} this week`;
+            document.getElementById('leadsChange').innerHTML = '<i class="fas fa-arrow-up"></i> +' + dashboardData.kpis.leadsChange + ' this week';
             document.getElementById('testDrives').textContent = dashboardData.kpis.testDrives;
-            document.getElementById('testDrivesSub').textContent = `Today's: ${dashboardData.kpis.testDrivesToday}`;
+            document.getElementById('testDrivesSub').textContent = "Today's: " + dashboardData.kpis.testDrivesToday;
             document.getElementById('monthlySales').textContent = dashboardData.kpis.monthlySales;
-            document.getElementById('salesTarget').textContent = `Target: ${dashboardData.kpis.salesTarget}`;
+            document.getElementById('salesTarget').textContent = 'Target: ' + dashboardData.kpis.salesTarget;
         }
 
         // Task Management
         function renderTasks() {
             const taskList = document.getElementById('taskList');
-            
+
             if (dashboardData.tasks.length === 0) {
-                taskList.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                        <i class="fas fa-check-circle" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
-                        No tasks yet. Add your first task!
-                    </div>
-                `;
+                taskList.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);"><i class="fas fa-check-circle" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>No tasks yet. Add your first task!</div>';
                 return;
             }
 
@@ -1307,20 +1613,20 @@
                 return new Date(a.due) - new Date(b.due);
             });
 
-            taskList.innerHTML = sortedTasks.map((task, index) => `
-                <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
-                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask('${task.id}')"></div>
-                    <div class="task-content">
-                        <div class="task-title">${task.title}</div>
-                        <div class="task-due">Due: ${formatDate(task.due)}</div>
-                    </div>
-                    <div class="task-priority ${task.priority}"></div>
-                </div>
-            `).join('');
+            taskList.innerHTML = sortedTasks.map(function(task) {
+                return '<div class="task-item ' + (task.completed ? 'completed' : '') + '" data-id="' + task.id + '">' +
+                    '<div class="task-checkbox ' + (task.completed ? 'checked' : '') + '" onclick="toggleTask(\'' + task.id + '\')"></div>' +
+                    '<div class="task-content">' +
+                    '<div class="task-title">' + task.title + '</div>' +
+                    '<div class="task-due">Due: ' + formatDate(task.due) + '</div>' +
+                    '</div>' +
+                    '<div class="task-priority ' + task.priority + '"></div>' +
+                    '</div>';
+            }).join('');
         }
 
         function toggleTask(id) {
-            const task = dashboardData.tasks.find(t => t.id === id);
+            const task = dashboardData.tasks.find(function(t) { return t.id === id; });
             if (task) {
                 task.completed = !task.completed;
                 saveData();
@@ -1340,9 +1646,9 @@
 
             const task = {
                 id: Date.now().toString(),
-                title,
+                title: title,
                 due: due || new Date().toISOString().split('T')[0],
-                priority,
+                priority: priority,
                 completed: false,
                 createdAt: new Date().toISOString()
             };
@@ -1364,63 +1670,254 @@
         function renderCalendar() {
             const year = currentDate.getFullYear();
             const month = currentDate.getMonth();
-            
+
             const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
                                'July', 'August', 'September', 'October', 'November', 'December'];
-            
-            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
-            
+
+            document.getElementById('calendarMonth').textContent = monthNames[month] + ' ' + year;
+
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
             const startPadding = firstDay.getDay();
             const daysInMonth = lastDay.getDate();
-            
+
             const today = new Date();
             const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
             
+            // Check selected date
+            const isSelectedMonth = selectedDate.getFullYear() === year && selectedDate.getMonth() === month;
+
             let html = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
-                .map(day => `<div class="calendar-day-header">${day}</div>`).join('');
-            
+                .map(function(day) { return '<div class="calendar-day-header">' + day + '</div>'; }).join('');
+
             // Previous month padding
             const prevMonth = new Date(year, month, 0);
             const prevMonthDays = prevMonth.getDate();
             for (let i = startPadding - 1; i >= 0; i--) {
-                html += `<div class="calendar-day other-month">${prevMonthDays - i}</div>`;
+                html += '<div class="calendar-day other-month">' + (prevMonthDays - i) + '</div>';
             }
-            
+
             // Current month
             for (let day = 1; day <= daysInMonth; day++) {
                 const isToday = isCurrentMonth && today.getDate() === day;
-                const hasEvent = dashboardData.tasks.some(t => {
+                const isSelected = isSelectedMonth && selectedDate.getDate() === day;
+                const dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+                
+                // Check for appointments on this day
+                const dayAppointments = dashboardData.appointments.filter(function(a) {
+                    return a.date === dateStr;
+                });
+                const hasCustomer = dayAppointments.some(function(a) { return a.type === 'customer'; });
+                const hasPersonal = dayAppointments.some(function(a) { return a.type === 'personal'; });
+                
+                // Check for tasks
+                const hasTask = dashboardData.tasks.some(function(t) {
                     const taskDate = new Date(t.due);
-                    return taskDate.getDate() === day && 
-                           taskDate.getMonth() === month && 
+                    return taskDate.getDate() === day &&
+                           taskDate.getMonth() === month &&
                            taskDate.getFullYear() === year &&
                            !t.completed;
                 });
+
+                let classes = 'calendar-day';
+                if (isToday) classes += ' today';
+                if (isSelected && !isToday) classes += ' selected';
+                if (hasCustomer) classes += ' has-customer';
+                if (hasPersonal) classes += ' has-personal';
+                if (hasTask && !hasCustomer && !hasPersonal) classes += ' has-event';
                 
-                html += `<div class="calendar-day${isToday ? ' today' : ''}${hasEvent ? ' has-event' : ''}">${day}</div>`;
+                html += '<div class="' + classes + '" onclick="selectDate(' + year + ',' + month + ',' + day + ')" style="cursor:pointer;position:relative;">' + day + '</div>';
             }
-            
+
             // Next month padding
             const totalCells = startPadding + daysInMonth;
             const remainingCells = 42 - totalCells;
             for (let i = 1; i <= remainingCells && totalCells + i <= 42; i++) {
-                html += `<div class="calendar-day other-month">${i}</div>`;
+                html += '<div class="calendar-day other-month">' + i + '</div>';
             }
-            
+
             document.getElementById('calendarGrid').innerHTML = html;
+        }
+        
+        function selectDate(year, month, day) {
+            selectedDate = new Date(year, month, day);
+            renderCalendar();
+            renderAppointments();
         }
 
         function changeMonth(delta) {
             currentDate.setMonth(currentDate.getMonth() + delta);
             renderCalendar();
         }
+        
+        // Appointments Management
+        function renderAppointments() {
+            const dateStr = selectedDate.toISOString().split('T')[0];
+            const today = new Date();
+            const isToday = selectedDate.toDateString() === today.toDateString();
+            
+            // Update label
+            const label = document.getElementById('appointmentsDateLabel');
+            if (isToday) {
+                label.textContent = "Today's Appointments";
+            } else {
+                const options = { weekday: 'short', month: 'short', day: 'numeric' };
+                label.textContent = selectedDate.toLocaleDateString('en-US', options) + ' Appointments';
+            }
+            
+            // Get appointments for selected date
+            const dayAppointments = dashboardData.appointments.filter(function(a) {
+                return a.date === dateStr;
+            }).sort(function(a, b) {
+                return a.time.localeCompare(b.time);
+            });
+            
+            const container = document.getElementById('appointmentsList');
+            
+            if (dayAppointments.length === 0) {
+                container.innerHTML = '<div class="no-appointments"><i class="fas fa-calendar-check" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>No appointments scheduled</div>';
+                return;
+            }
+            
+            container.innerHTML = dayAppointments.map(function(apt) {
+                const timeFormatted = formatTime(apt.time);
+                return '<div class="appointment-item ' + apt.type + '">' +
+                    '<div class="appointment-time">' + timeFormatted + '</div>' +
+                    '<div class="appointment-details">' +
+                        '<div class="appointment-title">' + escapeHtml(apt.title) + '</div>' +
+                        '<div class="appointment-type">' + (apt.type === 'customer' ? '<i class="fas fa-user-tie"></i> Customer' : '<i class="fas fa-user"></i> Personal') + 
+                        (apt.customer ? ' • ' + escapeHtml(apt.customer) : '') + '</div>' +
+                    '</div>' +
+                    '<button class="appointment-delete" onclick="deleteAppointment(\'' + apt.id + '\')" title="Delete">' +
+                        '<i class="fas fa-trash"></i>' +
+                    '</button>' +
+                '</div>';
+            }).join('');
+        }
+        
+        function formatTime(timeStr) {
+            const [hours, minutes] = timeStr.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const hour12 = hour % 12 || 12;
+            return hour12 + ':' + minutes + ' ' + ampm;
+        }
+        
+        function openAppointmentModal() {
+            document.getElementById('appointmentModalOverlay').classList.add('open');
+            // Set default date to selected date
+            document.getElementById('appointmentDate').value = selectedDate.toISOString().split('T')[0];
+            document.getElementById('appointmentTitle').focus();
+        }
+        
+        function closeAppointmentModal(e) {
+            if (!e || e.target === document.getElementById('appointmentModalOverlay')) {
+                document.getElementById('appointmentModalOverlay').classList.remove('open');
+                // Clear form
+                document.getElementById('appointmentTitle').value = '';
+                document.getElementById('appointmentTime').value = '09:00';
+                document.getElementById('appointmentCustomer').value = '';
+                document.getElementById('appointmentNotes').value = '';
+                selectAppointmentType('customer');
+            }
+        }
+        
+        function selectAppointmentType(type) {
+            selectedAppointmentType = type;
+            document.querySelectorAll('.type-option').forEach(function(el) {
+                el.classList.remove('selected');
+            });
+            document.querySelector('.type-option.' + type).classList.add('selected');
+            
+            // Show/hide customer name field
+            const customerGroup = document.getElementById('customerNameGroup');
+            if (type === 'personal') {
+                customerGroup.style.display = 'none';
+            } else {
+                customerGroup.style.display = 'block';
+            }
+        }
+        
+        function addAppointment() {
+            const title = document.getElementById('appointmentTitle').value.trim();
+            const date = document.getElementById('appointmentDate').value;
+            const time = document.getElementById('appointmentTime').value;
+            const customer = document.getElementById('appointmentCustomer').value.trim();
+            const notes = document.getElementById('appointmentNotes').value.trim();
+            
+            if (!title) {
+                alert('Please enter an appointment title');
+                return;
+            }
+            if (!date) {
+                alert('Please select a date');
+                return;
+            }
+            
+            const appointment = {
+                id: Date.now().toString(),
+                type: selectedAppointmentType,
+                title: title,
+                date: date,
+                time: time || '09:00',
+                customer: customer,
+                notes: notes,
+                createdAt: new Date().toISOString()
+            };
+            
+            dashboardData.appointments.push(appointment);
+            saveData();
+            
+            // Update selected date to the appointment date
+            selectedDate = new Date(date + 'T12:00:00');
+            
+            renderCalendar();
+            renderAppointments();
+            updateKPIs();
+            closeAppointmentModal();
+        }
+        
+        function deleteAppointment(id) {
+            if (confirm('Delete this appointment?')) {
+                dashboardData.appointments = dashboardData.appointments.filter(function(a) {
+                    return a.id !== id;
+                });
+                saveData();
+                renderCalendar();
+                renderAppointments();
+                updateKPIs();
+            }
+        }
+        
+        function showTodaysAppointments() {
+            selectedDate = new Date();
+            currentDate = new Date();
+            renderCalendar();
+            renderAppointments();
+        }
 
-        // Chat Panel
-        function openChat() {
-            // Open Telegram chat with Sven
-            window.open('https://t.me/jefflee44_bot', '_blank');
+        // Chat Panel - Connected to OpenClaw AI
+        const API_BASE = 'https://toyota-client-tools.preview.emergentagent.com';
+        // Persist session ID in localStorage so Sven remembers conversations
+        let chatSessionId = localStorage.getItem('svenChatSessionId');
+        if (!chatSessionId) {
+            chatSessionId = 'sven-command-center-' + Date.now();
+            localStorage.setItem('svenChatSessionId', chatSessionId);
+        }
+        let isWaitingForResponse = false;
+
+        function toggleChatPanel() {
+            const panel = document.getElementById('chatPanel');
+            const toggle = document.getElementById('chatToggle');
+            
+            if (panel.classList.contains('open')) {
+                panel.classList.remove('open');
+                toggle.classList.remove('hidden');
+            } else {
+                panel.classList.add('open');
+                toggle.classList.add('hidden');
+                document.getElementById('chatInput').focus();
+            }
         }
 
         function closeChat() {
@@ -1428,36 +1925,102 @@
             document.getElementById('chatToggle').classList.remove('hidden');
         }
 
-        function sendChatMessage() {
+        async function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
-            
-            if (!message) return;
-            
+
+            if (!message || isWaitingForResponse) return;
+
             const messagesDiv = document.getElementById('chatMessages');
-            
+
             // Add user message
-            messagesDiv.innerHTML += `<div class="chat-message user">${escapeHtml(message)}</div>`;
+            messagesDiv.innerHTML += '<div class="chat-message user">' + escapeHtml(message) + '</div>';
             input.value = '';
-            
-            // Simulate Sven response
-            setTimeout(() => {
-                messagesDiv.innerHTML += `
-                    <div class="chat-message sven">
-                        I'm a demo chat interface for now. In the full version, I'll be connected to your OpenClaw session so you can interact with me directly from this dashboard!
-                        <br><br>
-                        For now, you can chat with me through your main OpenClaw interface. 🦉
-                    </div>
-                `;
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }, 1000);
-            
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Show typing indicator
+            isWaitingForResponse = true;
+            const typingId = 'typing-' + Date.now();
+            messagesDiv.innerHTML += '<div class="chat-message sven" id="' + typingId + '"><i class="fas fa-circle-notch fa-spin"></i> Sven is thinking...</div>';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            try {
+                const response = await fetch(API_BASE + '/api/openclaw-ui/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        session_id: chatSessionId
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Remove typing indicator
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+
+                if (data.response) {
+                    // Add Sven's response
+                    const formattedResponse = formatResponse(data.response);
+                    messagesDiv.innerHTML += '<div class="chat-message sven">' + formattedResponse + '</div>';
+                } else if (data.error) {
+                    messagesDiv.innerHTML += '<div class="chat-message sven" style="color: #ef4444;">Sorry, I encountered an error: ' + escapeHtml(data.error) + '</div>';
+                }
+            } catch (error) {
+                // Remove typing indicator
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+                
+                console.error('Chat error:', error);
+                messagesDiv.innerHTML += '<div class="chat-message sven" style="color: #ef4444;">Sorry, I couldn\'t connect to the server. Please check your internet connection and try again.</div>';
+            }
+
+            isWaitingForResponse = false;
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
+        function formatResponse(text) {
+            // Convert markdown-like formatting to HTML
+            let formatted = escapeHtml(text);
+            // Convert **bold** to <strong>
+            formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            // Convert *italic* to <em>
+            formatted = formatted.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            // Convert newlines to <br>
+            formatted = formatted.replace(/\n/g, '<br>');
+            // Convert bullet points
+            formatted = formatted.replace(/^[-•]\s/gm, '• ');
+            return formatted;
+        }
+
         function handleChatKeypress(e) {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 sendChatMessage();
+            }
+        }
+
+        function sendQuickAction(prompt) {
+            // Fill the input with the prompt and send
+            document.getElementById('chatInput').value = prompt;
+            sendChatMessage();
+        }
+
+        async function clearChatHistory() {
+            try {
+                await fetch(API_BASE + '/api/openclaw-ui/history?session_id=' + chatSessionId, {
+                    method: 'DELETE'
+                });
+                // Create new session for fresh start
+                chatSessionId = 'sven-command-center-' + Date.now();
+                localStorage.setItem('svenChatSessionId', chatSessionId);
+                // Reset chat messages to initial state
+                document.getElementById('chatMessages').innerHTML = '<div class="chat-message sven">Hey Jeff! 👋 I\'m here to help. What would you like to work on? You can ask me to:<br><br>• Find vehicles for a customer<br>• Draft a follow-up message<br>• Check your schedule<br>• Run a workflow<br>• Anything else!</div>';
+            } catch (error) {
+                console.error('Error clearing history:', error);
             }
         }
 
@@ -1480,7 +2043,7 @@
 
         // Coming Soon
         function showComingSoon(feature) {
-            alert(`${feature} is coming soon! This feature will be available in a future update.`);
+            alert(feature + ' is coming soon! This feature will be available in a future update.');
         }
 
         // Utilities
@@ -1547,9 +2110,9 @@
             const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
             const quoteIndex = dayOfYear % motivationalQuotes.length;
             const quote = motivationalQuotes[quoteIndex];
-            
+
             document.getElementById('quoteText').textContent = quote.text;
-            document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
+            document.getElementById('quoteAuthor').textContent = '— ' + quote.author;
         }
 
         // Initialize
