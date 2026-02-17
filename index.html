@@ -633,6 +633,13 @@
             background: white;
         }
 
+        /* Workflow Cards */
+        .workflow-card:hover {
+            background: var(--bg-card-hover) !important;
+            border-color: var(--primary-red) !important;
+            transform: translateX(4px);
+        }
+
         /* Chat Panel */
         .chat-panel {
             position: fixed;
@@ -1238,8 +1245,8 @@
                     <i class="fas fa-user-clock"></i>
                     <span>Lead Follow Up</span>
                 </a>
-                <a href="vehicle-comparison.html" class="nav-item">
-                    <i class="fas fa-balance-scale"></i>
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Comparison')">
+                    <i class="fas fa-car-side"></i>
                     <span>Vehicle Comparison</span>
                 </a>
                 <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Request')">
@@ -1249,7 +1256,7 @@
 
                 <div class="nav-divider"></div>
 
-                <a href="workflows.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="showWorkflowsModal()">
                     <i class="fas fa-project-diagram"></i>
                     <span>Multi-Agent Tools</span>
                 </a>
@@ -1549,6 +1556,98 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeAppointmentModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="addAppointment()">Add Appointment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multi-Agent Tools Modal -->
+    <div class="modal-overlay" id="workflowsModalOverlay" onclick="closeWorkflowsModal(event)">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-project-diagram" style="color: var(--primary-red); margin-right: 8px;"></i>Antfarm Multi-Agent Tools</h3>
+                <button class="modal-close" onclick="closeWorkflowsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Select a workflow to run with Sven's AI-powered analysis:</p>
+                
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- Recommend Workflow -->
+                    <div class="workflow-card" onclick="runWorkflow('recommend')" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary-red), var(--dark-red)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-car" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="color: var(--text-primary); margin-bottom: 4px; font-size: 16px;">Vehicle Recommendations</h4>
+                                <p style="color: var(--text-secondary); font-size: 13px; margin: 0;">Get personalized Toyota recommendations based on customer needs</p>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Compare Workflow -->
+                    <div class="workflow-card" onclick="runWorkflow('compare')" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-balance-scale" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="color: var(--text-primary); margin-bottom: 4px; font-size: 16px;">Vehicle Comparison</h4>
+                                <p style="color: var(--text-secondary); font-size: 13px; margin: 0;">Compare Toyota vs competitors with specs, pricing & advantages</p>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Used Match Workflow -->
+                    <div class="workflow-card" onclick="runWorkflow('usedmatch')" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s ease;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-search-dollar" style="color: white; font-size: 20px;"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="color: var(--text-primary); margin-bottom: 4px; font-size: 16px;">Used Vehicle Match</h4>
+                                <p style="color: var(--text-secondary); font-size: 13px; margin: 0;">Find matching pre-owned vehicles for customer requirements</p>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 16px; background: rgba(230, 57, 70, 0.1); border-radius: 8px; border-left: 3px solid var(--primary-red);">
+                    <p style="color: var(--text-secondary); font-size: 13px; margin: 0;">
+                        <i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 8px;"></i>
+                        These tools are also available via Telegram: <code style="background: var(--bg-card); padding: 2px 6px; border-radius: 4px;">/recommend</code>, <code style="background: var(--bg-card); padding: 2px 6px; border-radius: 4px;">/compare</code>, <code style="background: var(--bg-card); padding: 2px 6px; border-radius: 4px;">/usedmatch</code>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workflow Input Modal -->
+    <div class="modal-overlay" id="workflowInputModalOverlay" onclick="closeWorkflowInputModal(event)">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 id="workflowInputTitle"><i class="fas fa-car" style="color: var(--primary-red); margin-right: 8px;"></i>Vehicle Recommendations</h3>
+                <button class="modal-close" onclick="closeWorkflowInputModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <p id="workflowInputDescription" style="color: var(--text-secondary); margin-bottom: 16px;">Describe the customer's needs:</p>
+                <div class="form-group">
+                    <textarea id="workflowInput" placeholder="e.g., family of 5, needs 3rd row seating, budget around $45k" style="width: 100%; min-height: 100px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; color: var(--text-primary); font-size: 14px; resize: vertical;"></textarea>
+                </div>
+                <div id="workflowExamples" style="margin-top: 12px;">
+                    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 8px;">Examples:</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeWorkflowInputModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="executeWorkflow()"><i class="fas fa-play" style="margin-right: 6px;"></i>Run Analysis</button>
             </div>
         </div>
     </div>
@@ -2044,6 +2143,122 @@
         // Coming Soon
         function showComingSoon(feature) {
             alert(feature + ' is coming soon! This feature will be available in a future update.');
+        }
+
+        // Multi-Agent Workflows
+        let currentWorkflow = null;
+        const workflowConfig = {
+            recommend: {
+                title: 'Vehicle Recommendations',
+                icon: 'fa-car',
+                color: 'var(--primary-red)',
+                description: 'Describe the customer\'s needs and preferences:',
+                placeholder: 'e.g., family of 5, needs 3rd row seating, budget around $45k',
+                examples: [
+                    'family of 5, needs 3rd row, budget $45k',
+                    'young professional, fuel efficiency priority',
+                    'outdoor enthusiast who tows a small boat'
+                ],
+                prompt: 'I need Toyota recommendations for a customer with these needs: '
+            },
+            compare: {
+                title: 'Vehicle Comparison',
+                icon: 'fa-balance-scale',
+                color: '#f59e0b',
+                description: 'Enter the vehicles you want to compare:',
+                placeholder: 'e.g., RAV4 vs Honda CR-V',
+                examples: [
+                    'RAV4 vs Honda CR-V',
+                    'Camry vs Accord vs Altima',
+                    '4Runner vs Wrangler for off-road'
+                ],
+                prompt: 'Compare these vehicles for a customer: '
+            },
+            usedmatch: {
+                title: 'Used Vehicle Match',
+                icon: 'fa-search-dollar',
+                color: '#22c55e',
+                description: 'Describe what the customer is looking for:',
+                placeholder: 'e.g., budget $25k, SUV, low miles, certified preferred',
+                examples: [
+                    'budget $25k, SUV, low miles, certified preferred',
+                    'first car for college student, reliable, under $15k',
+                    'towing capability 5000+ lbs, 4WD, max 50k miles'
+                ],
+                prompt: 'Find used vehicles for a customer looking for: '
+            }
+        };
+
+        function showWorkflowsModal() {
+            document.getElementById('workflowsModalOverlay').classList.add('open');
+        }
+
+        function closeWorkflowsModal(e) {
+            if (!e || e.target === document.getElementById('workflowsModalOverlay')) {
+                document.getElementById('workflowsModalOverlay').classList.remove('open');
+            }
+        }
+
+        function runWorkflow(type) {
+            currentWorkflow = type;
+            const config = workflowConfig[type];
+            
+            // Update modal content
+            document.getElementById('workflowInputTitle').innerHTML = '<i class="fas ' + config.icon + '" style="color: ' + config.color + '; margin-right: 8px;"></i>' + config.title;
+            document.getElementById('workflowInputDescription').textContent = config.description;
+            document.getElementById('workflowInput').placeholder = config.placeholder;
+            document.getElementById('workflowInput').value = '';
+            
+            // Update examples
+            const examplesContainer = document.querySelector('#workflowExamples > div');
+            examplesContainer.innerHTML = config.examples.map(ex => 
+                '<button onclick="setWorkflowExample(\'' + ex.replace(/'/g, "\\'") + '\')" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 6px 12px; color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: all 0.2s;">' + ex + '</button>'
+            ).join('');
+            
+            // Close workflows modal and open input modal
+            closeWorkflowsModal();
+            document.getElementById('workflowInputModalOverlay').classList.add('open');
+            setTimeout(() => document.getElementById('workflowInput').focus(), 100);
+        }
+
+        function setWorkflowExample(example) {
+            document.getElementById('workflowInput').value = example;
+        }
+
+        function closeWorkflowInputModal(e) {
+            if (!e || e.target === document.getElementById('workflowInputModalOverlay')) {
+                document.getElementById('workflowInputModalOverlay').classList.remove('open');
+                currentWorkflow = null;
+            }
+        }
+
+        function executeWorkflow() {
+            const input = document.getElementById('workflowInput').value.trim();
+            if (!input) {
+                alert('Please enter the details for the analysis.');
+                return;
+            }
+            
+            const config = workflowConfig[currentWorkflow];
+            const message = config.prompt + input;
+            
+            // Close modal
+            closeWorkflowInputModal();
+            
+            // Open chat panel and send message
+            openChatPanel();
+            
+            // Set the message in chat input and send
+            const chatInput = document.getElementById('chatInput');
+            chatInput.value = message;
+            sendChatMessage();
+        }
+
+        function openChatPanel() {
+            const panel = document.getElementById('chatPanel');
+            if (!panel.classList.contains('open')) {
+                panel.classList.add('open');
+            }
         }
 
         // Utilities
