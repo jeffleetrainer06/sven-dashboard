@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflows | SVEN - Jeff's Personal Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0F172A;
+            --bg-card: #1E293B;
+            --bg-card-hover: #334155;
+            --bg-input: #0F172A;
+            --accent: #10B981;
+            --accent-hover: #059669;
+            --accent-glow: rgba(16, 185, 129, 0.2);
+            --text: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+            --border: #334155;
+            --yellow: #FBBF24;
+            --purple: #A78BFA;
+            --blue: #60A5FA;
+            --red: #F87171;
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent) 0%, #059669 100%);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .logo p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .nav-link {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: var(--bg-card-hover);
+            color: var(--text);
+        }
+        
+        /* Main Layout */
+        .main {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+            min-height: calc(100vh - 150px);
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .sidebar-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            padding: 0 16px;
+            margin-bottom: 8px;
+        }
+        
+        .workflow-card {
+            background: var(--bg-card);
+            border: 2px solid transparent;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .workflow-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateX(4px);
+        }
+        
+        .workflow-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        
+        .workflow-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .workflow-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .workflow-icon.yellow { background: rgba(251, 191, 36, 0.2); }
+        .workflow-icon.green { background: rgba(16, 185, 129, 0.2); }
+        .workflow-icon.purple { background: rgba(167, 139, 250, 0.2); }
+        
+        .workflow-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .workflow-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .workflow-agents {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .agent-tag {
+            padding: 4px 10px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+        
+        .workflow-card.active .agent-tag {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent);
+        }
+        
+        /* Content Area */
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        /* Run Panel */
+        .run-panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+        
+        .run-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .run-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .run-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .run-status.ready { background: rgba(16, 185, 129, 0.2); color: var(--accent); }
+        .run-status.running { background: rgba(251, 191, 36, 0.2); color: var(--yellow); }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        
+        .task-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .task-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        
+        .task-input::placeholder {
+            color: var(--text-dim);
+        }
+        
+        .quick-fills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .quick-fill {
+            padding: 6px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-fill:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        .run-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            color: var(--text);
+        }
+        
+        /* Progress Section */
+        .progress-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .progress-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .progress-pipeline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+        
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        
+        .pipeline-step.pending { color: var(--text-dim); }
+        .pipeline-step.active { 
+            background: rgba(251, 191, 36, 0.2); 
+            color: var(--yellow);
+            animation: pulse 1.5s infinite;
+        }
+        .pipeline-step.complete { 
+            background: rgba(16, 185, 129, 0.2); 
+            color: var(--accent); 
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .pipeline-arrow {
+            color: var(--text-dim);
+            font-size: 12px;
+        }
+        
+        .output-area {
+            background: #000;
+            border-radius: var(--radius);
+            padding: 16px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .output-line {
+            margin-bottom: 4px;
+        }
+        
+        .output-line.system { color: var(--text-dim); }
+        .output-line.agent { color: var(--blue); }
+        .output-line.success { color: var(--accent); }
+        .output-line.error { color: var(--red); }
+        .output-line.result { color: var(--yellow); }
+        
+        /* Result Panel */
+        .result-panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--accent);
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .result-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .result-content {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        /* History */
+        .history-section {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .history-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .history-item:hover {
+            background: var(--bg-card-hover);
+        }
+        
+        .history-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .history-status.success { background: var(--accent); }
+        .history-status.error { background: var(--red); }
+        
+        .history-info {
+            flex: 1;
+        }
+        
+        .history-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .history-task {
+            font-size: 12px;
+            color: var(--text-dim);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+        
+        .history-time {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-dim);
+        }
+        
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 14px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .toast.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 12px;
+            }
+            
+            .sidebar-title {
+                display: none;
+            }
+            
+            .workflow-card {
+                min-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <div>
+                    <h1>Workflow Studio</h1>
+                    <p>Multi-agent automation • Jeff's Personal Assistant</p>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">💬 Client Hub</a>
+                <a href="#" class="nav-link" onclick="showHistory()">📋 History</a>
+            </nav>
+        </header>
+        
+        <!-- Main -->
+        <main class="main">
+            <!-- Sidebar: Workflow Selection -->
+            <aside class="sidebar">
+                <div class="sidebar-title">Select Workflow</div>
+                
+                <div class="workflow-card active" data-workflow="used-vehicle-match" onclick="selectWorkflow(this)">
+                    <div class="workflow-header">
+                        <div class="workflow-icon green">🎯</div>
+                        <div class="workflow-name">Used Vehicle Match</div>
+                    </div>
+                    <p class="workflow-desc">Match customers with pre-owned inventory using scoring algorithm and payment calculations</p>
+                    <div class="workflow-agents">
+                        <span class="agent-tag">Qualifier</span>
+                        <span class="agent-tag">Scraper</span>
+                        <span class="agent-tag">Matcher</span>
+                        <span class="agent-tag">Calculator</span>
+                        <span class="agent-tag">Presenter</span>
+                    </div>
+                </div>
+                
+                <div class="workflow-card" data-workflow="toyota-recommend" onclick="selectWorkflow(this)">
+                    <div class="workflow-header">
+                        <div class="workflow-icon yellow">🚗</div>
+                        <div class="workflow-name">New Vehicle Recommend</div>
+                    </div>
+                    <p class="workflow-desc">Qualify customers and recommend new Toyota vehicles with VINs, payments, and comparisons</p>
+                    <div class="workflow-agents">
+                        <span class="agent-tag">Qualifier</span>
+                        <span class="agent-tag">Inventory</span>
+                        <span class="agent-tag">Sales</span>
+                        <span class="agent-tag">Verifier</span>
+                    </div>
+                </div>
+                
+                <div class="workflow-card" data-workflow="vehicle-compare" onclick="selectWorkflow(this)">
+                    <div class="workflow-header">
+                        <div class="workflow-icon purple">📊</div>
+                        <div class="workflow-name">Competitive Analysis</div>
+                    </div>
+                    <p class="workflow-desc">Generate competitive analysis with specs, talking points, and conquest scripts</p>
+                    <div class="workflow-agents">
+                        <span class="agent-tag">Collector</span>
+                        <span class="agent-tag">Analyzer</span>
+                        <span class="agent-tag">Recommender</span>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Content -->
+            <div class="content">
+                <!-- Run Panel -->
+                <section class="run-panel">
+                    <div class="run-header">
+                        <h2 id="runTitle">🎯 Run Used Vehicle Match</h2>
+                        <span class="run-status ready" id="runStatus">Ready</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">Enter customer details or inquiry:</label>
+                        <textarea class="task-input" id="taskInput" placeholder="e.g., Mike Johnson, 970-555-1234, looking for SUV around $450/mo, has 2019 Ford Escape to trade with about 65,000 miles..."></textarea>
+                        <div class="quick-fills">
+                            <button class="quick-fill" onclick="fillExample('used')">📝 Example: Used SUV</button>
+                            <button class="quick-fill" onclick="fillExample('new')">📝 Example: New Hybrid</button>
+                            <button class="quick-fill" onclick="fillExample('compare')">📝 Example: RAV4 vs CR-V</button>
+                        </div>
+                    </div>
+                    
+                    <div class="run-actions">
+                        <button class="btn btn-primary" id="startBtn" onclick="startWorkflow()">
+                            ▶️ Start Workflow
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearInput()">
+                            Clear
+                        </button>
+                    </div>
+                </section>
+                
+                <!-- Progress Section -->
+                <section class="progress-section" id="progressSection" style="display: none;">
+                    <div class="progress-header">
+                        <h3>🔄 Pipeline Progress</h3>
+                        <button class="btn btn-secondary" onclick="stopWorkflow()">⏹ Stop</button>
+                    </div>
+                    
+                    <div class="progress-pipeline" id="pipeline">
+                        <!-- Steps inserted by JS -->
+                    </div>
+                    
+                    <div class="output-area" id="outputArea">
+                        <!-- Output lines inserted by JS -->
+                    </div>
+                </section>
+                
+                <!-- Result Panel -->
+                <section class="result-panel" id="resultSection" style="display: none;">
+                    <div class="result-header">
+                        <h3>✅ Workflow Complete</h3>
+                        <span id="resultTime"></span>
+                    </div>
+                    <div class="result-content" id="resultContent"></div>
+                    <div class="result-actions">
+                        <button class="btn btn-secondary" onclick="copyResult()">📋 Copy Result</button>
+                        <button class="btn btn-primary" onclick="sendToHub()">📤 Send to Client Hub</button>
+                    </div>
+                </section>
+                
+                <!-- History Section -->
+                <section class="history-section" id="historySection">
+                    <div class="history-header">
+                        <h3>📋 Recent Runs</h3>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="empty-state">
+                            <div class="icon">⚡</div>
+                            <p>No workflow runs yet</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        // ========================================
+        // State & Config
+        // ========================================
+        
+        const WORKFLOWS = {
+            'used-vehicle-match': {
+                name: 'Used Vehicle Match',
+                icon: '🎯',
+                agents: ['Qualifier', 'Scraper', 'Matcher', 'Calculator', 'Presenter']
+            },
+            'toyota-recommend': {
+                name: 'New Vehicle Recommend',
+                icon: '🚗',
+                agents: ['Qualifier', 'Inventory', 'Sales', 'Verifier']
+            },
+            'vehicle-compare': {
+                name: 'Competitive Analysis',
+                icon: '📊',
+                agents: ['Collector', 'Analyzer', 'Recommender']
+            }
+        };
+        
+        const EXAMPLES = {
+            used: `Mike Johnson, 970-555-1234
+Looking for: Used SUV with AWD
+Budget: Around $450/month
+Trade-in: 2019 Ford Escape, ~65,000 miles
+Must have: Apple CarPlay, backup camera
+Notes: Family of 4, needs good cargo space`,
+            
+            new: `Sarah Chen, sarah.chen@email.com, 303-555-8901
+Interested in: 2026 RAV4 Hybrid or Highlander Hybrid
+Budget: $45,000-55,000 total or $600/mo max
+Needs: Fuel efficiency, safety features, room for 2 kids
+Timeline: Looking to purchase within 2 weeks
+Trade: 2020 Honda Accord, 42,000 miles`,
+            
+            compare: `Compare the 2026 Toyota RAV4 Hybrid against:
+- 2026 Honda CR-V Hybrid
+- 2026 Mazda CX-50
+- 2026 Subaru Forester
+
+Focus on: Price, fuel economy, cargo space, towing, standard safety features
+Include: Talking points for conquesting Honda and Subaru customers`
+        };
+        
+        let state = {
+            selectedWorkflow: 'used-vehicle-match',
+            isRunning: false,
+            currentStep: 0,
+            runs: JSON.parse(localStorage.getItem('workflow_runs') || '[]')
+        };
+        
+        // ========================================
+        // UI Functions
+        // ========================================
+        
+        function selectWorkflow(el) {
+            document.querySelectorAll('.workflow-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            
+            state.selectedWorkflow = el.dataset.workflow;
+            const wf = WORKFLOWS[state.selectedWorkflow];
+            
+            document.getElementById('runTitle').textContent = `${wf.icon} Run ${wf.name}`;
+            document.getElementById('resultSection').style.display = 'none';
+        }
+        
+        function fillExample(type) {
+            document.getElementById('taskInput').value = EXAMPLES[type];
+        }
+        
+        function clearInput() {
+            document.getElementById('taskInput').value = '';
+        }
+        
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+        
+        // ========================================
+        // Workflow Execution
+        // ========================================
+        
+        async function startWorkflow() {
+            const input = document.getElementById('taskInput').value.trim();
+            if (!input) {
+                showToast('Please enter customer details');
+                return;
+            }
+            
+            const wf = WORKFLOWS[state.selectedWorkflow];
+            state.isRunning = true;
+            state.currentStep = 0;
+            
+            // Update UI
+            document.getElementById('runStatus').textContent = 'Running...';
+            document.getElementById('runStatus').className = 'run-status running';
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('progressSection').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+            
+            // Render pipeline
+            renderPipeline(wf.agents, 0);
+            
+            // Clear output
+            const output = document.getElementById('outputArea');
+            output.innerHTML = '';
+            addOutput('system', `Starting ${wf.name}...`);
+            addOutput('system', `Task: ${input.substring(0, 100)}...`);
+            addOutput('system', '─'.repeat(50));
+            
+            // Create run record
+            const run = {
+                id: Date.now().toString(),
+                workflow: state.selectedWorkflow,
+                workflowName: wf.name,
+                task: input,
+                startedAt: new Date().toISOString(),
+                status: 'running'
+            };
+            
+            // Execute each agent step
+            let result = '';
+            for (let i = 0; i < wf.agents.length; i++) {
+                if (!state.isRunning) {
+                    addOutput('error', 'Workflow stopped by user');
+                    run.status = 'stopped';
+                    break;
+                }
+                
+                const agent = wf.agents[i];
+                state.currentStep = i;
+                renderPipeline(wf.agents, i);
+                
+                addOutput('agent', `[${agent}] Processing...`);
+                
+                // Simulate agent processing (replace with real sub-agent call)
+                await simulateAgent(agent, input);
+                
+                addOutput('success', `[${agent}] ✓ Complete`);
+            }
+            
+            if (state.isRunning) {
+                // Mark all complete
+                renderPipeline(wf.agents, wf.agents.length);
+                
+                // Generate result
+                result = generateResult(state.selectedWorkflow, input);
+                
+                addOutput('system', '─'.repeat(50));
+                addOutput('success', '✅ Workflow completed successfully!');
+                
+                // Show result
+                document.getElementById('resultContent').textContent = result;
+                document.getElementById('resultTime').textContent = new Date().toLocaleTimeString();
+                document.getElementById('resultSection').style.display = 'block';
+                
+                run.status = 'success';
+                run.result = result;
+            }
+            
+            // Save run
+            run.completedAt = new Date().toISOString();
+            state.runs.unshift(run);
+            state.runs = state.runs.slice(0, 20); // Keep last 20
+            localStorage.setItem('workflow_runs', JSON.stringify(state.runs));
+            renderHistory();
+            
+            // Reset UI
+            state.isRunning = false;
+            document.getElementById('runStatus').textContent = 'Ready';
+            document.getElementById('runStatus').className = 'run-status ready';
+            document.getElementById('startBtn').disabled = false;
+        }
+        
+        function stopWorkflow() {
+            state.isRunning = false;
+            showToast('Stopping workflow...');
+        }
+        
+        async function simulateAgent(agent, input) {
+            // In production, this would call OpenClaw's sub-agent system
+            // For now, simulate with delay
+            const delay = 1000 + Math.random() * 1500;
+            await new Promise(r => setTimeout(r, delay));
+        }
+        
+        function renderPipeline(agents, currentIndex) {
+            const pipeline = document.getElementById('pipeline');
+            pipeline.innerHTML = agents.map((agent, i) => {
+                let status = 'pending';
+                let icon = '○';
+                if (i < currentIndex) {
+                    status = 'complete';
+                    icon = '✓';
+                } else if (i === currentIndex) {
+                    status = 'active';
+                    icon = '◉';
+                }
+                return `<div class="pipeline-step ${status}">${icon} ${agent}</div>`;
+            }).join('<span class="pipeline-arrow">→</span>');
+        }
+        
+        function addOutput(type, text) {
+            const output = document.getElementById('outputArea');
+            const line = document.createElement('div');
+            line.className = `output-line ${type}`;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // ========================================
+        // Result Generation (Mock)
+        // ========================================
+        
+        function generateResult(workflow, input) {
+            const name = input.match(/^([A-Z][a-z]+ [A-Z][a-z]+)/)?.[1] || 'Customer';
+            
+            if (workflow === 'used-vehicle-match') {
+                return `═══════════════════════════════════════════════════════
+USED VEHICLE RECOMMENDATION REPORT
+Pedersen Toyota | Fort Collins, CO
+Generated: ${new Date().toLocaleString()}
+═══════════════════════════════════════════════════════
+
+CUSTOMER: ${name}
+BUDGET: ~$450/month
+LOOKING FOR: SUV with AWD
+TRADE-IN: 2019 Ford Escape (~$8,500 equity)
+
+───────────────────────────────────────────────────────
+
+🏆 TOP MATCH: 2023 Toyota RAV4 XLE AWD
+   Stock #U24587 | 28,450 miles | Blueprint
+   
+   Match Score: 94/100 ████████████████████░░
+   
+   Price: $31,495
+   + Tax (8.30%): $2,614
+   + Fees: $997
+   = Out-the-door: $35,106
+   - Trade equity: $8,500
+   = Financed: $26,606
+   
+   💰 PAYMENT: $449/mo (72mo @ 6.49% APR)
+   
+   ✓ AWD standard
+   ✓ Toyota Safety Sense 2.5+
+   ✓ Apple CarPlay / Android Auto
+   ✓ One owner, clean history
+
+───────────────────────────────────────────────────────
+
+#2: 2022 Toyota Highlander LE AWD
+    $34,995 | 35,200 mi | $489/mo
+    
+#3: 2023 Toyota Venza Limited
+    $36,495 | 19,800 mi | $515/mo
+
+───────────────────────────────────────────────────────
+
+NEXT STEPS:
+1. Call ${name.split(' ')[0]} to review recommendations
+2. Schedule test drive for RAV4
+3. Get trade-in appraised
+4. Follow up within 24 hours
+
+Prepared by: Jeff Lee | 720-416-6955
+═══════════════════════════════════════════════════════`;
+            }
+            
+            // Add other workflow results...
+            return `Workflow completed for: ${name}`;
+        }
+        
+        // ========================================
+        // History
+        // ========================================
+        
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            
+            if (state.runs.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">⚡</div>
+                        <p>No workflow runs yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            list.innerHTML = state.runs.slice(0, 5).map(run => `
+                <div class="history-item" onclick="viewRun('${run.id}')">
+                    <div class="history-status ${run.status}"></div>
+                    <div class="history-info">
+                        <div class="history-name">${run.workflowName}</div>
+                        <div class="history-task">${run.task.substring(0, 50)}...</div>
+                    </div>
+                    <div class="history-time">${formatTime(run.startedAt)}</div>
+                </div>
+            `).join('');
+        }
+        
+        function viewRun(id) {
+            const run = state.runs.find(r => r.id === id);
+            if (run?.result) {
+                document.getElementById('resultContent').textContent = run.result;
+                document.getElementById('resultTime').textContent = new Date(run.completedAt).toLocaleTimeString();
+                document.getElementById('resultSection').style.display = 'block';
+                document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        function formatTime(iso) {
+            const d = new Date(iso);
+            const now = new Date();
+            const diff = now - d;
+            const mins = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            
+            if (mins < 1) return 'Just now';
+            if (mins < 60) return `${mins}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            return d.toLocaleDateString();
+        }
+        
+        // ========================================
+        // Result Actions
+        // ========================================
+        
+        function copyResult() {
+            const text = document.getElementById('resultContent').textContent;
+            navigator.clipboard.writeText(text);
+            showToast('Copied to clipboard!');
+        }
+        
+        function sendToHub() {
+            // Store result for Client Hub to pick up
+            const result = document.getElementById('resultContent').textContent;
+            localStorage.setItem('pending_hub_message', result);
+            showToast('Opening Client Hub...');
+            setTimeout(() => window.location.href = 'index.html', 500);
+        }
+        
+        // Init
+        renderHistory();
+    </script>
+</body>
+</html>

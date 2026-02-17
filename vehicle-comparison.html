@@ -1,0 +1,2788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Comparison | Jeff Lee - Pedersen Toyota</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #b82d39;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --toyota-red: #eb0a1e;
+            --honda-blue: #0e578e;
+            --hyundai-blue: #002c5f;
+            --kia-red: #05141f;
+            --mazda-red: #910a2d;
+            --subaru-blue: #003e7e;
+            --ford-blue: #003478;
+            --chevy-gold: #d4a017;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.03;
+            background: 
+                linear-gradient(90deg, var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px,
+                linear-gradient(var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .logo-main {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            text-decoration: none;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 16px 8px;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sven-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-text strong {
+            color: var(--text-primary);
+            display: block;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 24px;
+            max-width: calc(100% - 280px);
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-red);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-muted);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1da94e;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            background: var(--bg-card);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .category-tab {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+        }
+
+        .category-tab:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .category-tab.active {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        /* Vehicle Selection Grid */
+        .selection-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary-red);
+        }
+
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .vehicle-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-dark);
+            border: 2px solid transparent;
+        }
+
+        .vehicle-chip:hover {
+            border-color: var(--border-color);
+            transform: translateY(-1px);
+        }
+
+        .vehicle-chip.selected {
+            border-color: var(--primary-red);
+            background: rgba(230, 57, 70, 0.1);
+        }
+
+        .vehicle-chip.toyota { border-left: 3px solid var(--toyota-red); }
+        .vehicle-chip.honda { border-left: 3px solid var(--honda-blue); }
+        .vehicle-chip.hyundai { border-left: 3px solid var(--hyundai-blue); }
+        .vehicle-chip.kia { border-left: 3px solid var(--kia-red); }
+        .vehicle-chip.mazda { border-left: 3px solid var(--mazda-red); }
+        .vehicle-chip.subaru { border-left: 3px solid var(--subaru-blue); }
+        .vehicle-chip.ford { border-left: 3px solid var(--ford-blue); }
+        .vehicle-chip.chevy { border-left: 3px solid var(--chevy-gold); }
+        .vehicle-chip.nissan { border-left: 3px solid #c3002f; }
+        .vehicle-chip.jeep { border-left: 3px solid #1d1d1b; }
+        .vehicle-chip.vw { border-left: 3px solid #001e50; }
+        .vehicle-chip.gmc { border-left: 3px solid #c41230; }
+        .vehicle-chip.ram { border-left: 3px solid #000000; }
+
+        .vehicle-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-muted);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+        }
+
+        .vehicle-chip.selected .vehicle-checkbox {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+        }
+
+        .vehicle-chip.selected .vehicle-checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .vehicle-info {
+            flex: 1;
+        }
+
+        .vehicle-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .vehicle-msrp {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Selected Count Badge */
+        .selected-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(230, 57, 70, 0.2);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--primary-red);
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        /* Comparison Table */
+        .comparison-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .comparison-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .comparison-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comparison-title i {
+            color: var(--primary-red);
+        }
+
+        .comparison-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: var(--bg-dark);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            position: sticky;
+            top: 0;
+        }
+
+        .comparison-table th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            background: var(--bg-dark);
+        }
+
+        .comparison-table td:first-child {
+            position: sticky;
+            left: 0;
+            background: var(--bg-card);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .comparison-table tbody tr:hover td:first-child {
+            background: var(--bg-card-hover);
+        }
+
+        .vehicle-header {
+            min-width: 180px;
+        }
+
+        .vehicle-header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .vehicle-header-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .vehicle-header-brand {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .spec-value {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .spec-highlight {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .spec-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .spec-tag.yes {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .spec-tag.no {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .spec-tag.best {
+            background: rgba(230, 57, 70, 0.2);
+            color: var(--primary-red);
+        }
+
+        /* Category Sections in Table */
+        .category-row {
+            background: rgba(230, 57, 70, 0.05) !important;
+        }
+
+        .category-row td {
+            font-weight: 700 !important;
+            color: var(--primary-red) !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px !important;
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        /* Print Styles */
+        @media print {
+            .sidebar, .category-tabs, .selection-section, .header-actions, .comparison-actions, .bg-animation {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .comparison-section {
+                border: none !important;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                border: 1px solid #ddd !important;
+                padding: 8px !important;
+                font-size: 11px !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            .comparison-table {
+                min-width: 100% !important;
+            }
+
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .print-header h1 {
+                font-size: 24px;
+                margin-bottom: 8px;
+            }
+
+            .print-header p {
+                font-size: 14px;
+                color: #666;
+            }
+        }
+
+        .print-header {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+            }
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-main">JEFF LEE</span>
+                    <span class="logo-sub">PEDERSEN TOYOTA</span>
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="clienthub.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Client Hub</span>
+                </a>
+                <a href="calendar.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Lead Follow Up')">
+                    <i class="fas fa-user-clock"></i>
+                    <span>Lead Follow Up</span>
+                </a>
+                <a href="vehicle-comparison.html" class="nav-item active">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Vehicle Comparison</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Request')">
+                    <i class="fas fa-car-side"></i>
+                    <span>Vehicle Request</span>
+                </a>
+                
+                <div class="nav-divider"></div>
+                
+                <a href="workflows.html" class="nav-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Workflow Studio</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Memory')">
+                    <i class="fas fa-brain"></i>
+                    <span>Memory</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Budget Monitor')">
+                    <i class="fas fa-wallet"></i>
+                    <span>Budget Monitor</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Brochure Library')">
+                    <i class="fas fa-book-open"></i>
+                    <span>Brochure Library</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="sven-status">
+                    <div class="status-indicator"></div>
+                    <div class="status-text">
+                        <strong>Sven Online</strong>
+                        Ready to assist
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="print-header">
+                <h1>Vehicle Comparison</h1>
+                <p>Prepared by Jeff Lee | Pedersen Toyota | 720-416-6955</p>
+            </div>
+
+            <div class="main-header">
+                <h1 class="page-title">
+                    <i class="fas fa-balance-scale" style="color: var(--primary-red); margin-right: 12px;"></i>
+                    Vehicle Comparison
+                </h1>
+                <div class="header-actions">
+                    <span class="selected-count" id="selectedCount">
+                        <i class="fas fa-car"></i>
+                        <span>0 selected</span>
+                    </span>
+                    <button class="btn btn-secondary" onclick="clearSelection()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                    <button class="btn btn-primary" onclick="generateComparison()">
+                        <i class="fas fa-table"></i> Compare
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="category-tab active" onclick="switchCategory('compact-suv')">
+                    <i class="fas fa-car"></i> Compact SUV
+                </button>
+                <button class="category-tab" onclick="switchCategory('midsize-suv')">
+                    <i class="fas fa-car-side"></i> Midsize SUV
+                </button>
+                <button class="category-tab" onclick="switchCategory('3row-suv')">
+                    <i class="fas fa-shuttle-van"></i> 3-Row SUV
+                </button>
+                <button class="category-tab" onclick="switchCategory('midsize-truck')">
+                    <i class="fas fa-truck-pickup"></i> Midsize Truck
+                </button>
+                <button class="category-tab" onclick="switchCategory('fullsize-truck')">
+                    <i class="fas fa-truck"></i> Full-Size Truck
+                </button>
+            </div>
+
+            <!-- Vehicle Selection -->
+            <div class="selection-section">
+                <div class="section-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Select Vehicles to Compare
+                </div>
+                <div class="vehicle-grid" id="vehicleGrid">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="comparison-section" id="comparisonSection" style="display: none;">
+                <div class="comparison-header">
+                    <div class="comparison-title">
+                        <i class="fas fa-table"></i>
+                        Side-by-Side Comparison
+                    </div>
+                    <div class="comparison-actions">
+                        <button class="btn btn-secondary" onclick="copyToClipboard()">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <button class="btn btn-secondary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <button class="btn btn-primary" onclick="showEmailModal()">
+                            <i class="fas fa-envelope"></i> Email
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="comparison-table" id="comparisonTable">
+                        <!-- Populated by JavaScript -->
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="comparison-section" id="emptyState">
+                <div class="empty-state">
+                    <i class="fas fa-car-side"></i>
+                    <h3>No Vehicles Selected</h3>
+                    <p>Select 2 or more vehicles above, then click "Compare" to see a side-by-side comparison.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Email Modal -->
+    <div class="modal-overlay" id="emailModal">
+        <div class="modal">
+            <h2 class="modal-title">Email Comparison</h2>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Customer Email</label>
+                    <input type="email" class="form-input" id="customerEmail" placeholder="customer@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Customer Name</label>
+                    <input type="text" class="form-input" id="customerName" placeholder="John Smith">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Personal Note (optional)</label>
+                    <textarea class="form-input" id="emailNote" rows="3" placeholder="Add a personal message..."></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeEmailModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="sendEmail()">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =====================================================
+        // COMPREHENSIVE VEHICLE DATABASE - 2025 MODEL YEAR
+        // Data sourced from manufacturer specs, Car and Driver, Edmunds
+        // =====================================================
+
+        const vehicleDatabase = {
+            // ========== COMPACT SUVs ==========
+            'compact-suv': [
+                {
+                    id: 'corolla-cross',
+                    name: '2025 Corolla Cross',
+                    brand: 'Toyota',
+                    brandClass: 'toyota',
+                    msrp: 24560,
+                    specs: {
+                        // Exterior Dimensions
+                        length: '175.6"',
+                        width: '72.4"',
+                        height: '64.8"',
+                        wheelbase: '103.9"',
+                        groundClearance: '8.1"',
+                        curbWeight: '3250 lbs',
+                        // Interior Space
+                        cargoSpace: '26.5 cu ft',
+                        maxCargo: '66.8 cu ft',
+                        passengerVolume: '87.9 cu ft',
+                        headroomFront: '38.2"',
+                        legroomFront: '42.9"',
+                        legroomRear: '32.0"',
+                        seating: '5',
+                        // Performance
+                        engine: '2.0L 4-Cyl',
+                        horsepower: '169 hp',
+                        torque: '150 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'FWD / AWD',
+                        // Fuel Economy
+                        mpgCity: '31',
+                        mpgHwy: '33',
+                        mpgCombined: '32',
+                        fuelTank: '13.2 gal',
+                        // Capability
+                        towingCapacity: '1500 lbs',
+                        payloadCapacity: 'N/A',
+                        // Options
+                        hybridAvailable: 'Yes (36 city/34 hwy)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'hr-v',
+                    name: '2025 HR-V',
+                    brand: 'Honda',
+                    brandClass: 'honda',
+                    msrp: 25050,
+                    specs: {
+                        length: '179.8"',
+                        width: '72.4"',
+                        height: '63.8"',
+                        wheelbase: '104.5"',
+                        groundClearance: '7.0"',
+                        curbWeight: '3190 lbs',
+                        cargoSpace: '24.4 cu ft',
+                        maxCargo: '55.1 cu ft',
+                        passengerVolume: '95.6 cu ft',
+                        headroomFront: '39.5"',
+                        legroomFront: '42.2"',
+                        legroomRear: '36.0"',
+                        seating: '5',
+                        engine: '2.0L 4-Cyl',
+                        horsepower: '158 hp',
+                        torque: '138 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '26',
+                        mpgHwy: '32',
+                        mpgCombined: '28',
+                        fuelTank: '13.2 gal',
+                        towingCapacity: '1500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'cx-30',
+                    name: '2025 CX-30',
+                    brand: 'Mazda',
+                    brandClass: 'mazda',
+                    msrp: 24970,
+                    specs: {
+                        length: '173.0"',
+                        width: '70.7"',
+                        height: '60.8"',
+                        wheelbase: '104.5"',
+                        groundClearance: '6.9"',
+                        curbWeight: '3232 lbs',
+                        cargoSpace: '20.2 cu ft',
+                        maxCargo: '45.2 cu ft',
+                        passengerVolume: '91.9 cu ft',
+                        headroomFront: '38.1"',
+                        legroomFront: '42.3"',
+                        legroomRear: '36.3"',
+                        seating: '5',
+                        engine: '2.5L 4-Cyl / 2.5L Turbo',
+                        horsepower: '191 hp / 250 hp',
+                        torque: '186 lb-ft / 320 lb-ft',
+                        transmission: '6-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '25',
+                        mpgHwy: '33',
+                        mpgCombined: '28',
+                        fuelTank: '13.2 gal',
+                        towingCapacity: '2000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'kona',
+                    name: '2025 Kona',
+                    brand: 'Hyundai',
+                    brandClass: 'hyundai',
+                    msrp: 25400,
+                    specs: {
+                        length: '171.3"',
+                        width: '73.0"',
+                        height: '61.4"',
+                        wheelbase: '105.3"',
+                        groundClearance: '6.5"',
+                        curbWeight: '3186 lbs',
+                        cargoSpace: '27.2 cu ft',
+                        maxCargo: '56.6 cu ft',
+                        passengerVolume: '95.6 cu ft',
+                        headroomFront: '40.1"',
+                        legroomFront: '41.5"',
+                        legroomRear: '35.2"',
+                        seating: '5',
+                        engine: '2.0L 4-Cyl',
+                        horsepower: '147 hp',
+                        torque: '132 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '28',
+                        mpgHwy: '33',
+                        mpgCombined: '30',
+                        fuelTank: '13.2 gal',
+                        towingCapacity: '1653 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (Kona Hybrid: 43 city/45 hwy)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'seltos',
+                    name: '2025 Seltos',
+                    brand: 'Kia',
+                    brandClass: 'kia',
+                    msrp: 25190,
+                    specs: {
+                        length: '172.6"',
+                        width: '70.9"',
+                        height: '64.4"',
+                        wheelbase: '103.5"',
+                        groundClearance: '6.5"',
+                        curbWeight: '3199 lbs',
+                        cargoSpace: '26.6 cu ft',
+                        maxCargo: '62.8 cu ft',
+                        passengerVolume: '94.8 cu ft',
+                        headroomFront: '39.4"',
+                        legroomFront: '41.4"',
+                        legroomRear: '38.0"',
+                        seating: '5',
+                        engine: '2.0L 4-Cyl / 1.6L Turbo',
+                        horsepower: '146 hp / 195 hp',
+                        torque: '132 lb-ft / 195 lb-ft',
+                        transmission: 'CVT / 7-Spd DCT',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '28',
+                        mpgHwy: '34',
+                        mpgCombined: '30',
+                        fuelTank: '13.7 gal',
+                        towingCapacity: '2000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'crosstrek',
+                    name: '2025 Crosstrek',
+                    brand: 'Subaru',
+                    brandClass: 'subaru',
+                    msrp: 26695,
+                    specs: {
+                        length: '176.4"',
+                        width: '70.9"',
+                        height: '63.4"',
+                        wheelbase: '104.9"',
+                        groundClearance: '8.7"',
+                        curbWeight: '3271 lbs',
+                        cargoSpace: '22.4 cu ft',
+                        maxCargo: '55.0 cu ft',
+                        passengerVolume: '100.0 cu ft',
+                        headroomFront: '40.0"',
+                        legroomFront: '43.1"',
+                        legroomRear: '36.5"',
+                        seating: '5',
+                        engine: '2.0L 4-Cyl / 2.5L 4-Cyl',
+                        horsepower: '152 hp / 182 hp',
+                        torque: '145 lb-ft / 178 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'AWD Standard',
+                        mpgCity: '27',
+                        mpgHwy: '34',
+                        mpgCombined: '30',
+                        fuelTank: '16.6 gal',
+                        towingCapacity: '3500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (Plug-in: 90 MPGe)',
+                        awd: 'Standard'
+                    }
+                },
+                {
+                    id: 'kicks',
+                    name: '2025 Kicks',
+                    brand: 'Nissan',
+                    brandClass: 'nissan',
+                    msrp: 22680,
+                    specs: {
+                        length: '172.4"',
+                        width: '69.3"',
+                        height: '62.4"',
+                        wheelbase: '103.1"',
+                        groundClearance: '6.7"',
+                        curbWeight: '2750 lbs',
+                        cargoSpace: '25.3 cu ft',
+                        maxCargo: '53.1 cu ft',
+                        passengerVolume: '93.5 cu ft',
+                        headroomFront: '39.6"',
+                        legroomFront: '44.2"',
+                        legroomRear: '33.2"',
+                        seating: '5',
+                        engine: '1.6L 4-Cyl',
+                        horsepower: '122 hp',
+                        torque: '114 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'FWD Only',
+                        mpgCity: '31',
+                        mpgHwy: '36',
+                        mpgCombined: '33',
+                        fuelTank: '10.8 gal',
+                        towingCapacity: 'Not Rated',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Not Available'
+                    }
+                },
+                {
+                    id: 'trailblazer',
+                    name: '2025 Trailblazer',
+                    brand: 'Chevy',
+                    brandClass: 'chevy',
+                    msrp: 24895,
+                    specs: {
+                        length: '173.5"',
+                        width: '71.2"',
+                        height: '65.4"',
+                        wheelbase: '103.9"',
+                        groundClearance: '7.5"',
+                        curbWeight: '2883 lbs',
+                        cargoSpace: '25.3 cu ft',
+                        maxCargo: '54.4 cu ft',
+                        passengerVolume: '97.5 cu ft',
+                        headroomFront: '40.0"',
+                        legroomFront: '40.9"',
+                        legroomRear: '39.4"',
+                        seating: '5',
+                        engine: '1.2L Turbo 3-Cyl / 1.3L Turbo',
+                        horsepower: '137 hp / 155 hp',
+                        torque: '162 lb-ft / 174 lb-ft',
+                        transmission: 'CVT / 9-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '29',
+                        mpgHwy: '33',
+                        mpgCombined: '31',
+                        fuelTank: '13.2 gal',
+                        towingCapacity: '1000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'bronco-sport',
+                    name: '2025 Bronco Sport',
+                    brand: 'Ford',
+                    brandClass: 'ford',
+                    msrp: 31245,
+                    specs: {
+                        length: '172.7"',
+                        width: '74.3"',
+                        height: '70.2"',
+                        wheelbase: '105.1"',
+                        groundClearance: '8.8"',
+                        curbWeight: '3553 lbs',
+                        cargoSpace: '32.5 cu ft',
+                        maxCargo: '65.2 cu ft',
+                        passengerVolume: '97.3 cu ft',
+                        headroomFront: '40.3"',
+                        legroomFront: '42.4"',
+                        legroomRear: '36.9"',
+                        seating: '5',
+                        engine: '1.5L Turbo / 2.0L Turbo',
+                        horsepower: '181 hp / 250 hp',
+                        torque: '190 lb-ft / 277 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'AWD Standard',
+                        mpgCity: '25',
+                        mpgHwy: '28',
+                        mpgCombined: '26',
+                        fuelTank: '16.0 gal',
+                        towingCapacity: '2200 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Standard'
+                    }
+                }
+            ],
+
+            // ========== MIDSIZE SUVs ==========
+            'midsize-suv': [
+                {
+                    id: 'rav4',
+                    name: '2025 RAV4',
+                    brand: 'Toyota',
+                    brandClass: 'toyota',
+                    msrp: 31900,
+                    specs: {
+                        length: '180.9"',
+                        width: '73.0"',
+                        height: '67.1"',
+                        wheelbase: '105.9"',
+                        groundClearance: '8.4"',
+                        curbWeight: '3615 lbs',
+                        cargoSpace: '37.6 cu ft',
+                        maxCargo: '69.8 cu ft',
+                        passengerVolume: '98.9 cu ft',
+                        headroomFront: '37.7"',
+                        legroomFront: '41.0"',
+                        legroomRear: '37.8"',
+                        seating: '5',
+                        engine: '2.5L 4-Cyl Hybrid',
+                        horsepower: '219 hp (hybrid)',
+                        torque: '163 lb-ft',
+                        transmission: 'ECVT',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '41',
+                        mpgHwy: '38',
+                        mpgCombined: '40',
+                        fuelTank: '14.5 gal',
+                        towingCapacity: '3500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (Standard)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'cr-v',
+                    name: '2025 CR-V',
+                    brand: 'Honda',
+                    brandClass: 'honda',
+                    msrp: 30550,
+                    specs: {
+                        length: '184.8"',
+                        width: '73.0"',
+                        height: '67.5"',
+                        wheelbase: '106.3"',
+                        groundClearance: '7.8"',
+                        curbWeight: '3455 lbs',
+                        cargoSpace: '36.3 cu ft',
+                        maxCargo: '76.5 cu ft',
+                        passengerVolume: '105.9 cu ft',
+                        headroomFront: '40.1"',
+                        legroomFront: '41.3"',
+                        legroomRear: '41.0"',
+                        seating: '5',
+                        engine: '1.5L Turbo 4-Cyl',
+                        horsepower: '190 hp',
+                        torque: '179 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '28',
+                        mpgHwy: '34',
+                        mpgCombined: '30',
+                        fuelTank: '14.0 gal',
+                        towingCapacity: '1500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (40 city/34 hwy)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'cx-50',
+                    name: '2025 CX-50',
+                    brand: 'Mazda',
+                    brandClass: 'mazda',
+                    msrp: 30900,
+                    specs: {
+                        length: '185.8"',
+                        width: '77.0"',
+                        height: '66.3"',
+                        wheelbase: '110.8"',
+                        groundClearance: '8.6"',
+                        curbWeight: '3685 lbs',
+                        cargoSpace: '31.4 cu ft',
+                        maxCargo: '56.3 cu ft',
+                        passengerVolume: '99.5 cu ft',
+                        headroomFront: '39.3"',
+                        legroomFront: '41.7"',
+                        legroomRear: '39.4"',
+                        seating: '5',
+                        engine: '2.5L 4-Cyl / 2.5L Turbo',
+                        horsepower: '187 hp / 256 hp',
+                        torque: '186 lb-ft / 320 lb-ft',
+                        transmission: '6-Spd Auto',
+                        drivetrain: 'AWD Standard',
+                        mpgCity: '24',
+                        mpgHwy: '30',
+                        mpgCombined: '26',
+                        fuelTank: '15.5 gal',
+                        towingCapacity: '3500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Standard'
+                    }
+                },
+                {
+                    id: 'tucson',
+                    name: '2025 Tucson',
+                    brand: 'Hyundai',
+                    brandClass: 'hyundai',
+                    msrp: 30550,
+                    specs: {
+                        length: '182.3"',
+                        width: '73.4"',
+                        height: '66.3"',
+                        wheelbase: '108.5"',
+                        groundClearance: '8.3"',
+                        curbWeight: '3649 lbs',
+                        cargoSpace: '38.7 cu ft',
+                        maxCargo: '74.8 cu ft',
+                        passengerVolume: '108.2 cu ft',
+                        headroomFront: '40.3"',
+                        legroomFront: '41.4"',
+                        legroomRear: '41.3"',
+                        seating: '5',
+                        engine: '2.5L 4-Cyl',
+                        horsepower: '187 hp',
+                        torque: '178 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '26',
+                        mpgHwy: '33',
+                        mpgCombined: '29',
+                        fuelTank: '14.3 gal',
+                        towingCapacity: '2000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (38 city/38 hwy)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'sportage',
+                    name: '2025 Sportage',
+                    brand: 'Kia',
+                    brandClass: 'kia',
+                    msrp: 31090,
+                    specs: {
+                        length: '183.5"',
+                        width: '73.4"',
+                        height: '66.1"',
+                        wheelbase: '108.5"',
+                        groundClearance: '8.3"',
+                        curbWeight: '3602 lbs',
+                        cargoSpace: '39.6 cu ft',
+                        maxCargo: '74.1 cu ft',
+                        passengerVolume: '108.1 cu ft',
+                        headroomFront: '39.6"',
+                        legroomFront: '41.4"',
+                        legroomRear: '41.3"',
+                        seating: '5',
+                        engine: '2.5L 4-Cyl / 1.6L Turbo Hybrid',
+                        horsepower: '187 hp / 227 hp',
+                        torque: '178 lb-ft / 258 lb-ft',
+                        transmission: '8-Spd Auto / 6-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '25',
+                        mpgHwy: '32',
+                        mpgCombined: '28',
+                        fuelTank: '14.3 gal',
+                        towingCapacity: '2500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (43 city/43 hwy)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'forester',
+                    name: '2025 Forester',
+                    brand: 'Subaru',
+                    brandClass: 'subaru',
+                    msrp: 33495,
+                    specs: {
+                        length: '183.4"',
+                        width: '72.2"',
+                        height: '67.5"',
+                        wheelbase: '105.1"',
+                        groundClearance: '9.2"',
+                        curbWeight: '3549 lbs',
+                        cargoSpace: '29.6 cu ft',
+                        maxCargo: '74.2 cu ft',
+                        passengerVolume: '107.2 cu ft',
+                        headroomFront: '41.2"',
+                        legroomFront: '43.3"',
+                        legroomRear: '39.4"',
+                        seating: '5',
+                        engine: '2.5L 4-Cyl',
+                        horsepower: '180 hp',
+                        torque: '178 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'AWD Standard',
+                        mpgCity: '26',
+                        mpgHwy: '33',
+                        mpgCombined: '29',
+                        fuelTank: '16.6 gal',
+                        towingCapacity: '3000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Standard'
+                    }
+                },
+                {
+                    id: 'rogue',
+                    name: '2025 Rogue',
+                    brand: 'Nissan',
+                    brandClass: 'nissan',
+                    msrp: 32520,
+                    specs: {
+                        length: '183.1"',
+                        width: '72.4"',
+                        height: '67.3"',
+                        wheelbase: '106.5"',
+                        groundClearance: '8.2"',
+                        curbWeight: '3660 lbs',
+                        cargoSpace: '36.5 cu ft',
+                        maxCargo: '74.1 cu ft',
+                        passengerVolume: '105.7 cu ft',
+                        headroomFront: '38.5"',
+                        legroomFront: '41.5"',
+                        legroomRear: '38.5"',
+                        seating: '5',
+                        engine: '1.5L Turbo 3-Cyl',
+                        horsepower: '201 hp',
+                        torque: '225 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '30',
+                        mpgHwy: '37',
+                        mpgCombined: '33',
+                        fuelTank: '14.5 gal',
+                        towingCapacity: '1500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'equinox',
+                    name: '2025 Equinox',
+                    brand: 'Chevy',
+                    brandClass: 'chevy',
+                    msrp: 30995,
+                    specs: {
+                        length: '183.1"',
+                        width: '72.6"',
+                        height: '66.4"',
+                        wheelbase: '107.4"',
+                        groundClearance: '7.8"',
+                        curbWeight: '3331 lbs',
+                        cargoSpace: '29.5 cu ft',
+                        maxCargo: '63.9 cu ft',
+                        passengerVolume: '103.5 cu ft',
+                        headroomFront: '40.9"',
+                        legroomFront: '40.9"',
+                        legroomRear: '39.7"',
+                        seating: '5',
+                        engine: '1.5L Turbo 4-Cyl',
+                        horsepower: '175 hp',
+                        torque: '203 lb-ft',
+                        transmission: '6-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '26',
+                        mpgHwy: '31',
+                        mpgCombined: '28',
+                        fuelTank: '14.9 gal',
+                        towingCapacity: '1500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No (EV Available)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'escape',
+                    name: '2025 Escape',
+                    brand: 'Ford',
+                    brandClass: 'ford',
+                    msrp: 30995,
+                    specs: {
+                        length: '180.5"',
+                        width: '74.1"',
+                        height: '66.1"',
+                        wheelbase: '106.7"',
+                        groundClearance: '7.8"',
+                        curbWeight: '3527 lbs',
+                        cargoSpace: '33.5 cu ft',
+                        maxCargo: '65.4 cu ft',
+                        passengerVolume: '100.5 cu ft',
+                        headroomFront: '39.9"',
+                        legroomFront: '42.4"',
+                        legroomRear: '38.8"',
+                        seating: '5',
+                        engine: '1.5L Turbo / 2.5L Hybrid',
+                        horsepower: '180 hp / 210 hp',
+                        torque: '190 lb-ft / N/A',
+                        transmission: '8-Spd Auto / CVT',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '28',
+                        mpgHwy: '34',
+                        mpgCombined: '30',
+                        fuelTank: '13.5 gal',
+                        towingCapacity: '2000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (44 city/37 hwy)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'tiguan',
+                    name: '2025 Tiguan',
+                    brand: 'VW',
+                    brandClass: 'vw',
+                    msrp: 30995,
+                    specs: {
+                        length: '186.1"',
+                        width: '72.4"',
+                        height: '66.3"',
+                        wheelbase: '109.8"',
+                        groundClearance: '7.9"',
+                        curbWeight: '3713 lbs',
+                        cargoSpace: '37.6 cu ft',
+                        maxCargo: '73.4 cu ft',
+                        passengerVolume: '103.5 cu ft',
+                        headroomFront: '38.7"',
+                        legroomFront: '40.2"',
+                        legroomRear: '38.4"',
+                        seating: '5-7',
+                        engine: '2.0L Turbo 4-Cyl',
+                        horsepower: '184 hp',
+                        torque: '221 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '22',
+                        mpgHwy: '29',
+                        mpgCombined: '25',
+                        fuelTank: '15.9 gal',
+                        towingCapacity: '1500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                }
+            ],
+
+            // ========== 3-ROW SUVs ==========
+            '3row-suv': [
+                {
+                    id: 'highlander',
+                    name: '2025 Highlander',
+                    brand: 'Toyota',
+                    brandClass: 'toyota',
+                    msrp: 40920,
+                    specs: {
+                        length: '194.9"',
+                        width: '76.0"',
+                        height: '68.1"',
+                        wheelbase: '112.2"',
+                        groundClearance: '8.0"',
+                        curbWeight: '4495 lbs',
+                        cargoSpace: '16.0 cu ft',
+                        cargoBehind2nd: '48.4 cu ft',
+                        maxCargo: '84.3 cu ft',
+                        passengerVolume: '144.8 cu ft',
+                        headroomFront: '38.4"',
+                        legroomFront: '44.2"',
+                        legroom2nd: '41.0"',
+                        legroom3rd: '27.7"',
+                        seating: '7-8',
+                        engine: '2.4L Turbo 4-Cyl',
+                        horsepower: '265 hp',
+                        torque: '310 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '22',
+                        mpgHwy: '29',
+                        mpgCombined: '25',
+                        fuelTank: '17.9 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (36 city/35 hwy)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'grand-highlander',
+                    name: '2025 Grand Highlander',
+                    brand: 'Toyota',
+                    brandClass: 'toyota',
+                    msrp: 44405,
+                    specs: {
+                        length: '201.4"',
+                        width: '78.3"',
+                        height: '69.2"',
+                        wheelbase: '116.1"',
+                        groundClearance: '8.0"',
+                        curbWeight: '4650 lbs',
+                        cargoSpace: '20.2 cu ft',
+                        cargoBehind2nd: '51.7 cu ft',
+                        maxCargo: '97.5 cu ft',
+                        passengerVolume: '158.4 cu ft',
+                        headroomFront: '38.6"',
+                        legroomFront: '41.9"',
+                        legroom2nd: '40.5"',
+                        legroom3rd: '32.7"',
+                        seating: '7-8',
+                        engine: '2.4L Turbo / Hybrid Max',
+                        horsepower: '265 hp / 362 hp',
+                        torque: '310 lb-ft / N/A',
+                        transmission: '8-Spd Auto / ECVT',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '21',
+                        mpgHwy: '28',
+                        mpgCombined: '24',
+                        fuelTank: '17.9 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (Hybrid Max: 362 hp)',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'pilot',
+                    name: '2025 Pilot',
+                    brand: 'Honda',
+                    brandClass: 'honda',
+                    msrp: 41200,
+                    specs: {
+                        length: '199.9"',
+                        width: '78.5"',
+                        height: '71.1"',
+                        wheelbase: '114.3"',
+                        groundClearance: '7.3"',
+                        curbWeight: '4366 lbs',
+                        cargoSpace: '18.6 cu ft',
+                        cargoBehind2nd: '49.8 cu ft',
+                        maxCargo: '87.0 cu ft',
+                        passengerVolume: '153.0 cu ft',
+                        headroomFront: '40.1"',
+                        legroomFront: '40.7"',
+                        legroom2nd: '40.9"',
+                        legroom3rd: '31.9"',
+                        seating: '7-8',
+                        engine: '3.5L V6',
+                        horsepower: '285 hp',
+                        torque: '262 lb-ft',
+                        transmission: '10-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '19',
+                        mpgHwy: '26',
+                        mpgCombined: '22',
+                        fuelTank: '19.5 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'cx-90',
+                    name: '2025 CX-90',
+                    brand: 'Mazda',
+                    brandClass: 'mazda',
+                    msrp: 40970,
+                    specs: {
+                        length: '201.6"',
+                        width: '77.5"',
+                        height: '68.6"',
+                        wheelbase: '115.3"',
+                        groundClearance: '8.3"',
+                        curbWeight: '4775 lbs',
+                        cargoSpace: '14.9 cu ft',
+                        cargoBehind2nd: '43.9 cu ft',
+                        maxCargo: '74.2 cu ft',
+                        passengerVolume: '143.3 cu ft',
+                        headroomFront: '38.4"',
+                        legroomFront: '41.7"',
+                        legroom2nd: '39.4"',
+                        legroom3rd: '29.6"',
+                        seating: '7-8',
+                        engine: '3.3L Turbo I6 / PHEV',
+                        horsepower: '280 hp / 323 hp',
+                        torque: '332 lb-ft / 369 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'AWD Standard',
+                        mpgCity: '21',
+                        mpgHwy: '28',
+                        mpgCombined: '24',
+                        fuelTank: '19.0 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'Yes (PHEV: 56 MPGe)',
+                        awd: 'Standard'
+                    }
+                },
+                {
+                    id: 'palisade',
+                    name: '2025 Palisade',
+                    brand: 'Hyundai',
+                    brandClass: 'hyundai',
+                    msrp: 37650,
+                    specs: {
+                        length: '196.1"',
+                        width: '77.8"',
+                        height: '68.9"',
+                        wheelbase: '114.2"',
+                        groundClearance: '7.9"',
+                        curbWeight: '4449 lbs',
+                        cargoSpace: '18.0 cu ft',
+                        cargoBehind2nd: '45.8 cu ft',
+                        maxCargo: '86.4 cu ft',
+                        passengerVolume: '155.3 cu ft',
+                        headroomFront: '40.3"',
+                        legroomFront: '44.1"',
+                        legroom2nd: '42.4"',
+                        legroom3rd: '31.4"',
+                        seating: '7-8',
+                        engine: '3.8L V6',
+                        horsepower: '291 hp',
+                        torque: '262 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '19',
+                        mpgHwy: '26',
+                        mpgCombined: '22',
+                        fuelTank: '18.8 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'telluride',
+                    name: '2025 Telluride',
+                    brand: 'Kia',
+                    brandClass: 'kia',
+                    msrp: 37265,
+                    specs: {
+                        length: '197.2"',
+                        width: '78.3"',
+                        height: '69.5"',
+                        wheelbase: '114.2"',
+                        groundClearance: '8.4"',
+                        curbWeight: '4482 lbs',
+                        cargoSpace: '21.0 cu ft',
+                        cargoBehind2nd: '46.0 cu ft',
+                        maxCargo: '87.0 cu ft',
+                        passengerVolume: '178.0 cu ft',
+                        headroomFront: '40.0"',
+                        legroomFront: '41.4"',
+                        legroom2nd: '42.4"',
+                        legroom3rd: '31.4"',
+                        seating: '7-8',
+                        engine: '3.8L V6',
+                        horsepower: '291 hp',
+                        torque: '262 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '20',
+                        mpgHwy: '26',
+                        mpgCombined: '23',
+                        fuelTank: '18.8 gal',
+                        towingCapacity: '5500 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'ascent',
+                    name: '2025 Ascent',
+                    brand: 'Subaru',
+                    brandClass: 'subaru',
+                    msrp: 36895,
+                    specs: {
+                        length: '196.8"',
+                        width: '76.0"',
+                        height: '72.0"',
+                        wheelbase: '113.0"',
+                        groundClearance: '8.7"',
+                        curbWeight: '4603 lbs',
+                        cargoSpace: '17.8 cu ft',
+                        cargoBehind2nd: '47.5 cu ft',
+                        maxCargo: '86.5 cu ft',
+                        passengerVolume: '153.5 cu ft',
+                        headroomFront: '41.3"',
+                        legroomFront: '42.2"',
+                        legroom2nd: '38.6"',
+                        legroom3rd: '31.7"',
+                        seating: '7-8',
+                        engine: '2.4L Turbo 4-Cyl',
+                        horsepower: '270 hp',
+                        torque: '277 lb-ft',
+                        transmission: 'CVT',
+                        drivetrain: 'AWD Standard',
+                        mpgCity: '21',
+                        mpgHwy: '27',
+                        mpgCombined: '23',
+                        fuelTank: '19.3 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Standard'
+                    }
+                },
+                {
+                    id: 'pathfinder',
+                    name: '2025 Pathfinder',
+                    brand: 'Nissan',
+                    brandClass: 'nissan',
+                    msrp: 36890,
+                    specs: {
+                        length: '198.4"',
+                        width: '77.2"',
+                        height: '72.0"',
+                        wheelbase: '114.2"',
+                        groundClearance: '7.1"',
+                        curbWeight: '4541 lbs',
+                        cargoSpace: '16.6 cu ft',
+                        cargoBehind2nd: '45.0 cu ft',
+                        maxCargo: '80.5 cu ft',
+                        passengerVolume: '152.0 cu ft',
+                        headroomFront: '42.3"',
+                        legroomFront: '44.0"',
+                        legroom2nd: '38.8"',
+                        legroom3rd: '29.9"',
+                        seating: '7-8',
+                        engine: '3.5L V6',
+                        horsepower: '284 hp',
+                        torque: '259 lb-ft',
+                        transmission: '9-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '21',
+                        mpgHwy: '27',
+                        mpgCombined: '23',
+                        fuelTank: '19.5 gal',
+                        towingCapacity: '6000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'traverse',
+                    name: '2025 Traverse',
+                    brand: 'Chevy',
+                    brandClass: 'chevy',
+                    msrp: 36995,
+                    specs: {
+                        length: '205.0"',
+                        width: '78.6"',
+                        height: '69.6"',
+                        wheelbase: '120.9"',
+                        groundClearance: '7.5"',
+                        curbWeight: '4753 lbs',
+                        cargoSpace: '23.0 cu ft',
+                        cargoBehind2nd: '57.8 cu ft',
+                        maxCargo: '98.2 cu ft',
+                        passengerVolume: '159.8 cu ft',
+                        headroomFront: '40.5"',
+                        legroomFront: '44.5"',
+                        legroom2nd: '38.9"',
+                        legroom3rd: '33.4"',
+                        seating: '7-8',
+                        engine: '2.5L Turbo 4-Cyl',
+                        horsepower: '328 hp',
+                        torque: '326 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '22',
+                        mpgHwy: '27',
+                        mpgCombined: '24',
+                        fuelTank: '19.4 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'explorer',
+                    name: '2025 Explorer',
+                    brand: 'Ford',
+                    brandClass: 'ford',
+                    msrp: 38330,
+                    specs: {
+                        length: '198.8"',
+                        width: '78.9"',
+                        height: '70.0"',
+                        wheelbase: '119.1"',
+                        groundClearance: '7.9"',
+                        curbWeight: '4435 lbs',
+                        cargoSpace: '18.2 cu ft',
+                        cargoBehind2nd: '47.9 cu ft',
+                        maxCargo: '87.8 cu ft',
+                        passengerVolume: '152.7 cu ft',
+                        headroomFront: '40.7"',
+                        legroomFront: '43.0"',
+                        legroom2nd: '39.0"',
+                        legroom3rd: '32.2"',
+                        seating: '6-7',
+                        engine: '2.3L Turbo 4-Cyl / 3.0L Twin-Turbo V6',
+                        horsepower: '300 hp / 400 hp',
+                        torque: '310 lb-ft / 415 lb-ft',
+                        transmission: '10-Spd Auto',
+                        drivetrain: 'RWD / AWD',
+                        mpgCity: '21',
+                        mpgHwy: '28',
+                        mpgCombined: '24',
+                        fuelTank: '20.2 gal',
+                        towingCapacity: '5600 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                },
+                {
+                    id: 'atlas',
+                    name: '2025 Atlas',
+                    brand: 'VW',
+                    brandClass: 'vw',
+                    msrp: 42270,
+                    specs: {
+                        length: '198.4"',
+                        width: '78.3"',
+                        height: '69.9"',
+                        wheelbase: '117.3"',
+                        groundClearance: '8.0"',
+                        curbWeight: '4637 lbs',
+                        cargoSpace: '20.6 cu ft',
+                        cargoBehind2nd: '55.5 cu ft',
+                        maxCargo: '96.8 cu ft',
+                        passengerVolume: '155.0 cu ft',
+                        headroomFront: '40.3"',
+                        legroomFront: '41.6"',
+                        legroom2nd: '37.6"',
+                        legroom3rd: '33.7"',
+                        seating: '7',
+                        engine: '2.0L Turbo 4-Cyl / 3.6L V6',
+                        horsepower: '269 hp / 276 hp',
+                        torque: '273 lb-ft / 266 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'FWD / AWD',
+                        mpgCity: '19',
+                        mpgHwy: '24',
+                        mpgCombined: '21',
+                        fuelTank: '18.6 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: 'N/A',
+                        hybridAvailable: 'No',
+                        awd: 'Available'
+                    }
+                }
+            ],
+
+            // ========== MIDSIZE TRUCKS ==========
+            'midsize-truck': [
+                {
+                    id: 'tacoma',
+                    name: '2025 Tacoma',
+                    brand: 'Toyota',
+                    brandClass: 'toyota',
+                    msrp: 33950,
+                    specs: {
+                        length: '212.3" (Double Cab)',
+                        width: '75.2"',
+                        height: '70.6"',
+                        wheelbase: '127.4"',
+                        groundClearance: '9.4"',
+                        curbWeight: '4505 lbs',
+                        bedLengths: '5\' / 6\'',
+                        cabOptions: 'Double Cab / Access Cab',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '100.3 cu ft',
+                        headroomFront: '38.2"',
+                        legroomFront: '42.9"',
+                        legroomRear: '32.9"',
+                        seating: '5',
+                        engine: '2.4L Turbo 4-Cyl / i-FORCE MAX Hybrid',
+                        horsepower: '278 hp / 326 hp',
+                        torque: '317 lb-ft / 465 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '21',
+                        mpgHwy: '26',
+                        mpgCombined: '23',
+                        fuelTank: '21.1 gal',
+                        towingCapacity: '6500 lbs',
+                        payloadCapacity: '1685 lbs',
+                        hybridAvailable: 'Yes (i-FORCE MAX: 326 hp)',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'ridgeline',
+                    name: '2025 Ridgeline',
+                    brand: 'Honda',
+                    brandClass: 'honda',
+                    msrp: 40550,
+                    specs: {
+                        length: '210.2"',
+                        width: '78.6"',
+                        height: '70.8"',
+                        wheelbase: '125.2"',
+                        groundClearance: '7.6"',
+                        curbWeight: '4515 lbs',
+                        bedLengths: '5\'4"',
+                        cabOptions: 'Crew Cab Only',
+                        cargoSpace: '7.3 cu ft (in-bed trunk)',
+                        maxCargo: 'N/A',
+                        passengerVolume: '109.9 cu ft',
+                        headroomFront: '39.5"',
+                        legroomFront: '40.9"',
+                        legroomRear: '36.5"',
+                        seating: '5',
+                        engine: '3.5L V6',
+                        horsepower: '280 hp',
+                        torque: '262 lb-ft',
+                        transmission: '9-Spd Auto',
+                        drivetrain: 'AWD Standard',
+                        mpgCity: '18',
+                        mpgHwy: '24',
+                        mpgCombined: '21',
+                        fuelTank: '19.5 gal',
+                        towingCapacity: '5000 lbs',
+                        payloadCapacity: '1583 lbs',
+                        hybridAvailable: 'No',
+                        awd: 'Standard'
+                    }
+                },
+                {
+                    id: 'colorado',
+                    name: '2025 Colorado',
+                    brand: 'Chevy',
+                    brandClass: 'chevy',
+                    msrp: 31895,
+                    specs: {
+                        length: '212.7" (Crew Cab)',
+                        width: '74.1"',
+                        height: '71.0"',
+                        wheelbase: '131.4"',
+                        groundClearance: '8.4"',
+                        curbWeight: '4473 lbs',
+                        bedLengths: '5\'2" / 6\'2"',
+                        cabOptions: 'Crew Cab / Extended Cab',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '107.1 cu ft',
+                        headroomFront: '41.4"',
+                        legroomFront: '45.0"',
+                        legroomRear: '35.0"',
+                        seating: '5',
+                        engine: '2.7L Turbo 4-Cyl / 2.7L Turbo High-Output',
+                        horsepower: '237 hp / 310 hp',
+                        torque: '259 lb-ft / 430 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '19',
+                        mpgHwy: '25',
+                        mpgCombined: '21',
+                        fuelTank: '21.0 gal',
+                        towingCapacity: '7700 lbs',
+                        payloadCapacity: '1684 lbs',
+                        hybridAvailable: 'No',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'ranger',
+                    name: '2025 Ranger',
+                    brand: 'Ford',
+                    brandClass: 'ford',
+                    msrp: 34265,
+                    specs: {
+                        length: '210.8" (SuperCrew)',
+                        width: '73.3"',
+                        height: '71.6"',
+                        wheelbase: '126.8"',
+                        groundClearance: '8.7"',
+                        curbWeight: '4564 lbs',
+                        bedLengths: '5\' / 6\'',
+                        cabOptions: 'SuperCab / SuperCrew',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '105.0 cu ft',
+                        headroomFront: '40.8"',
+                        legroomFront: '43.1"',
+                        legroomRear: '35.1"',
+                        seating: '5',
+                        engine: '2.3L Turbo 4-Cyl / 2.7L Twin-Turbo V6',
+                        horsepower: '270 hp / 315 hp',
+                        torque: '310 lb-ft / 400 lb-ft',
+                        transmission: '10-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '21',
+                        mpgHwy: '26',
+                        mpgCombined: '23',
+                        fuelTank: '20.0 gal',
+                        towingCapacity: '7500 lbs',
+                        payloadCapacity: '1805 lbs',
+                        hybridAvailable: 'No',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'canyon',
+                    name: '2025 Canyon',
+                    brand: 'GMC',
+                    brandClass: 'gmc',
+                    msrp: 35195,
+                    specs: {
+                        length: '212.7" (Crew Cab)',
+                        width: '74.1"',
+                        height: '71.0"',
+                        wheelbase: '131.4"',
+                        groundClearance: '10.7" (AT4X)',
+                        curbWeight: '4760 lbs',
+                        bedLengths: '5\'2" / 6\'2"',
+                        cabOptions: 'Crew Cab / Extended Cab',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '107.1 cu ft',
+                        headroomFront: '41.4"',
+                        legroomFront: '45.0"',
+                        legroomRear: '35.0"',
+                        seating: '5',
+                        engine: '2.7L Turbo 4-Cyl / 2.7L Turbo High-Output',
+                        horsepower: '237 hp / 310 hp',
+                        torque: '259 lb-ft / 430 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '19',
+                        mpgHwy: '25',
+                        mpgCombined: '21',
+                        fuelTank: '21.0 gal',
+                        towingCapacity: '7700 lbs',
+                        payloadCapacity: '1610 lbs',
+                        hybridAvailable: 'No',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'frontier',
+                    name: '2025 Frontier',
+                    brand: 'Nissan',
+                    brandClass: 'nissan',
+                    msrp: 33740,
+                    specs: {
+                        length: '210.2" (Crew Cab)',
+                        width: '73.0"',
+                        height: '72.1"',
+                        wheelbase: '126.0"',
+                        groundClearance: '9.4"',
+                        curbWeight: '4498 lbs',
+                        bedLengths: '5\' / 6\'1"',
+                        cabOptions: 'King Cab / Crew Cab',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '97.0 cu ft',
+                        headroomFront: '39.9"',
+                        legroomFront: '42.3"',
+                        legroomRear: '33.0"',
+                        seating: '5',
+                        engine: '3.8L V6',
+                        horsepower: '310 hp',
+                        torque: '281 lb-ft',
+                        transmission: '9-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '18',
+                        mpgHwy: '24',
+                        mpgCombined: '20',
+                        fuelTank: '21.1 gal',
+                        towingCapacity: '6620 lbs',
+                        payloadCapacity: '1610 lbs',
+                        hybridAvailable: 'No',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'gladiator',
+                    name: '2025 Gladiator',
+                    brand: 'Jeep',
+                    brandClass: 'jeep',
+                    msrp: 38085,
+                    specs: {
+                        length: '218.0"',
+                        width: '73.8"',
+                        height: '73.1"',
+                        wheelbase: '137.3"',
+                        groundClearance: '10.0" (Rubicon)',
+                        curbWeight: '4650 lbs',
+                        bedLengths: '5\'',
+                        cabOptions: 'Crew Cab Only',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '107.0 cu ft',
+                        headroomFront: '42.8"',
+                        legroomFront: '41.2"',
+                        legroomRear: '38.3"',
+                        seating: '5',
+                        engine: '3.6L V6',
+                        horsepower: '285 hp',
+                        torque: '260 lb-ft',
+                        transmission: '6-Spd Manual / 8-Spd Auto',
+                        drivetrain: '4WD Only',
+                        mpgCity: '17',
+                        mpgHwy: '22',
+                        mpgCombined: '19',
+                        fuelTank: '22.0 gal',
+                        towingCapacity: '7650 lbs',
+                        payloadCapacity: '1700 lbs',
+                        hybridAvailable: 'No',
+                        awd: '4WD Standard'
+                    }
+                }
+            ],
+
+            // ========== FULL-SIZE TRUCKS ==========
+            'fullsize-truck': [
+                {
+                    id: 'tundra',
+                    name: '2025 Tundra',
+                    brand: 'Toyota',
+                    brandClass: 'toyota',
+                    msrp: 42275,
+                    specs: {
+                        length: '233.6" (CrewMax)',
+                        width: '80.2"',
+                        height: '78.0"',
+                        wheelbase: '145.7"',
+                        groundClearance: '10.6" (TRD Pro)',
+                        curbWeight: '5620 lbs',
+                        bedLengths: '5\'6" / 6\'6" / 8\'1"',
+                        cabOptions: 'Double Cab / CrewMax',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '123.0 cu ft',
+                        headroomFront: '40.6"',
+                        legroomFront: '42.8"',
+                        legroomRear: '42.0"',
+                        seating: '5-6',
+                        engine: '3.4L Twin-Turbo V6 / i-FORCE MAX Hybrid',
+                        horsepower: '389 hp / 437 hp',
+                        torque: '479 lb-ft / 583 lb-ft',
+                        transmission: '10-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '18',
+                        mpgHwy: '23',
+                        mpgCombined: '20',
+                        fuelTank: '32.2 gal',
+                        towingCapacity: '12000 lbs',
+                        payloadCapacity: '1940 lbs',
+                        hybridAvailable: 'Yes (i-FORCE MAX: 437 hp, 22 city/24 hwy)',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'f150',
+                    name: '2025 F-150',
+                    brand: 'Ford',
+                    brandClass: 'ford',
+                    msrp: 37295,
+                    specs: {
+                        length: '231.7" (SuperCrew)',
+                        width: '79.9"',
+                        height: '77.2"',
+                        wheelbase: '145.4"',
+                        groundClearance: '9.4"',
+                        curbWeight: '4785 lbs',
+                        bedLengths: '5\'6" / 6\'6" / 8\'',
+                        cabOptions: 'Regular / SuperCab / SuperCrew',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '126.1 cu ft',
+                        headroomFront: '40.8"',
+                        legroomFront: '43.9"',
+                        legroomRear: '43.6"',
+                        seating: '5-6',
+                        engine: '3.5L V6 / 2.7L Turbo / 3.5L Turbo / 5.0L V8',
+                        horsepower: '290-430 hp',
+                        torque: '265-570 lb-ft',
+                        transmission: '10-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '20',
+                        mpgHwy: '26',
+                        mpgCombined: '22',
+                        fuelTank: '26.0 gal',
+                        towingCapacity: '14000 lbs',
+                        payloadCapacity: '3325 lbs',
+                        hybridAvailable: 'Yes (PowerBoost: 430 hp)',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'silverado',
+                    name: '2025 Silverado 1500',
+                    brand: 'Chevy',
+                    brandClass: 'chevy',
+                    msrp: 38495,
+                    specs: {
+                        length: '231.7" (Crew Cab)',
+                        width: '81.2"',
+                        height: '75.4"',
+                        wheelbase: '147.4"',
+                        groundClearance: '9.9"',
+                        curbWeight: '4920 lbs',
+                        bedLengths: '5\'10" / 6\'7" / 8\'2"',
+                        cabOptions: 'Regular / Double / Crew',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '126.3 cu ft',
+                        headroomFront: '43.0"',
+                        legroomFront: '44.5"',
+                        legroomRear: '43.4"',
+                        seating: '5-6',
+                        engine: '2.7L Turbo / 5.3L V8 / 6.2L V8 / 3.0L Duramax Diesel',
+                        horsepower: '310-420 hp',
+                        torque: '348-460 lb-ft',
+                        transmission: '8/10-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '19',
+                        mpgHwy: '24',
+                        mpgCombined: '21',
+                        fuelTank: '24.0 gal',
+                        towingCapacity: '13300 lbs',
+                        payloadCapacity: '2280 lbs',
+                        hybridAvailable: 'No',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'sierra',
+                    name: '2025 Sierra 1500',
+                    brand: 'GMC',
+                    brandClass: 'gmc',
+                    msrp: 41995,
+                    specs: {
+                        length: '231.7" (Crew Cab)',
+                        width: '81.9"',
+                        height: '76.3"',
+                        wheelbase: '147.4"',
+                        groundClearance: '9.9"',
+                        curbWeight: '5210 lbs',
+                        bedLengths: '5\'10" / 6\'7" / 8\'2"',
+                        cabOptions: 'Regular / Double / Crew',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '126.3 cu ft',
+                        headroomFront: '43.0"',
+                        legroomFront: '44.5"',
+                        legroomRear: '43.4"',
+                        seating: '5-6',
+                        engine: '2.7L Turbo / 5.3L V8 / 6.2L V8 / 3.0L Duramax Diesel',
+                        horsepower: '310-420 hp',
+                        torque: '348-460 lb-ft',
+                        transmission: '8/10-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '19',
+                        mpgHwy: '24',
+                        mpgCombined: '21',
+                        fuelTank: '24.0 gal',
+                        towingCapacity: '13000 lbs',
+                        payloadCapacity: '2190 lbs',
+                        hybridAvailable: 'No',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'ram1500',
+                    name: '2025 Ram 1500',
+                    brand: 'Ram',
+                    brandClass: 'ram',
+                    msrp: 42815,
+                    specs: {
+                        length: '232.9" (Crew Cab)',
+                        width: '82.1"',
+                        height: '77.6"',
+                        wheelbase: '144.6"',
+                        groundClearance: '8.9"',
+                        curbWeight: '5160 lbs',
+                        bedLengths: '5\'7" / 6\'4"',
+                        cabOptions: 'Quad Cab / Crew Cab',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '125.0 cu ft',
+                        headroomFront: '40.9"',
+                        legroomFront: '40.9"',
+                        legroomRear: '45.2"',
+                        seating: '5-6',
+                        engine: '3.6L V6 / 5.7L V8 / 3.0L Hurricane Twin-Turbo I6',
+                        horsepower: '305-540 hp',
+                        torque: '269-521 lb-ft',
+                        transmission: '8-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '18',
+                        mpgHwy: '25',
+                        mpgCombined: '21',
+                        fuelTank: '26.0 gal',
+                        towingCapacity: '12750 lbs',
+                        payloadCapacity: '2300 lbs',
+                        hybridAvailable: 'Yes (eTorque mild hybrid)',
+                        awd: '4WD Available'
+                    }
+                },
+                {
+                    id: 'titan',
+                    name: '2025 Titan',
+                    brand: 'Nissan',
+                    brandClass: 'nissan',
+                    msrp: 48960,
+                    specs: {
+                        length: '233.1" (Crew Cab)',
+                        width: '80.7"',
+                        height: '78.0"',
+                        wheelbase: '139.8"',
+                        groundClearance: '9.7"',
+                        curbWeight: '5600 lbs',
+                        bedLengths: '5\'6" / 6\'6"',
+                        cabOptions: 'King Cab / Crew Cab',
+                        cargoSpace: 'N/A',
+                        maxCargo: 'N/A',
+                        passengerVolume: '112.0 cu ft',
+                        headroomFront: '40.8"',
+                        legroomFront: '40.8"',
+                        legroomRear: '38.5"',
+                        seating: '5-6',
+                        engine: '5.6L V8',
+                        horsepower: '400 hp',
+                        torque: '413 lb-ft',
+                        transmission: '9-Spd Auto',
+                        drivetrain: 'RWD / 4WD',
+                        mpgCity: '15',
+                        mpgHwy: '21',
+                        mpgCombined: '17',
+                        fuelTank: '26.0 gal',
+                        towingCapacity: '9080 lbs',
+                        payloadCapacity: '1680 lbs',
+                        hybridAvailable: 'No',
+                        awd: '4WD Available'
+                    }
+                }
+            ]
+        };
+
+        // =====================================================
+        // APPLICATION STATE
+        // =====================================================
+        let currentCategory = 'compact-suv';
+        let selectedVehicles = [];
+
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderVehicleGrid();
+        });
+
+        // =====================================================
+        // CATEGORY SWITCHING
+        // =====================================================
+        function switchCategory(category) {
+            currentCategory = category;
+            
+            // Update tab styles
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.category-tab').classList.add('active');
+            
+            // Re-render vehicle grid
+            renderVehicleGrid();
+        }
+
+        // =====================================================
+        // VEHICLE GRID RENDERING
+        // =====================================================
+        function renderVehicleGrid() {
+            const grid = document.getElementById('vehicleGrid');
+            const vehicles = vehicleDatabase[currentCategory];
+            
+            grid.innerHTML = vehicles.map(vehicle => {
+                const isSelected = selectedVehicles.find(v => v.id === vehicle.id);
+                return `
+                    <div class="vehicle-chip ${vehicle.brandClass} ${isSelected ? 'selected' : ''}" 
+                         onclick="toggleVehicle('${vehicle.id}')">
+                        <div class="vehicle-checkbox"></div>
+                        <div class="vehicle-info">
+                            <div class="vehicle-name">${vehicle.name}</div>
+                            <div class="vehicle-msrp">From $${vehicle.msrp.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            updateSelectedCount();
+        }
+
+        // =====================================================
+        // VEHICLE SELECTION
+        // =====================================================
+        function toggleVehicle(vehicleId) {
+            const vehicle = vehicleDatabase[currentCategory].find(v => v.id === vehicleId);
+            const index = selectedVehicles.findIndex(v => v.id === vehicleId);
+            
+            if (index > -1) {
+                selectedVehicles.splice(index, 1);
+            } else {
+                selectedVehicles.push({...vehicle, category: currentCategory});
+            }
+            
+            renderVehicleGrid();
+            updateSelectedCount();
+        }
+
+        function clearSelection() {
+            selectedVehicles = [];
+            renderVehicleGrid();
+            updateSelectedCount();
+            document.getElementById('comparisonSection').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+        }
+
+        function updateSelectedCount() {
+            const countEl = document.getElementById('selectedCount');
+            countEl.innerHTML = `
+                <i class="fas fa-car"></i>
+                <span>${selectedVehicles.length} selected</span>
+            `;
+        }
+
+        // =====================================================
+        // COMPARISON GENERATION
+        // =====================================================
+        function generateComparison() {
+            if (selectedVehicles.length < 2) {
+                alert('Please select at least 2 vehicles to compare.');
+                return;
+            }
+
+            const table = document.getElementById('comparisonTable');
+            const isTruck = selectedVehicles.some(v => v.category.includes('truck'));
+            const is3Row = selectedVehicles.some(v => v.category === '3row-suv');
+            
+            // Build header row
+            let headerRow = '<thead><tr><th>Specification</th>';
+            selectedVehicles.forEach(vehicle => {
+                headerRow += `
+                    <th class="vehicle-header">
+                        <div class="vehicle-header-content">
+                            <div class="vehicle-header-brand">${vehicle.brand}</div>
+                            <div class="vehicle-header-name">${vehicle.name.replace('2025 ', '')}</div>
+                        </div>
+                    </th>
+                `;
+            });
+            headerRow += '</tr></thead>';
+
+            // Spec categories
+            const specs = [
+                { category: 'PRICING & BASICS', specs: [
+                    { key: 'msrp', label: 'Starting MSRP', format: v => `$${v.msrp.toLocaleString()}` },
+                    { key: 'seating', label: 'Seating Capacity', format: v => v.specs.seating },
+                    { key: 'drivetrain', label: 'Drivetrain', format: v => v.specs.drivetrain },
+                ]},
+                { category: 'EXTERIOR DIMENSIONS', specs: [
+                    { key: 'length', label: 'Length', format: v => v.specs.length },
+                    { key: 'width', label: 'Width', format: v => v.specs.width },
+                    { key: 'height', label: 'Height', format: v => v.specs.height },
+                    { key: 'wheelbase', label: 'Wheelbase', format: v => v.specs.wheelbase },
+                    { key: 'groundClearance', label: 'Ground Clearance', format: v => v.specs.groundClearance, highlight: true },
+                    { key: 'curbWeight', label: 'Curb Weight', format: v => v.specs.curbWeight },
+                ]},
+                { category: 'INTERIOR SPACE', specs: [
+                    { key: 'cargoSpace', label: isTruck ? 'Bed Lengths' : 'Cargo Space (behind rear)', format: v => isTruck ? v.specs.bedLengths : v.specs.cargoSpace },
+                    ...(is3Row ? [{ key: 'cargoBehind2nd', label: 'Cargo Behind 2nd Row', format: v => v.specs.cargoBehind2nd || 'N/A' }] : []),
+                    { key: 'maxCargo', label: 'Max Cargo Space', format: v => v.specs.maxCargo },
+                    { key: 'passengerVolume', label: 'Passenger Volume', format: v => v.specs.passengerVolume },
+                    { key: 'headroomFront', label: 'Front Headroom', format: v => v.specs.headroomFront },
+                    { key: 'legroomFront', label: 'Front Legroom', format: v => v.specs.legroomFront },
+                    { key: 'legroomRear', label: is3Row ? '2nd Row Legroom' : 'Rear Legroom', format: v => is3Row ? (v.specs.legroom2nd || v.specs.legroomRear) : v.specs.legroomRear },
+                    ...(is3Row ? [{ key: 'legroom3rd', label: '3rd Row Legroom', format: v => v.specs.legroom3rd || 'N/A' }] : []),
+                ]},
+                { category: 'FUEL ECONOMY', specs: [
+                    { key: 'mpgCity', label: 'City MPG', format: v => v.specs.mpgCity },
+                    { key: 'mpgHwy', label: 'Highway MPG', format: v => v.specs.mpgHwy },
+                    { key: 'mpgCombined', label: 'Combined MPG', format: v => v.specs.mpgCombined, highlight: true },
+                    { key: 'fuelTank', label: 'Fuel Tank', format: v => v.specs.fuelTank },
+                ]},
+                { category: 'PERFORMANCE & CAPABILITY', specs: [
+                    { key: 'engine', label: 'Engine Options', format: v => v.specs.engine },
+                    { key: 'horsepower', label: 'Horsepower', format: v => v.specs.horsepower, highlight: true },
+                    { key: 'torque', label: 'Torque', format: v => v.specs.torque },
+                    { key: 'transmission', label: 'Transmission', format: v => v.specs.transmission },
+                    { key: 'towingCapacity', label: 'Max Towing', format: v => v.specs.towingCapacity, highlight: true },
+                    ...(isTruck ? [{ key: 'payloadCapacity', label: 'Payload Capacity', format: v => v.specs.payloadCapacity }] : []),
+                ]},
+                { category: 'OPTIONS', specs: [
+                    { key: 'hybridAvailable', label: 'Hybrid Available', format: v => v.specs.hybridAvailable },
+                    { key: 'awd', label: isTruck ? '4WD' : 'AWD', format: v => v.specs.awd },
+                ]},
+            ];
+
+            // Build body rows
+            let bodyRows = '<tbody>';
+            specs.forEach(category => {
+                // Category header row
+                bodyRows += `<tr class="category-row"><td colspan="${selectedVehicles.length + 1}">${category.category}</td></tr>`;
+                
+                category.specs.forEach(spec => {
+                    bodyRows += '<tr>';
+                    bodyRows += `<td>${spec.label}</td>`;
+                    
+                    selectedVehicles.forEach(vehicle => {
+                        const value = spec.format(vehicle);
+                        const className = spec.highlight ? 'spec-value spec-highlight' : 'spec-value';
+                        
+                        // Check for Yes/No values
+                        if (value === 'Yes' || value.startsWith('Yes')) {
+                            bodyRows += `<td><span class="spec-tag yes">${value}</span></td>`;
+                        } else if (value === 'No' || value === 'Not Available' || value === 'Not Rated') {
+                            bodyRows += `<td><span class="spec-tag no">${value}</span></td>`;
+                        } else if (value === 'Standard') {
+                            bodyRows += `<td><span class="spec-tag best">${value}</span></td>`;
+                        } else {
+                            bodyRows += `<td class="${className}">${value}</td>`;
+                        }
+                    });
+                    bodyRows += '</tr>';
+                });
+            });
+            bodyRows += '</tbody>';
+
+            table.innerHTML = headerRow + bodyRows;
+            
+            document.getElementById('comparisonSection').style.display = 'block';
+            document.getElementById('emptyState').style.display = 'none';
+            
+            // Scroll to comparison
+            document.getElementById('comparisonSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // =====================================================
+        // EXPORT FUNCTIONS
+        // =====================================================
+        function copyToClipboard() {
+            const table = document.getElementById('comparisonTable');
+            let text = '';
+            
+            // Header
+            const headers = table.querySelectorAll('thead th');
+            headers.forEach((th, i) => {
+                if (i > 0) text += '\t';
+                text += th.textContent.trim().replace(/\n/g, ' ');
+            });
+            text += '\n';
+            
+            // Body
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                cells.forEach((td, i) => {
+                    if (i > 0) text += '\t';
+                    text += td.textContent.trim();
+                });
+                text += '\n';
+            });
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Comparison copied to clipboard! You can paste it into an email or document.');
+            });
+        }
+
+        function showEmailModal() {
+            document.getElementById('emailModal').classList.add('active');
+        }
+
+        function closeEmailModal() {
+            document.getElementById('emailModal').classList.remove('active');
+        }
+
+        function sendEmail() {
+            const email = document.getElementById('customerEmail').value;
+            const name = document.getElementById('customerName').value;
+            const note = document.getElementById('emailNote').value;
+            
+            if (!email) {
+                alert('Please enter the customer email address.');
+                return;
+            }
+            
+            // Build vehicle list for subject
+            const vehicleNames = selectedVehicles.map(v => v.name.replace('2025 ', '')).join(' vs ');
+            
+            // Build email body
+            let body = `Hi ${name || 'there'},\n\n`;
+            body += note ? `${note}\n\n` : 'Here\'s the vehicle comparison you requested:\n\n';
+            body += `Comparing: ${vehicleNames}\n\n`;
+            
+            // Add key specs
+            selectedVehicles.forEach(vehicle => {
+                body += `${vehicle.name}\n`;
+                body += `• Starting at $${vehicle.msrp.toLocaleString()}\n`;
+                body += `• ${vehicle.specs.mpgCombined} MPG combined\n`;
+                body += `• ${vehicle.specs.cargoSpace || vehicle.specs.bedLengths} cargo\n`;
+                body += `• Towing: ${vehicle.specs.towingCapacity}\n`;
+                body += `• Hybrid: ${vehicle.specs.hybridAvailable}\n\n`;
+            });
+            
+            body += `\nI'd be happy to schedule test drives or answer any questions!\n\n`;
+            body += `Best,\nJeff Lee\nPedersen Toyota\n720-416-6955\njlee@pedersentoyota.com`;
+            
+            // Open email client
+            const mailtoLink = `mailto:${email}?subject=Vehicle Comparison: ${vehicleNames}&body=${encodeURIComponent(body)}`;
+            window.open(mailtoLink);
+            
+            closeEmailModal();
+        }
+
+        function showComingSoon(feature) {
+            alert(`${feature} is coming soon!`);
+        }
+    </script>
+</body>
+</html>

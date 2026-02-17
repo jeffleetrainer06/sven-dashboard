@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Vehicle Shopping Hub | Jeff Lee - Pedersen Toyota</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#EB0A1E">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body class="customer-hub">
+    <div class="hub-container">
+        <!-- Header -->
+        <header class="hub-header">
+            <div class="hub-brand">
+                <div class="consultant-card">
+                    <div class="consultant-avatar">JL</div>
+                    <div class="consultant-info">
+                        <h1>JEFF LEE</h1>
+                        <p>Sales Consultant | Pedersen Toyota</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hub-title">
+                <h2>Your Personal Vehicle Shopping Hub</h2>
+            </div>
+        </header>
+
+        <!-- Contact Bar -->
+        <div class="contact-bar">
+            <a href="tel:720-416-6955" class="contact-item">
+                <span class="contact-icon">📞</span>
+                <span>720-416-6955</span>
+            </a>
+            <a href="mailto:jlee@pedersentoyota.com" class="contact-item">
+                <span class="contact-icon">📧</span>
+                <span>jlee@pedersentoyota.com</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <main class="hub-main">
+            <!-- Welcome Message (shown first time) -->
+            <section class="hub-welcome" id="hubWelcome">
+                <h3>Welcome, <span id="customerFirstName">there</span>! 👋</h3>
+                <p>This is your personal hub for shopping at Pedersen Toyota. Chat with me anytime, explore tools below, and let's find you the perfect vehicle.</p>
+            </section>
+
+            <!-- Chat Section -->
+            <section class="hub-section hub-chat-section">
+                <div class="section-header">
+                    <h3>💬 Messages</h3>
+                    <span class="message-count" id="messageCount"></span>
+                </div>
+                <div class="hub-chat-messages" id="hubChatMessages">
+                    <!-- Messages populated by JS -->
+                </div>
+                <div class="hub-chat-input">
+                    <textarea 
+                        id="hubChatInput" 
+                        placeholder="Type your message to Jeff..."
+                        rows="2"
+                        onkeydown="handleHubChatKeydown(event)"
+                    ></textarea>
+                    <button class="btn btn-primary" onclick="sendHubMessage()">Send</button>
+                </div>
+            </section>
+
+            <!-- Tools Section -->
+            <section class="hub-section hub-tools-section">
+                <div class="section-header">
+                    <h3>🛠️ Your Tools</h3>
+                </div>
+                <div class="hub-tools-grid">
+                    <a href="https://pedersen-tradeappraisal.lovable.app/" target="_blank" class="hub-tool-card">
+                        <span class="hub-tool-icon">📸</span>
+                        <span class="hub-tool-title">Trade-In Appraisal</span>
+                        <span class="hub-tool-desc">Get your vehicle's value with photos</span>
+                    </a>
+                    <div class="hub-tool-card" onclick="openPaymentCalculator()">
+                        <span class="hub-tool-icon">💰</span>
+                        <span class="hub-tool-title">Payment Calculator</span>
+                        <span class="hub-tool-desc">Estimate your monthly payment</span>
+                    </div>
+                    <a href="https://smartpath.pedersentoyota.com/how-it-works?dealerCd=05030&source=t3&zipcode=80525" target="_blank" class="hub-tool-card">
+                        <span class="hub-tool-icon">🛒</span>
+                        <span class="hub-tool-title">SmartPath</span>
+                        <span class="hub-tool-desc">Continue your Toyota purchase online</span>
+                    </a>
+                    <a href="https://www.pedersentoyota.com/finance-application.htm" target="_blank" class="hub-tool-card">
+                        <span class="hub-tool-icon">📝</span>
+                        <span class="hub-tool-title">Credit Application</span>
+                        <span class="hub-tool-desc">Get pre-approved for financing</span>
+                    </a>
+                    <div class="hub-tool-card" onclick="openDocumentUpload()">
+                        <span class="hub-tool-icon">📄</span>
+                        <span class="hub-tool-title">Upload Documents</span>
+                        <span class="hub-tool-desc">License, insurance, and more</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vehicles Section (populated by Jeff) -->
+            <section class="hub-section hub-vehicles-section" id="vehiclesSection" style="display: none;">
+                <div class="section-header">
+                    <h3>🚙 Vehicles Selected For You</h3>
+                </div>
+                <div class="hub-vehicles-list" id="vehiclesList">
+                    <!-- Vehicles populated by JS -->
+                </div>
+            </section>
+
+            <!-- Quick Links -->
+            <section class="hub-section hub-links-section">
+                <div class="section-header">
+                    <h3>🔗 Quick Links</h3>
+                </div>
+                <div class="hub-links-grid">
+                    <a href="https://www.pedersentoyota.com/new-inventory/index.htm" target="_blank" class="hub-link">
+                        🚗 New Inventory
+                    </a>
+                    <a href="https://www.pedersentoyota.com/used-inventory/index.htm" target="_blank" class="hub-link">
+                        🔄 Used Inventory
+                    </a>
+                    <a href="https://www.pedersentoyota.com/specials/new.htm" target="_blank" class="hub-link">
+                        🏷️ Current Specials
+                    </a>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=Pedersen+Toyota+Fort+Collins+CO" target="_blank" class="hub-link">
+                        📍 Get Directions
+                    </a>
+                    <a href="https://www.pedersentoyota.com/dealership/hours-and-directions.htm" target="_blank" class="hub-link">
+                        🕐 Hours & Info
+                    </a>
+                    <a href="https://www.pedersentoyota.com/schedule-service.htm" target="_blank" class="hub-link">
+                        🔧 Service Appointment
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="hub-footer">
+            <div class="footer-brand">
+                <img src="https://www.pedersentoyota.com/assets/shared/images/toyota-logo-2019.svg" alt="Toyota" class="toyota-logo" onerror="this.style.display='none'">
+                <span>Pedersen Toyota | Fort Collins, CO</span>
+            </div>
+            <p class="footer-address">4455 S College Ave, Fort Collins, CO 80525</p>
+            <p class="footer-note">Your hub link is active for 90 days. Save it for easy access!</p>
+        </footer>
+    </div>
+
+    <!-- Payment Calculator Modal -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>💰 Payment Calculator</h3>
+                <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="paymentForm" onsubmit="calculatePayment(event)">
+                    <div class="form-group">
+                        <label for="vehiclePrice">Vehicle Price ($)</label>
+                        <input type="number" id="vehiclePrice" required placeholder="35000">
+                    </div>
+                    <div class="form-group">
+                        <label for="downPayment">Down Payment ($)</label>
+                        <input type="number" id="downPayment" value="0" placeholder="5000">
+                    </div>
+                    <div class="form-group">
+                        <label for="tradeValue">Trade-In Value ($)</label>
+                        <input type="number" id="tradeValue" value="0" placeholder="8000">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="loanTerm">Loan Term</label>
+                            <select id="loanTerm">
+                                <option value="48">48 months</option>
+                                <option value="60" selected>60 months</option>
+                                <option value="72">72 months</option>
+                                <option value="84">84 months</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="interestRate">Est. APR (%)</label>
+                            <input type="number" id="interestRate" value="6.9" step="0.1" placeholder="6.9">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Calculate</button>
+                </form>
+                <div class="payment-result" id="paymentResult" style="display: none;">
+                    <div class="result-main">
+                        <span class="result-label">Estimated Monthly Payment</span>
+                        <span class="result-value" id="monthlyPayment">$0</span>
+                    </div>
+                    <div class="result-details">
+                        <div class="result-row">
+                            <span>Vehicle Price</span>
+                            <span id="resultPrice">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span>Tax (8.30%)</span>
+                            <span id="resultTax">$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span>Fees</span>
+                            <span>$996.70</span>
+                        </div>
+                        <div class="result-row">
+                            <span>Down Payment</span>
+                            <span id="resultDown">-$0</span>
+                        </div>
+                        <div class="result-row">
+                            <span>Trade-In</span>
+                            <span id="resultTrade">-$0</span>
+                        </div>
+                        <div class="result-row total">
+                            <span>Amount Financed</span>
+                            <span id="resultFinanced">$0</span>
+                        </div>
+                    </div>
+                    <p class="result-disclaimer">*Estimate only. Final payment may vary based on credit approval, taxes, and fees. Fort Collins sales tax rate: 8.30%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Document Upload Modal -->
+    <div class="modal-overlay" id="documentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>📄 Upload Documents</h3>
+                <button class="modal-close" onclick="closeDocumentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-intro">Speed up your purchase by uploading documents ahead of time. Jeff will securely receive these.</p>
+                <div class="upload-options">
+                    <div class="upload-item">
+                        <input type="checkbox" id="docLicense">
+                        <label for="docLicense">Driver's License (front & back)</label>
+                    </div>
+                    <div class="upload-item">
+                        <input type="checkbox" id="docInsurance">
+                        <label for="docInsurance">Insurance Card</label>
+                    </div>
+                    <div class="upload-item">
+                        <input type="checkbox" id="docPaystub">
+                        <label for="docPaystub">Proof of Income (paystub)</label>
+                    </div>
+                    <div class="upload-item">
+                        <input type="checkbox" id="docResidence">
+                        <label for="docResidence">Proof of Residence (utility bill)</label>
+                    </div>
+                </div>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" multiple accept="image/*,.pdf" onchange="handleFileSelect(event)">
+                    <div class="upload-prompt">
+                        <span class="upload-icon">📁</span>
+                        <p>Tap to select files or take photos</p>
+                        <p class="hint">JPG, PNG, or PDF • Max 10MB each</p>
+                    </div>
+                </div>
+                <div class="uploaded-files" id="uploadedFiles"></div>
+                <button class="btn btn-primary btn-full" onclick="submitDocuments()" id="submitDocsBtn" disabled>
+                    Send to Jeff
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="js/hub.js"></script>
+</body>
+</html>

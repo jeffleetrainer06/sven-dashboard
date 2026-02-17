@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVEN | Vehicle Comparison</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #b82d39;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --toyota-red: #eb0a1e;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .logo-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-red);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .category-tab:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .category-tab.active {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            color: white;
+        }
+
+        /* Vehicle Grid */
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .vehicle-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .vehicle-card:hover {
+            border-color: var(--text-muted);
+            transform: translateY(-2px);
+        }
+
+        .vehicle-card.selected {
+            border-color: var(--primary-red);
+            background: rgba(230, 57, 70, 0.1);
+        }
+
+        .vehicle-card.toyota {
+            border-left: 4px solid var(--toyota-red);
+        }
+
+        .vehicle-brand {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .vehicle-card.toyota .vehicle-brand {
+            color: var(--toyota-red);
+        }
+
+        .vehicle-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .vehicle-price {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-red);
+            margin-bottom: 16px;
+        }
+
+        .vehicle-specs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .spec-item {
+            font-size: 12px;
+        }
+
+        .spec-label {
+            color: var(--text-muted);
+        }
+
+        .spec-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .select-indicator {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .vehicle-card.selected .select-indicator {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+        }
+
+        .vehicle-card.selected .select-indicator::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .comparison-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .comparison-count {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: var(--bg-dark);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .comparison-table th:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .comparison-table th:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .comparison-table td {
+            font-size: 14px;
+        }
+
+        .comparison-table tr:hover td {
+            background: var(--bg-card-hover);
+        }
+
+        .comparison-table .vehicle-header {
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .comparison-table .vehicle-header.toyota {
+            color: var(--toyota-red);
+        }
+
+        .comparison-table .spec-row td:first-child {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .comparison-table .best-value {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .comparison-table .price-row td {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .no-selection {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .no-selection i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .header, .category-tabs, .vehicle-grid, .btn {
+                display: none;
+            }
+            
+            .comparison-section {
+                border: none;
+                padding: 0;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                border: 1px solid #ddd;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .category-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 8px;
+            }
+            
+            .category-tab {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="logo">
+                <div>
+                    <div class="logo-text">SVEN</div>
+                    <div class="logo-sub">Vehicle Comparison</div>
+                </div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" onclick="clearSelection()">
+                <i class="fas fa-times"></i> Clear
+            </button>
+            <button class="btn btn-secondary" onclick="printComparison()">
+                <i class="fas fa-print"></i> Print
+            </button>
+            <button class="btn btn-primary" onclick="emailComparison()">
+                <i class="fas fa-envelope"></i> Email to Customer
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="page-title">Vehicle Comparison Tool</h1>
+        <p class="page-subtitle">Select up to 4 vehicles to compare side-by-side. Toyota vehicles are highlighted.</p>
+
+        <div class="category-tabs" id="categoryTabs">
+            <button class="category-tab active" data-category="compact-suv">Compact SUV</button>
+            <button class="category-tab" data-category="midsize-suv">Mid-Size SUV</button>
+            <button class="category-tab" data-category="fullsize-suv">Full-Size SUV</button>
+            <button class="category-tab" data-category="midsize-truck">Mid-Size Truck</button>
+            <button class="category-tab" data-category="fullsize-truck">Full-Size Truck</button>
+        </div>
+
+        <div class="vehicle-grid" id="vehicleGrid">
+            <!-- Vehicles will be populated by JavaScript -->
+        </div>
+
+        <div class="comparison-section">
+            <div class="comparison-header">
+                <div>
+                    <div class="comparison-title">Side-by-Side Comparison</div>
+                    <div class="comparison-count" id="selectionCount">Select vehicles above to compare</div>
+                </div>
+            </div>
+            <div class="comparison-table" id="comparisonTable">
+                <div class="no-selection">
+                    <i class="fas fa-car"></i>
+                    Click on vehicles above to add them to your comparison
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Vehicle Database
+        const vehicles = {
+            'compact-suv': [
+                {
+                    brand: 'Toyota',
+                    name: 'RAV4',
+                    year: 2025,
+                    msrp: 31380,
+                    mpgCity: 27,
+                    mpgHwy: 35,
+                    hp: 203,
+                    torque: 184,
+                    cargo: 37.6,
+                    towing: 3500,
+                    awd: 'Available',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Honda',
+                    name: 'CR-V',
+                    year: 2025,
+                    msrp: 31450,
+                    mpgCity: 28,
+                    mpgHwy: 34,
+                    hp: 190,
+                    torque: 179,
+                    cargo: 36.3,
+                    towing: 1500,
+                    awd: 'Available',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Mazda',
+                    name: 'CX-50',
+                    year: 2025,
+                    msrp: 30800,
+                    mpgCity: 24,
+                    mpgHwy: 30,
+                    hp: 187,
+                    torque: 186,
+                    cargo: 31.4,
+                    towing: 3500,
+                    awd: 'Standard',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Hyundai',
+                    name: 'Tucson',
+                    year: 2025,
+                    msrp: 30850,
+                    mpgCity: 26,
+                    mpgHwy: 33,
+                    hp: 187,
+                    torque: 178,
+                    cargo: 38.7,
+                    towing: 2000,
+                    awd: 'Available',
+                    hybrid: 'Available',
+                    warranty: '5yr/60k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Subaru',
+                    name: 'Forester',
+                    year: 2025,
+                    msrp: 32890,
+                    mpgCity: 26,
+                    mpgHwy: 33,
+                    hp: 180,
+                    torque: 174,
+                    cargo: 28.9,
+                    towing: 1500,
+                    awd: 'Standard',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Nissan',
+                    name: 'Rogue',
+                    year: 2025,
+                    msrp: 31190,
+                    mpgCity: 26,
+                    mpgHwy: 33,
+                    hp: 201,
+                    torque: 225,
+                    cargo: 31.6,
+                    towing: 1500,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                }
+            ],
+            'midsize-suv': [
+                {
+                    brand: 'Toyota',
+                    name: 'Highlander',
+                    year: 2025,
+                    msrp: 40970,
+                    mpgCity: 21,
+                    mpgHwy: 29,
+                    hp: 265,
+                    torque: 263,
+                    cargo: 16.0,
+                    towing: 5000,
+                    awd: 'Available',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Toyota',
+                    name: 'Grand Highlander',
+                    year: 2025,
+                    msrp: 45550,
+                    mpgCity: 21,
+                    mpgHwy: 28,
+                    hp: 265,
+                    torque: 263,
+                    cargo: 20.9,
+                    towing: 5000,
+                    awd: 'Available',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Honda',
+                    name: 'Pilot',
+                    year: 2025,
+                    msrp: 42545,
+                    mpgCity: 19,
+                    mpgHwy: 27,
+                    hp: 285,
+                    torque: 262,
+                    cargo: 18.5,
+                    towing: 5000,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Hyundai',
+                    name: 'Palisade',
+                    year: 2025,
+                    msrp: 38100,
+                    mpgCity: 19,
+                    mpgHwy: 26,
+                    hp: 291,
+                    torque: 262,
+                    cargo: 18.0,
+                    towing: 5000,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '5yr/60k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Kia',
+                    name: 'Telluride',
+                    year: 2025,
+                    msrp: 37440,
+                    mpgCity: 20,
+                    mpgHwy: 26,
+                    hp: 291,
+                    torque: 262,
+                    cargo: 21.0,
+                    towing: 5000,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '5yr/60k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Chevrolet',
+                    name: 'Traverse',
+                    year: 2025,
+                    msrp: 37350,
+                    mpgCity: 18,
+                    mpgHwy: 27,
+                    hp: 315,
+                    torque: 266,
+                    cargo: 23.0,
+                    towing: 5000,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                }
+            ],
+            'fullsize-suv': [
+                {
+                    brand: 'Toyota',
+                    name: 'Sequoia',
+                    year: 2025,
+                    msrp: 62900,
+                    mpgCity: 21,
+                    mpgHwy: 24,
+                    hp: 437,
+                    torque: 583,
+                    cargo: 22.2,
+                    towing: 9520,
+                    awd: 'Available',
+                    hybrid: 'Standard',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Toyota',
+                    name: 'Land Cruiser',
+                    year: 2025,
+                    msrp: 58970,
+                    mpgCity: 19,
+                    mpgHwy: 22,
+                    hp: 326,
+                    torque: 465,
+                    cargo: 41.0,
+                    towing: 6000,
+                    awd: 'Standard',
+                    hybrid: 'Standard',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Chevrolet',
+                    name: 'Tahoe',
+                    year: 2025,
+                    msrp: 59500,
+                    mpgCity: 16,
+                    mpgHwy: 20,
+                    hp: 355,
+                    torque: 383,
+                    cargo: 25.5,
+                    towing: 8400,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Ford',
+                    name: 'Expedition',
+                    year: 2025,
+                    msrp: 61640,
+                    mpgCity: 16,
+                    mpgHwy: 21,
+                    hp: 400,
+                    torque: 480,
+                    cargo: 19.3,
+                    towing: 9300,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'GMC',
+                    name: 'Yukon',
+                    year: 2025,
+                    msrp: 63100,
+                    mpgCity: 16,
+                    mpgHwy: 20,
+                    hp: 355,
+                    torque: 383,
+                    cargo: 25.5,
+                    towing: 8400,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Jeep',
+                    name: 'Wagoneer',
+                    year: 2025,
+                    msrp: 64995,
+                    mpgCity: 15,
+                    mpgHwy: 20,
+                    hp: 420,
+                    torque: 497,
+                    cargo: 27.4,
+                    towing: 10000,
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                }
+            ],
+            'midsize-truck': [
+                {
+                    brand: 'Toyota',
+                    name: 'Tacoma',
+                    year: 2025,
+                    msrp: 33795,
+                    mpgCity: 21,
+                    mpgHwy: 26,
+                    hp: 278,
+                    torque: 317,
+                    cargo: '5ft / 6ft bed',
+                    towing: 6500,
+                    awd: '4WD Available',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Ford',
+                    name: 'Ranger',
+                    year: 2025,
+                    msrp: 34265,
+                    mpgCity: 21,
+                    mpgHwy: 26,
+                    hp: 270,
+                    torque: 310,
+                    cargo: '5ft / 6ft bed',
+                    towing: 7500,
+                    awd: '4WD Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Chevrolet',
+                    name: 'Colorado',
+                    year: 2025,
+                    msrp: 32695,
+                    mpgCity: 19,
+                    mpgHwy: 25,
+                    hp: 237,
+                    torque: 259,
+                    cargo: '5ft / 6ft bed',
+                    towing: 7700,
+                    awd: '4WD Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Honda',
+                    name: 'Ridgeline',
+                    year: 2025,
+                    msrp: 41245,
+                    mpgCity: 18,
+                    mpgHwy: 24,
+                    hp: 280,
+                    torque: 262,
+                    cargo: '5.3ft bed',
+                    towing: 5000,
+                    awd: 'Standard',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Nissan',
+                    name: 'Frontier',
+                    year: 2025,
+                    msrp: 33620,
+                    mpgCity: 18,
+                    mpgHwy: 24,
+                    hp: 310,
+                    torque: 281,
+                    cargo: '5ft / 6ft bed',
+                    towing: 6720,
+                    awd: '4WD Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Jeep',
+                    name: 'Gladiator',
+                    year: 2025,
+                    msrp: 38790,
+                    mpgCity: 17,
+                    mpgHwy: 22,
+                    hp: 285,
+                    torque: 260,
+                    cargo: '5ft bed',
+                    towing: 7700,
+                    awd: '4WD Standard',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '4-Star',
+                    isToyota: false
+                }
+            ],
+            'fullsize-truck': [
+                {
+                    brand: 'Toyota',
+                    name: 'Tundra',
+                    year: 2025,
+                    msrp: 43595,
+                    mpgCity: 18,
+                    mpgHwy: 23,
+                    hp: 389,
+                    torque: 479,
+                    cargo: '5.5ft / 6.5ft / 8ft bed',
+                    towing: 12000,
+                    awd: '4WD Available',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Ford',
+                    name: 'F-150',
+                    year: 2025,
+                    msrp: 40075,
+                    mpgCity: 20,
+                    mpgHwy: 26,
+                    hp: 400,
+                    torque: 410,
+                    cargo: '5.5ft / 6.5ft / 8ft bed',
+                    towing: 14000,
+                    awd: '4WD Available',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Chevrolet',
+                    name: 'Silverado 1500',
+                    year: 2025,
+                    msrp: 40500,
+                    mpgCity: 16,
+                    mpgHwy: 24,
+                    hp: 355,
+                    torque: 383,
+                    cargo: '5.8ft / 6.6ft bed',
+                    towing: 13300,
+                    awd: '4WD Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Ram',
+                    name: '1500',
+                    year: 2025,
+                    msrp: 43360,
+                    mpgCity: 17,
+                    mpgHwy: 23,
+                    hp: 395,
+                    torque: 410,
+                    cargo: '5.6ft / 6.4ft bed',
+                    towing: 12750,
+                    awd: '4WD Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'GMC',
+                    name: 'Sierra 1500',
+                    year: 2025,
+                    msrp: 44800,
+                    mpgCity: 16,
+                    mpgHwy: 24,
+                    hp: 355,
+                    torque: 383,
+                    cargo: '5.8ft / 6.6ft bed',
+                    towing: 13200,
+                    awd: '4WD Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Nissan',
+                    name: 'Titan',
+                    year: 2025,
+                    msrp: 47150,
+                    mpgCity: 15,
+                    mpgHwy: 21,
+                    hp: 400,
+                    torque: 413,
+                    cargo: '5.5ft / 6.5ft bed',
+                    towing: 11060,
+                    awd: '4WD Available',
+                    hybrid: 'No',
+                    warranty: '5yr/100k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                }
+            ]
+        };
+
+        let selectedVehicles = [];
+        let currentCategory = 'compact-suv';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupCategoryTabs();
+            renderVehicles();
+        });
+
+        function setupCategoryTabs() {
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategory = this.dataset.category;
+                    renderVehicles();
+                });
+            });
+        }
+
+        function renderVehicles() {
+            const grid = document.getElementById('vehicleGrid');
+            const categoryVehicles = vehicles[currentCategory] || [];
+            
+            grid.innerHTML = categoryVehicles.map(vehicle => {
+                const isSelected = selectedVehicles.some(v => 
+                    v.brand === vehicle.brand && v.name === vehicle.name
+                );
+                
+                return `
+                    <div class="vehicle-card ${vehicle.isToyota ? 'toyota' : ''} ${isSelected ? 'selected' : ''}"
+                         onclick="toggleVehicle('${vehicle.brand}', '${vehicle.name}')">
+                        <div class="select-indicator"></div>
+                        <div class="vehicle-brand">${vehicle.brand}</div>
+                        <div class="vehicle-name">${vehicle.year} ${vehicle.name}</div>
+                        <div class="vehicle-price">$${vehicle.msrp.toLocaleString()}</div>
+                        <div class="vehicle-specs">
+                            <div class="spec-item">
+                                <div class="spec-label">MPG</div>
+                                <div class="spec-value">${vehicle.mpgCity}/${vehicle.mpgHwy}</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">HP</div>
+                                <div class="spec-value">${vehicle.hp}</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">Towing</div>
+                                <div class="spec-value">${vehicle.towing.toLocaleString()} lbs</div>
+                            </div>
+                            <div class="spec-item">
+                                <div class="spec-label">AWD/4WD</div>
+                                <div class="spec-value">${vehicle.awd}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleVehicle(brand, name) {
+            const index = selectedVehicles.findIndex(v => 
+                v.brand === brand && v.name === name
+            );
+            
+            if (index > -1) {
+                selectedVehicles.splice(index, 1);
+            } else {
+                if (selectedVehicles.length >= 4) {
+                    alert('You can compare up to 4 vehicles at a time. Remove one to add another.');
+                    return;
+                }
+                
+                // Find the vehicle in current category or all categories
+                let vehicle = null;
+                for (const category of Object.values(vehicles)) {
+                    vehicle = category.find(v => v.brand === brand && v.name === name);
+                    if (vehicle) break;
+                }
+                
+                if (vehicle) {
+                    selectedVehicles.push(vehicle);
+                }
+            }
+            
+            renderVehicles();
+            renderComparison();
+        }
+
+        function renderComparison() {
+            const container = document.getElementById('comparisonTable');
+            const countEl = document.getElementById('selectionCount');
+            
+            if (selectedVehicles.length === 0) {
+                countEl.textContent = 'Select vehicles above to compare';
+                container.innerHTML = `
+                    <div class="no-selection">
+                        <i class="fas fa-car"></i>
+                        Click on vehicles above to add them to your comparison
+                    </div>
+                `;
+                return;
+            }
+            
+            countEl.textContent = `${selectedVehicles.length} vehicle${selectedVehicles.length > 1 ? 's' : ''} selected`;
+            
+            const specs = [
+                { key: 'msrp', label: 'Starting MSRP', format: v => `$${v.toLocaleString()}`, best: 'low' },
+                { key: 'mpgCity', label: 'MPG (City)', format: v => v, best: 'high' },
+                { key: 'mpgHwy', label: 'MPG (Highway)', format: v => v, best: 'high' },
+                { key: 'hp', label: 'Horsepower', format: v => v, best: 'high' },
+                { key: 'torque', label: 'Torque (lb-ft)', format: v => v, best: 'high' },
+                { key: 'cargo', label: 'Cargo Space', format: v => typeof v === 'number' ? `${v} cu.ft.` : v, best: 'high' },
+                { key: 'towing', label: 'Towing Capacity', format: v => `${v.toLocaleString()} lbs`, best: 'high' },
+                { key: 'awd', label: 'AWD/4WD', format: v => v },
+                { key: 'hybrid', label: 'Hybrid Available', format: v => v },
+                { key: 'warranty', label: 'Warranty', format: v => v },
+                { key: 'safetyRating', label: 'NHTSA Safety', format: v => v }
+            ];
+            
+            let html = '<table>';
+            
+            // Header row
+            html += '<tr><th>Specification</th>';
+            selectedVehicles.forEach(v => {
+                html += `<th class="vehicle-header ${v.isToyota ? 'toyota' : ''}">${v.year} ${v.brand}<br>${v.name}</th>`;
+            });
+            html += '</tr>';
+            
+            // Spec rows
+            specs.forEach(spec => {
+                html += `<tr class="spec-row ${spec.key === 'msrp' ? 'price-row' : ''}">`;
+                html += `<td>${spec.label}</td>`;
+                
+                // Find best value if applicable
+                let bestValue = null;
+                if (spec.best && selectedVehicles.length > 1) {
+                    const numericValues = selectedVehicles
+                        .map(v => typeof v[spec.key] === 'number' ? v[spec.key] : null)
+                        .filter(v => v !== null);
+                    
+                    if (numericValues.length > 1) {
+                        bestValue = spec.best === 'high' 
+                            ? Math.max(...numericValues)
+                            : Math.min(...numericValues);
+                    }
+                }
+                
+                selectedVehicles.forEach(v => {
+                    const value = v[spec.key];
+                    const isBest = bestValue !== null && value === bestValue;
+                    html += `<td class="${isBest ? 'best-value' : ''}">${spec.format(value)}</td>`;
+                });
+                
+                html += '</tr>';
+            });
+            
+            html += '</table>';
+            container.innerHTML = html;
+        }
+
+        function clearSelection() {
+            selectedVehicles = [];
+            renderVehicles();
+            renderComparison();
+        }
+
+        function printComparison() {
+            if (selectedVehicles.length === 0) {
+                alert('Please select vehicles to compare first.');
+                return;
+            }
+            window.print();
+        }
+
+        function emailComparison() {
+            if (selectedVehicles.length === 0) {
+                alert('Please select vehicles to compare first.');
+                return;
+            }
+            
+            const subject = 'Vehicle Comparison from Jeff Lee at Pedersen Toyota';
+            let body = 'Here is the vehicle comparison you requested:\n\n';
+            
+            selectedVehicles.forEach(v => {
+                body += `${v.year} ${v.brand} ${v.name}\n`;
+                body += `  - Starting MSRP: $${v.msrp.toLocaleString()}\n`;
+                body += `  - MPG: ${v.mpgCity} city / ${v.mpgHwy} hwy\n`;
+                body += `  - Horsepower: ${v.hp} hp\n`;
+                body += `  - Towing: ${v.towing.toLocaleString()} lbs\n\n`;
+            });
+            
+            body += '\nLet me know if you have any questions!\n\nJeff Lee\nPedersen Toyota\n720-416-6955';
+            
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+    </script>
+</body>
+</html>

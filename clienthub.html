@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeff's Client Hub | SVEN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #b82d39;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.03;
+            background: 
+                linear-gradient(90deg, var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px,
+                linear-gradient(var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .logo-main {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 12px 8px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 18px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 12px 8px;
+        }
+
+        .sidebar-footer {
+            padding: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sven-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg-card);
+            border-radius: 8px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .status-text strong {
+            color: var(--text-primary);
+            display: block;
+        }
+
+        /* Main Content Area */
+        .main-area {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Customer List Panel */
+        .customer-panel {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .panel-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-title i {
+            color: var(--primary-red);
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-red);
+        }
+
+        .btn-secondary {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .btn-small {
+            padding: 6px 10px;
+            font-size: 11px;
+        }
+
+        .search-box {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+        .customer-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .customer-card {
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            border: 1px solid transparent;
+        }
+
+        .customer-card:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .customer-card.active {
+            background: rgba(230, 57, 70, 0.15);
+            border-color: var(--primary-red);
+        }
+
+        .customer-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .customer-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .customer-vehicle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .customer-status {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: var(--bg-dark);
+        }
+
+        .customer-status.active { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+        .customer-status.inquiry { background: rgba(59, 130, 246, 0.2); color: var(--info); }
+        .customer-status.appointment { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        .customer-status.pending { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .customer-status.sold { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+
+        .customer-preview {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .customer-time {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 36px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-dark);
+            min-width: 0;
+        }
+
+        .chat-header {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-customer-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .chat-customer-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .status-dropdown {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+        }
+
+        .chat-placeholder i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .message {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+        }
+
+        .message.received {
+            align-self: flex-start;
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.sent .message-bubble {
+            background: var(--primary-red);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received .message-bubble {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            padding: 0 4px;
+        }
+
+        .message.sent .message-time {
+            text-align: right;
+        }
+
+        .message-tool {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .chat-input-area {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-wrapper textarea {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 14px;
+            resize: none;
+            font-family: inherit;
+            max-height: 120px;
+        }
+
+        .chat-input-wrapper textarea:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+        .btn-send {
+            padding: 12px 24px;
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-send:hover {
+            background: var(--dark-red);
+        }
+
+        /* Tools Panel */
+        .tools-panel {
+            width: 300px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+
+        .tools-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, transparent 100%);
+        }
+
+        .tools-header h3 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tools-header p {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .tools-section {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tools-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+
+        .tool-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary-red);
+            transform: translateX(4px);
+        }
+
+        .tool-btn.highlight {
+            border-color: var(--primary-red);
+            background: rgba(230, 57, 70, 0.1);
+        }
+
+        .tool-btn.highlight:hover {
+            background: rgba(230, 57, 70, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .tool-info {
+            flex: 1;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .tool-desc {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .tool-send-icon {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .tool-btn:hover .tool-send-icon {
+            color: var(--primary-red);
+        }
+
+        /* Customer Portal Section */
+        .portal-section {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
+        }
+
+        .portal-section .tool-btn {
+            border-color: var(--info);
+        }
+
+        .portal-section .tool-btn:hover {
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        /* Customer Details in Tools */
+        .customer-details {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-item {
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .detail-value a {
+            color: var(--info);
+            text-decoration: none;
+        }
+
+        .detail-value a:hover {
+            text-decoration: underline;
+        }
+
+        /* Delete Button */
+        .delete-section {
+            padding: 16px;
+            margin-top: auto;
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.open .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-red);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.active {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile */
+        @media (max-width: 1200px) {
+            .tools-panel {
+                width: 260px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+            .tools-panel {
+                display: none;
+            }
+            .customer-panel {
+                width: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-main">SVEN</div>
+                    <div class="logo-sub">Jeff's Personal Assistant</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="clienthub.html" class="nav-item active">
+                    <i class="fas fa-users"></i>
+                    <span>Client Hub</span>
+                </a>
+                <a href="calendar.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Lead Follow Up')">
+                    <i class="fas fa-user-clock"></i>
+                    <span>Lead Follow Up</span>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="workflows.html" class="nav-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Multi-Agent Tools</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Brochure Library')">
+                    <i class="fas fa-book-open"></i>
+                    <span>Brochure Library</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sven-status">
+                    <div class="status-indicator"></div>
+                    <div class="status-text">
+                        <strong>Sven Online</strong>
+                        Ready to assist
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="main-area">
+            <!-- Customer List Panel -->
+            <div class="customer-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <i class="fas fa-users"></i>
+                        Customers
+                    </div>
+                    <button class="btn btn-primary btn-small" onclick="openAddCustomerModal()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="customerSearch" placeholder="Search customers..." onkeyup="handleSearch(event)">
+                </div>
+
+                <div class="customer-list" id="customerList">
+                    <div class="empty-state" id="emptyCustomers">
+                        <i class="fas fa-user-plus"></i>
+                        <p>No customers yet</p>
+                        <button class="btn btn-primary btn-small" onclick="openAddCustomerModal()">Add First Customer</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Panel -->
+            <div class="chat-panel">
+                <div class="chat-header" id="chatHeader">
+                    <div class="chat-customer-info">
+                        <h3 id="chatCustomerName">Select a Customer</h3>
+                        <div class="chat-customer-meta" id="chatCustomerMeta" style="display: none;">
+                            <span id="chatEmail"><i class="fas fa-envelope"></i> email@example.com</span>
+                            <span id="chatPhone"><i class="fas fa-phone"></i> (720) 555-1234</span>
+                        </div>
+                    </div>
+                    <div class="chat-actions" id="chatActions" style="display: none;">
+                        <select class="status-dropdown" id="chatStatusDropdown" onchange="updateCustomerStatus()">
+                            <option value="inquiry">📋 Inquiry</option>
+                            <option value="active">🟢 Active</option>
+                            <option value="appointment">📅 Appointment</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="sold">✅ Sold</option>
+                            <option value="lost">❌ Lost</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-placeholder" id="chatPlaceholder">
+                        <i class="fas fa-comments"></i>
+                        <p>Select a customer to view conversation</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-area" id="chatInputArea" style="display: none;">
+                    <div class="chat-input-wrapper">
+                        <textarea id="chatInput" placeholder="Type your message..." rows="1" onkeydown="handleChatKeydown(event)"></textarea>
+                        <button class="btn-send" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools Panel -->
+            <div class="tools-panel" id="toolsPanel">
+                <div class="tools-header">
+                    <h3><i class="fas fa-paper-plane"></i> Send to Customer</h3>
+                    <p>Click any tool to send it in the chat</p>
+                </div>
+
+                <!-- Customer Portal -->
+                <div class="tools-section portal-section">
+                    <div class="tools-section-title">Customer Portal</div>
+                    
+                    <button class="tool-btn highlight" onclick="getTextLink()">
+                        <span class="tool-icon">📱</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Get Link to Text</div>
+                            <div class="tool-desc">Copy portal link to text customer</div>
+                        </div>
+                        <i class="fas fa-copy tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendPortalInvite()">
+                        <span class="tool-icon">✉️</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Send Portal Invite</div>
+                            <div class="tool-desc">Send welcome message with link</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+                </div>
+
+                <!-- Quick Tools -->
+                <div class="tools-section">
+                    <div class="tools-section-title">Quick Tools</div>
+
+                    <button class="tool-btn highlight" onclick="sendTool('trade')">
+                        <span class="tool-icon">📸</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Trade-In Appraisal</div>
+                            <div class="tool-desc">Remote trade evaluation tool</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendTool('payment')">
+                        <span class="tool-icon">💰</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Payment Calculator</div>
+                            <div class="tool-desc">Estimate monthly payments</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendTool('smartpath')">
+                        <span class="tool-icon">🛒</span>
+                        <div class="tool-info">
+                            <div class="tool-name">SmartPath</div>
+                            <div class="tool-desc">Start online purchase</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendTool('credit')">
+                        <span class="tool-icon">📝</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Credit Application</div>
+                            <div class="tool-desc">Pre-approval form</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="tools-section">
+                    <div class="tools-section-title">Send Links</div>
+
+                    <button class="tool-btn" onclick="sendLink('toyota')">
+                        <span class="tool-icon">🚗</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Toyota.com</div>
+                            <div class="tool-desc">Build & price vehicles</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendLink('inventory')">
+                        <span class="tool-icon">📦</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Our Inventory</div>
+                            <div class="tool-desc">Current available vehicles</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendLink('specials')">
+                        <span class="tool-icon">🏷️</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Current Specials</div>
+                            <div class="tool-desc">Deals and incentives</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendLink('accessories')">
+                        <span class="tool-icon">🎨</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Accessories</div>
+                            <div class="tool-desc">AIM parts & accessories</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="tools-section">
+                    <div class="tools-section-title">Quick Actions</div>
+
+                    <button class="tool-btn" onclick="scheduleTestDrive()">
+                        <span class="tool-icon">🚙</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Schedule Test Drive</div>
+                            <div class="tool-desc">Send scheduling message</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="explainReservation()">
+                        <span class="tool-icon">📋</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Explain Reservation</div>
+                            <div class="tool-desc">How reservations work</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+                </div>
+
+                <!-- Quick Responses -->
+                <div class="tools-section">
+                    <div class="tools-section-title">Quick Responses</div>
+
+                    <button class="tool-btn" onclick="sendQuickResponse('greeting')">
+                        <span class="tool-icon">👋</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Warm Greeting</div>
+                            <div class="tool-desc">Initial welcome message</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendQuickResponse('availability')">
+                        <span class="tool-icon">📦</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Availability Check</div>
+                            <div class="tool-desc">Ask about vehicle preferences</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendQuickResponse('tradeQuestion')">
+                        <span class="tool-icon">🔄</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Trade-In Question</div>
+                            <div class="tool-desc">Ask about current vehicle</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendQuickResponse('financing')">
+                        <span class="tool-icon">💳</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Financing Info</div>
+                            <div class="tool-desc">Explain financing options</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendQuickResponse('followup')">
+                        <span class="tool-icon">🔔</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Follow-Up</div>
+                            <div class="tool-desc">Check in on progress</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <button class="tool-btn" onclick="sendQuickResponse('thanks')">
+                        <span class="tool-icon">🙏</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Thank You</div>
+                            <div class="tool-desc">Appreciation message</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+                </div>
+
+                <!-- Customer Details (shown when customer selected) -->
+                <div class="customer-details" id="customerDetails" style="display: none;">
+                    <div class="tools-section-title">Customer Info</div>
+                    <div class="detail-item">
+                        <div class="detail-label">Email</div>
+                        <div class="detail-value" id="detailEmail">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Phone</div>
+                        <div class="detail-value" id="detailPhone">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Vehicle Interest</div>
+                        <div class="detail-value" id="detailVehicle">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Source</div>
+                        <div class="detail-value" id="detailSource">-</div>
+                    </div>
+                </div>
+
+                <!-- Delete -->
+                <div class="delete-section" id="deleteSection" style="display: none;">
+                    <button class="btn btn-danger" style="width: 100%;" onclick="deleteCustomer()">
+                        <i class="fas fa-trash"></i> Delete Customer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div class="modal-overlay" id="addCustomerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Customer</h3>
+                <button class="modal-close" onclick="closeAddCustomerModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addCustomerForm" onsubmit="handleAddCustomer(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name *</label>
+                            <input type="text" id="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name *</label>
+                            <input type="text" id="lastName" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="customerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="customerPhone" placeholder="(720) 555-1234">
+                    </div>
+                    <div class="form-group">
+                        <label>Lead Source</label>
+                        <select id="leadSource">
+                            <option value="internet">Internet Lead</option>
+                            <option value="truecar">TrueCar</option>
+                            <option value="cargurus">CarGurus</option>
+                            <option value="autotrader">AutoTrader</option>
+                            <option value="website">Website</option>
+                            <option value="walkin">Walk-In</option>
+                            <option value="phone">Phone Call</option>
+                            <option value="referral">Referral</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Interest</label>
+                        <input type="text" id="vehicleInterest" placeholder="e.g., 2026 RAV4 Hybrid">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="customerNotes" rows="3" placeholder="Additional notes..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAddCustomerModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="document.getElementById('addCustomerForm').requestSubmit()">
+                    <i class="fas fa-plus"></i> Add Customer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        // ========================================
+        // Data Store
+        // ========================================
+        const STORAGE_KEY = 'jefflee_clienthub';
+        const LINK_EXPIRY_DAYS = 90;
+
+        // Tool URLs
+        const TOOLS = {
+            trade: {
+                name: 'Trade-In Appraisal',
+                url: 'https://pedersen-tradeappraisal.lovable.app/',
+                icon: '📸',
+                description: 'Get an instant value estimate for your current vehicle'
+            },
+            payment: {
+                name: 'Payment Calculator',
+                url: 'https://www.pedersentoyota.com/payment-calculator.htm',
+                icon: '💰',
+                description: 'Estimate your monthly payment'
+            },
+            smartpath: {
+                name: 'SmartPath',
+                url: 'https://smartpath.pedersentoyota.com/how-it-works?dealerCd=05030&source=t3&zipcode=80525',
+                icon: '🛒',
+                description: 'Start your purchase online'
+            },
+            credit: {
+                name: 'Credit Application',
+                url: 'https://www.pedersentoyota.com/finance-application.htm',
+                icon: '📝',
+                description: 'Get pre-approved for financing'
+            }
+        };
+
+        const LINKS = {
+            toyota: {
+                name: 'Toyota.com',
+                url: 'https://www.toyota.com/',
+                description: 'Build and price your perfect Toyota'
+            },
+            inventory: {
+                name: 'Our Inventory',
+                url: 'https://www.pedersentoyota.com/new-inventory/index.htm',
+                description: 'See what we have in stock'
+            },
+            specials: {
+                name: 'Current Specials',
+                url: 'https://www.pedersentoyota.com/specials/new.htm',
+                description: 'Check out our latest deals'
+            },
+            accessories: {
+                name: 'Accessories',
+                url: 'https://parts.pedersentoyota.com/',
+                description: 'Browse parts and accessories'
+            }
+        };
+
+        // State
+        let state = {
+            customers: [],
+            activeCustomerId: null
+        };
+
+        // ========================================
+        // Initialization
+        // ========================================
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    state = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error('Error loading state:', e);
+            }
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.error('Error saving state:', e);
+            }
+        }
+
+        // ========================================
+        // Utility Functions
+        // ========================================
+        function generateId() {
+            return Math.random().toString(36).substring(2, 14);
+        }
+
+        function formatTime(date) {
+            const now = new Date();
+            const d = new Date(date);
+            const diffMs = now - d;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return d.toLocaleDateString();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 3000);
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            }
+        }
+
+        function getCustomerHubUrl(customerId) {
+            const baseUrl = window.location.origin + window.location.pathname.replace('clienthub.html', 'hub.html');
+            return `${baseUrl}?c=${customerId}`;
+        }
+
+        function showComingSoon(feature) {
+            showToast(`${feature} coming soon!`);
+        }
+
+        // ========================================
+        // Customer Management
+        // ========================================
+        function createCustomer(data) {
+            const customer = {
+                id: generateId(),
+                name: data.name,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email || '',
+                phone: data.phone || '',
+                vehicleInterest: data.vehicleInterest || 'Not specified',
+                leadSource: data.leadSource || 'internet',
+                notes: data.notes || '',
+                status: 'inquiry',
+                createdAt: new Date().toISOString(),
+                lastActivity: new Date().toISOString(),
+                messages: []
+            };
+
+            // Add welcome message
+            customer.messages.push({
+                id: generateId(),
+                type: 'sent',
+                text: `Hi ${customer.firstName}! Welcome to your personal vehicle shopping hub. I'm Jeff, and I'll be helping you find the perfect vehicle. Feel free to message me anytime with questions!`,
+                timestamp: new Date().toISOString()
+            });
+
+            state.customers.unshift(customer);
+            saveState();
+            return customer;
+        }
+
+        function getCustomer(id) {
+            return state.customers.find(c => c.id === id);
+        }
+
+        function deleteCustomerById(id) {
+            state.customers = state.customers.filter(c => c.id !== id);
+            if (state.activeCustomerId === id) {
+                state.activeCustomerId = null;
+                clearChatView();
+            }
+            saveState();
+            renderCustomerList();
+        }
+
+        // ========================================
+        // UI Rendering
+        // ========================================
+        function renderCustomerList(searchQuery = '') {
+            const list = document.getElementById('customerList');
+            const empty = document.getElementById('emptyCustomers');
+            
+            let customers = [...state.customers];
+            
+            if (searchQuery) {
+                customers = customers.filter(c => 
+                    c.name.toLowerCase().includes(searchQuery) ||
+                    c.email.toLowerCase().includes(searchQuery) ||
+                    c.vehicleInterest.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            if (customers.length === 0 && state.customers.length === 0) {
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            
+            if (customers.length === 0 && searchQuery) {
+                list.innerHTML = '<div class="empty-state"><p>No customers match your search</p></div>';
+                return;
+            }
+            
+            list.innerHTML = customers.map(customer => {
+                const isActive = customer.id === state.activeCustomerId;
+                const lastMessage = customer.messages[customer.messages.length - 1];
+                const preview = lastMessage ? lastMessage.text.substring(0, 40) + (lastMessage.text.length > 40 ? '...' : '') : '';
+                
+                return `
+                    <div class="customer-card ${isActive ? 'active' : ''}" onclick="selectCustomer('${customer.id}')">
+                        <div class="customer-name">${customer.name}</div>
+                        <div class="customer-meta">
+                            <span class="customer-vehicle">🚗 ${customer.vehicleInterest}</span>
+                            <span class="customer-status ${customer.status}">${customer.status}</span>
+                        </div>
+                        <div class="customer-preview">${preview}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectCustomer(id) {
+            state.activeCustomerId = id;
+            renderCustomerList();
+            renderChatView(id);
+            showCustomerDetails(id);
+            
+            document.getElementById('chatInputArea').style.display = 'block';
+            document.getElementById('chatActions').style.display = 'flex';
+            document.getElementById('chatCustomerMeta').style.display = 'flex';
+            document.getElementById('customerDetails').style.display = 'block';
+            document.getElementById('deleteSection').style.display = 'block';
+        }
+
+        function renderChatView(customerId) {
+            const customer = getCustomer(customerId);
+            if (!customer) return;
+
+            document.getElementById('chatCustomerName').textContent = customer.name;
+            document.getElementById('chatEmail').innerHTML = `<i class="fas fa-envelope"></i> ${customer.email || 'No email'}`;
+            document.getElementById('chatPhone').innerHTML = `<i class="fas fa-phone"></i> ${customer.phone || 'No phone'}`;
+            document.getElementById('chatStatusDropdown').value = customer.status || 'inquiry';
+
+            const container = document.getElementById('chatMessages');
+            document.getElementById('chatPlaceholder').style.display = 'none';
+            
+            container.innerHTML = customer.messages.map(msg => `
+                <div class="message ${msg.type}">
+                    <div class="message-bubble">
+                        ${msg.text}
+                        ${msg.tool ? `<div class="message-tool">${TOOLS[msg.tool]?.icon || '🔗'} ${TOOLS[msg.tool]?.name || msg.tool}</div>` : ''}
+                        ${msg.link ? `<div class="message-tool">🔗 ${LINKS[msg.link]?.name || msg.link}</div>` : ''}
+                    </div>
+                    <span class="message-time">${formatTime(msg.timestamp)}</span>
+                </div>
+            `).join('');
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showCustomerDetails(customerId) {
+            const customer = getCustomer(customerId);
+            if (!customer) return;
+
+            document.getElementById('detailEmail').innerHTML = customer.email ? `<a href="mailto:${customer.email}">${customer.email}</a>` : '-';
+            document.getElementById('detailPhone').innerHTML = customer.phone ? `<a href="tel:${customer.phone}">${customer.phone}</a>` : '-';
+            document.getElementById('detailVehicle').textContent = customer.vehicleInterest || '-';
+            document.getElementById('detailSource').textContent = customer.leadSource || '-';
+        }
+
+        function clearChatView() {
+            document.getElementById('chatCustomerName').textContent = 'Select a Customer';
+            document.getElementById('chatCustomerMeta').style.display = 'none';
+            document.getElementById('chatMessages').innerHTML = `
+                <div class="chat-placeholder" id="chatPlaceholder">
+                    <i class="fas fa-comments"></i>
+                    <p>Select a customer to view conversation</p>
+                </div>
+            `;
+            document.getElementById('chatInputArea').style.display = 'none';
+            document.getElementById('chatActions').style.display = 'none';
+            document.getElementById('customerDetails').style.display = 'none';
+            document.getElementById('deleteSection').style.display = 'none';
+        }
+
+        function updateCustomerStatus() {
+            if (!state.activeCustomerId) return;
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+
+            customer.status = document.getElementById('chatStatusDropdown').value;
+            saveState();
+            renderCustomerList();
+        }
+
+        // ========================================
+        // Chat Functions
+        // ========================================
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            
+            if (!text || !state.activeCustomerId) return;
+
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+
+            customer.messages.push({
+                id: generateId(),
+                type: 'sent',
+                text: text,
+                timestamp: new Date().toISOString()
+            });
+
+            customer.lastActivity = new Date().toISOString();
+            saveState();
+
+            input.value = '';
+            renderChatView(state.activeCustomerId);
+            renderCustomerList();
+        }
+
+        function handleChatKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // ========================================
+        // Tool Sending Functions
+        // ========================================
+        function sendTool(toolKey) {
+            if (!state.activeCustomerId) {
+                showToast('Select a customer first');
+                return;
+            }
+
+            const tool = TOOLS[toolKey];
+            if (!tool) return;
+
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+
+            customer.messages.push({
+                id: generateId(),
+                type: 'sent',
+                text: `Here's a helpful tool for you:\n\n${tool.description}\n\n${tool.url}`,
+                tool: toolKey,
+                timestamp: new Date().toISOString()
+            });
+
+            customer.lastActivity = new Date().toISOString();
+            saveState();
+
+            renderChatView(state.activeCustomerId);
+            renderCustomerList();
+            showToast(`${tool.name} sent!`);
+        }
+
+        function sendLink(linkKey) {
+            if (!state.activeCustomerId) {
+                showToast('Select a customer first');
+                return;
+            }
+
+            const link = LINKS[linkKey];
+            if (!link) return;
+
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+
+            customer.messages.push({
+                id: generateId(),
+                type: 'sent',
+                text: `${link.description}:\n\n${link.url}`,
+                link: linkKey,
+                timestamp: new Date().toISOString()
+            });
+
+            customer.lastActivity = new Date().toISOString();
+            saveState();
+
+            renderChatView(state.activeCustomerId);
+            renderCustomerList();
+            showToast(`${link.name} link sent!`);
+        }
+
+        function getTextLink() {
+            if (!state.activeCustomerId) {
+                showToast('Select a customer first');
+                return;
+            }
+            const url = getCustomerHubUrl(state.activeCustomerId);
+            copyToClipboard(url);
+            showToast('Hub link copied! Ready to text.');
+        }
+
+        function sendPortalInvite() {
+            if (!state.activeCustomerId) {
+                showToast('Select a customer first');
+                return;
+            }
+            
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+            
+            const url = getCustomerHubUrl(state.activeCustomerId);
+            
+            customer.messages.push({
+                id: generateId(),
+                type: 'sent',
+                text: `Hi ${customer.firstName}! 👋\n\nI've set up your personal Client Hub where you can:\n\n✅ Chat with me directly\n✅ Access helpful tools\n✅ Track your vehicle search\n\nAccess it here: ${url}`,
+                timestamp: new Date().toISOString()
+            });
+            
+            customer.lastActivity = new Date().toISOString();
+            saveState();
+            renderChatView(state.activeCustomerId);
+            renderCustomerList();
+            showToast('Portal invite sent!');
+        }
+
+        function scheduleTestDrive() {
+            if (!state.activeCustomerId) {
+                showToast('Select a customer first');
+                return;
+            }
+            
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+            
+            customer.messages.push({
+                id: generateId(),
+                type: 'sent',
+                text: `I'd love to get you scheduled for a test drive! 🚗\n\nWhat day and time works best for you? We're open Monday-Saturday 9am-7pm.`,
+                timestamp: new Date().toISOString()
+            });
+            
+            customer.lastActivity = new Date().toISOString();
+            saveState();
+            renderChatView(state.activeCustomerId);
+            showToast('Test drive message sent!');
+        }
+
+        function explainReservation() {
+            if (!state.activeCustomerId) {
+                showToast('Select a customer first');
+                return;
+            }
+            
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+            
+            customer.messages.push({
+                id: generateId(),
+                type: 'sent',
+                text: `Here's how our reservation process works:\n\n1️⃣ Reserve your vehicle - A small refundable deposit holds it\n2️⃣ Complete paperwork online via SmartPath\n3️⃣ Schedule your delivery time\n4️⃣ Drive home happy!\n\nWant me to start a reservation for you?`,
+                timestamp: new Date().toISOString()
+            });
+            
+            customer.lastActivity = new Date().toISOString();
+            saveState();
+            renderChatView(state.activeCustomerId);
+            showToast('Reservation info sent!');
+        }
+
+        // Quick Responses
+        const QUICK_RESPONSES = {
+            greeting: {
+                name: 'Warm Greeting',
+                getMessage: (customer) => `Hi ${customer.firstName}! 👋\n\nThanks for reaching out about your vehicle search. I'm Jeff Lee at Pedersen Toyota and I'm here to help you find the perfect vehicle.\n\nWhat questions can I answer for you today?`
+            },
+            availability: {
+                name: 'Availability Check',
+                getMessage: (customer) => `Great question about availability! 📦\n\nTo help find the best options for you, can you tell me:\n\n• What model(s) are you most interested in?\n• Any must-have features or colors?\n• Are you looking for new, used, or either?\n• What's your ideal timeline?\n\nOnce I know more, I can pull up some perfect matches!`
+            },
+            tradeQuestion: {
+                name: 'Trade-In Question',
+                getMessage: (customer) => `Do you have a vehicle you're looking to trade in? 🔄\n\nIf so, I can get you a quick value estimate! Just share:\n\n• Year, make, model, and trim\n• Approximate mileage\n• General condition\n\nOr you can use our Remote Trade Appraisal tool for an instant estimate: https://pedersen-tradeappraisal.lovable.app/`
+            },
+            financing: {
+                name: 'Financing Info',
+                getMessage: (customer) => `Great question about financing! 💳\n\nWe work with multiple lenders to get you the best rates. Here's what to know:\n\n✅ We can often beat your bank's rate\n✅ Pre-approval takes just a few minutes\n✅ No obligation and won't hurt your credit to check\n✅ We have options for all credit situations\n\nWould you like me to get you pre-approved? I can send over a quick, secure application.`
+            },
+            followup: {
+                name: 'Follow-Up',
+                getMessage: (customer) => `Hi ${customer.firstName}! 🔔\n\nJust wanted to check in and see how your vehicle search is going. Have you had any new questions come up?\n\nI'm here whenever you're ready to take the next step - whether that's a test drive, more info, or just chatting through options.\n\nHow can I help?`
+            },
+            thanks: {
+                name: 'Thank You',
+                getMessage: (customer) => `Thank you so much, ${customer.firstName}! 🙏\n\nI really appreciate you considering Pedersen Toyota. It's been great working with you.\n\nIf you ever have questions down the road or know anyone else looking for a vehicle, I'm always happy to help!\n\nTake care and enjoy!`
+            }
+        };
+
+        function sendQuickResponse(responseKey) {
+            if (!state.activeCustomerId) {
+                showToast('Select a customer first');
+                return;
+            }
+
+            const response = QUICK_RESPONSES[responseKey];
+            if (!response) return;
+
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+
+            customer.messages.push({
+                id: generateId(),
+                type: 'sent',
+                text: response.getMessage(customer),
+                timestamp: new Date().toISOString()
+            });
+
+            customer.lastActivity = new Date().toISOString();
+            saveState();
+
+            renderChatView(state.activeCustomerId);
+            renderCustomerList();
+            showToast(`${response.name} sent!`);
+        }
+
+        // ========================================
+        // Modal Functions
+        // ========================================
+        function openAddCustomerModal() {
+            document.getElementById('addCustomerModal').classList.add('open');
+            document.getElementById('firstName').focus();
+        }
+
+        function closeAddCustomerModal() {
+            document.getElementById('addCustomerModal').classList.remove('open');
+            document.getElementById('addCustomerForm').reset();
+        }
+
+        function handleAddCustomer(event) {
+            event.preventDefault();
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            
+            const data = {
+                name: `${firstName} ${lastName}`,
+                firstName: firstName,
+                lastName: lastName,
+                email: document.getElementById('customerEmail').value.trim(),
+                phone: document.getElementById('customerPhone').value.trim(),
+                vehicleInterest: document.getElementById('vehicleInterest').value.trim() || 'Not specified',
+                leadSource: document.getElementById('leadSource').value,
+                notes: document.getElementById('customerNotes').value.trim()
+            };
+
+            const customer = createCustomer(data);
+            
+            const hubUrl = getCustomerHubUrl(customer.id);
+            copyToClipboard(hubUrl);
+
+            closeAddCustomerModal();
+            renderCustomerList();
+            selectCustomer(customer.id);
+            
+            showToast(`Customer added! Hub link copied.`);
+        }
+
+        function handleSearch(event) {
+            const query = event.target.value.toLowerCase().trim();
+            renderCustomerList(query);
+        }
+
+        function deleteCustomer() {
+            if (!state.activeCustomerId) return;
+            
+            const customer = getCustomer(state.activeCustomerId);
+            if (!customer) return;
+
+            if (confirm(`Delete ${customer.name}? This cannot be undone.`)) {
+                deleteCustomerById(state.activeCustomerId);
+                showToast('Customer deleted');
+            }
+        }
+
+        // ========================================
+        // Initialize
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            renderCustomerList();
+        });
+    </script>
+</body>
+</html>

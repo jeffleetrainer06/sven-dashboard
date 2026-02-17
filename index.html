@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVEN | Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #b82d39;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.03;
+            background: 
+                linear-gradient(90deg, var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px,
+                linear-gradient(var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .logo-main {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            text-decoration: none;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 16px 8px;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sven-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-text strong {
+            color: var(--text-primary);
+            display: block;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 24px;
+            max-width: calc(100% - 280px);
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Daily Quote */
+        .daily-quote {
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, rgba(230, 57, 70, 0.05) 100%);
+            border: 1px solid rgba(230, 57, 70, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            max-width: 400px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .daily-quote::before {
+            content: '"';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            font-size: 48px;
+            font-family: Georgia, serif;
+            color: var(--primary-red);
+            opacity: 0.3;
+            line-height: 1;
+        }
+
+        .quote-text {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 8px;
+            padding-left: 24px;
+        }
+
+        .quote-author {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-red);
+            text-align: right;
+        }
+
+        .quote-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quote-label i {
+            color: var(--primary-red);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-red);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-muted);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+        }
+
+        .main-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .side-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-red);
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .kpi-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .kpi-change.positive {
+            color: var(--success);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .kpi-change.neutral {
+            color: var(--text-secondary);
+            background: var(--bg-card-hover);
+        }
+
+        .kpi-subtext {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title i {
+            color: var(--primary-red);
+        }
+
+        .card-body {
+            padding: 16px 20px;
+        }
+
+        /* Tasks */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover {
+            border-color: var(--border-color);
+        }
+
+        .task-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--text-muted);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--primary-red);
+        }
+
+        .task-checkbox.checked {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+        }
+
+        .task-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .task-due {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .task-priority {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .task-priority.high { background: var(--danger); }
+        .task-priority.medium { background: var(--warning); }
+        .task-priority.low { background: var(--success); }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-align: center;
+        }
+
+        .action-btn.primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--dark-red);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: var(--primary-red);
+            border: 1px solid var(--primary-red);
+        }
+
+        .action-btn.secondary:hover {
+            background: rgba(230, 57, 70, 0.1);
+        }
+
+        /* Calendar Widget */
+        .calendar-widget {
+            padding: 16px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-month {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .calendar-nav button {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-nav button:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+        }
+
+        .calendar-day-header {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 8px 0;
+        }
+
+        .calendar-day {
+            font-size: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+        }
+
+        .calendar-day:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-muted);
+        }
+
+        .calendar-day.today {
+            background: var(--primary-red);
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day.has-event::after {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-red);
+            border-radius: 50%;
+            margin: 2px auto 0;
+        }
+
+        .calendar-day.today.has-event::after {
+            background: white;
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 380px;
+            height: 500px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform: translateY(calc(100% + 24px));
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .chat-panel.open {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .chat-header-text h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .chat-header-text span {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-message.sven {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-message.user {
+            background: var(--primary-red);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-input-area {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-red);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-red);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-send:hover {
+            background: var(--dark-red);
+            transform: scale(1.05);
+        }
+
+        /* Chat Toggle Button */
+        .chat-toggle {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(230, 57, 70, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-toggle.hidden {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        /* Toyota Logo */
+        .toyota-logo {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .toyota-logo svg {
+            width: 60px;
+            height: 60px;
+            fill: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .side-column {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .side-column {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            border: none;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        /* Add Task Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.open .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-red);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-main">SVEN</div>
+                    <div class="logo-sub">Jeff's Personal Assistant</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item active">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="clienthub.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Jeff's Client Hub</span>
+                </a>
+                <a href="calendar.html" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Lead Follow Up')">
+                    <i class="fas fa-user-clock"></i>
+                    <span>Lead Follow Up</span>
+                </a>
+                <a href="vehicle-comparison.html" class="nav-item">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Vehicle Comparison</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Request')">
+                    <i class="fas fa-search-dollar"></i>
+                    <span>Vehicle Request</span>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="workflows.html" class="nav-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Multi-Agent Tools</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Memory')">
+                    <i class="fas fa-brain"></i>
+                    <span>Memory</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Budget Monitor')">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Budget Monitor</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Brochure Library')">
+                    <i class="fas fa-book-open"></i>
+                    <span>Brochure Library</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sven-status">
+                    <div class="status-indicator"></div>
+                    <div class="status-text">
+                        <strong>Sven Online</strong>
+                        Ready to assist
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div>
+                    <h1 class="page-title">Jeff's Command Center</h1>
+                </div>
+                <div class="daily-quote">
+                    <div class="quote-label"><i class="fas fa-lightbulb"></i> Daily Inspiration</div>
+                    <div class="quote-text" id="quoteText">Loading...</div>
+                    <div class="quote-author" id="quoteAuthor"></div>
+                </div>
+            </header>
+
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 24px;">
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="openModal()">
+                        <i class="fas fa-plus"></i> Add Task
+                    </button>
+                    <button class="btn btn-primary" onclick="openChat()">
+                        <i class="fab fa-telegram"></i> Chat with Sven
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="main-column">
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-label">Active Leads</div>
+                            <div class="kpi-value" id="activeLeads">0</div>
+                            <div class="kpi-change positive" id="leadsChange">
+                                <i class="fas fa-arrow-up"></i> +0 this week
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Scheduled Test Drives</div>
+                            <div class="kpi-value" id="testDrives">0</div>
+                            <div class="kpi-subtext" id="testDrivesSub">Today's: 0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Monthly Sales</div>
+                            <div class="kpi-value" id="monthlySales">0</div>
+                            <div class="kpi-subtext" id="salesTarget">Target: 20</div>
+                        </div>
+                    </div>
+
+                    <!-- Urgent Tasks -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Urgent Tasks & Follow-Ups
+                            </div>
+                            <button class="btn btn-secondary" onclick="openModal()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="task-list" id="taskList">
+                                <!-- Tasks will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="side-column">
+                    <!-- Calendar -->
+                    <div class="card">
+                        <div class="calendar-widget">
+                            <div class="calendar-header">
+                                <span class="calendar-month" id="calendarMonth">February 2026</span>
+                                <div class="calendar-nav">
+                                    <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                                    <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="calendar-grid" id="calendarGrid">
+                                <!-- Calendar will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-bolt"></i>
+                                Quick Actions
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-actions">
+                                <button class="action-btn primary" onclick="window.location.href='index.html'">
+                                    <i class="fas fa-user-plus"></i> Start New Lead Engagement
+                                </button>
+                                <button class="action-btn secondary" onclick="showComingSoon('Appointments')">
+                                    <i class="fas fa-calendar-check"></i> View Upcoming Appointments
+                                </button>
+                                <button class="action-btn secondary" onclick="showComingSoon('Daily Report')">
+                                    <i class="fas fa-chart-bar"></i> Generate Daily Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Chat Panel -->
+    <button class="chat-toggle" id="chatToggle" onclick="openChat()" title="Chat with Sven on Telegram">
+        <i class="fab fa-telegram"></i>
+    </button>
+
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-avatar">🦉</div>
+                <div class="chat-header-text">
+                    <h3>Sven</h3>
+                    <span>Your AI Assistant</span>
+                </div>
+            </div>
+            <button class="chat-close" onclick="closeChat()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message sven">
+                Hey Jeff! 👋 I'm here to help. What would you like to work on? You can ask me to:
+                <br><br>
+                • Find vehicles for a customer<br>
+                • Draft a follow-up message<br>
+                • Check your schedule<br>
+                • Run a workflow<br>
+                • Anything else!
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Ask Sven anything..." onkeypress="handleChatKeypress(event)">
+                <button class="chat-send" onclick="sendChatMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Add New Task</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Task Description</label>
+                    <input type="text" id="taskTitle" placeholder="e.g., Call Sarah Jenkins - Test Drive Follow-up">
+                </div>
+                <div class="form-group">
+                    <label>Due Date</label>
+                    <input type="date" id="taskDue">
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="taskPriority">
+                        <option value="high">High</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="addTask()">Add Task</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Management
+        let dashboardData = JSON.parse(localStorage.getItem('svenDashboard')) || {
+            kpis: {
+                activeLeads: 0,
+                leadsChange: 0,
+                testDrives: 0,
+                testDrivesToday: 0,
+                monthlySales: 0,
+                salesTarget: 20
+            },
+            tasks: []
+        };
+
+        // Initialize Dashboard
+        function initDashboard() {
+            updateKPIs();
+            renderTasks();
+            renderCalendar();
+        }
+
+        // KPI Management
+        function updateKPIs() {
+            document.getElementById('activeLeads').textContent = dashboardData.kpis.activeLeads;
+            document.getElementById('leadsChange').innerHTML = `<i class="fas fa-arrow-up"></i> +${dashboardData.kpis.leadsChange} this week`;
+            document.getElementById('testDrives').textContent = dashboardData.kpis.testDrives;
+            document.getElementById('testDrivesSub').textContent = `Today's: ${dashboardData.kpis.testDrivesToday}`;
+            document.getElementById('monthlySales').textContent = dashboardData.kpis.monthlySales;
+            document.getElementById('salesTarget').textContent = `Target: ${dashboardData.kpis.salesTarget}`;
+        }
+
+        // Task Management
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            
+            if (dashboardData.tasks.length === 0) {
+                taskList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <i class="fas fa-check-circle" style="font-size: 32px; margin-bottom: 12px; display: block;"></i>
+                        No tasks yet. Add your first task!
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort tasks: incomplete first, then by priority, then by due date
+            const priorityOrder = { high: 0, medium: 1, low: 2 };
+            const sortedTasks = [...dashboardData.tasks].sort((a, b) => {
+                if (a.completed !== b.completed) return a.completed ? 1 : -1;
+                if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                    return priorityOrder[a.priority] - priorityOrder[b.priority];
+                }
+                return new Date(a.due) - new Date(b.due);
+            });
+
+            taskList.innerHTML = sortedTasks.map((task, index) => `
+                <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask('${task.id}')"></div>
+                    <div class="task-content">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-due">Due: ${formatDate(task.due)}</div>
+                    </div>
+                    <div class="task-priority ${task.priority}"></div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTask(id) {
+            const task = dashboardData.tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveData();
+                renderTasks();
+            }
+        }
+
+        function addTask() {
+            const title = document.getElementById('taskTitle').value.trim();
+            const due = document.getElementById('taskDue').value;
+            const priority = document.getElementById('taskPriority').value;
+
+            if (!title) {
+                alert('Please enter a task description');
+                return;
+            }
+
+            const task = {
+                id: Date.now().toString(),
+                title,
+                due: due || new Date().toISOString().split('T')[0],
+                priority,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            dashboardData.tasks.push(task);
+            saveData();
+            renderTasks();
+            closeModal();
+
+            // Clear form
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDue').value = '';
+            document.getElementById('taskPriority').value = 'medium';
+        }
+
+        // Calendar
+        let currentDate = new Date();
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startPadding = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+            
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+            
+            let html = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+                .map(day => `<div class="calendar-day-header">${day}</div>`).join('');
+            
+            // Previous month padding
+            const prevMonth = new Date(year, month, 0);
+            const prevMonthDays = prevMonth.getDate();
+            for (let i = startPadding - 1; i >= 0; i--) {
+                html += `<div class="calendar-day other-month">${prevMonthDays - i}</div>`;
+            }
+            
+            // Current month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = isCurrentMonth && today.getDate() === day;
+                const hasEvent = dashboardData.tasks.some(t => {
+                    const taskDate = new Date(t.due);
+                    return taskDate.getDate() === day && 
+                           taskDate.getMonth() === month && 
+                           taskDate.getFullYear() === year &&
+                           !t.completed;
+                });
+                
+                html += `<div class="calendar-day${isToday ? ' today' : ''}${hasEvent ? ' has-event' : ''}">${day}</div>`;
+            }
+            
+            // Next month padding
+            const totalCells = startPadding + daysInMonth;
+            const remainingCells = 42 - totalCells;
+            for (let i = 1; i <= remainingCells && totalCells + i <= 42; i++) {
+                html += `<div class="calendar-day other-month">${i}</div>`;
+            }
+            
+            document.getElementById('calendarGrid').innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            currentDate.setMonth(currentDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        // Chat Panel
+        function openChat() {
+            // Open Telegram chat with Sven
+            window.open('https://t.me/jefflee44_bot', '_blank');
+        }
+
+        function closeChat() {
+            document.getElementById('chatPanel').classList.remove('open');
+            document.getElementById('chatToggle').classList.remove('hidden');
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const messagesDiv = document.getElementById('chatMessages');
+            
+            // Add user message
+            messagesDiv.innerHTML += `<div class="chat-message user">${escapeHtml(message)}</div>`;
+            input.value = '';
+            
+            // Simulate Sven response
+            setTimeout(() => {
+                messagesDiv.innerHTML += `
+                    <div class="chat-message sven">
+                        I'm a demo chat interface for now. In the full version, I'll be connected to your OpenClaw session so you can interact with me directly from this dashboard!
+                        <br><br>
+                        For now, you can chat with me through your main OpenClaw interface. 🦉
+                    </div>
+                `;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }, 1000);
+            
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function handleChatKeypress(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        // Modal
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('open');
+            document.getElementById('taskTitle').focus();
+        }
+
+        function closeModal(e) {
+            if (!e || e.target === document.getElementById('modalOverlay')) {
+                document.getElementById('modalOverlay').classList.remove('open');
+            }
+        }
+
+        // Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Coming Soon
+        function showComingSoon(feature) {
+            alert(`${feature} is coming soon! This feature will be available in a future update.`);
+        }
+
+        // Utilities
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function saveData() {
+            localStorage.setItem('svenDashboard', JSON.stringify(dashboardData));
+        }
+
+        // Public method to update KPIs (can be called from console or other pages)
+        window.updateDashboardKPIs = function(kpis) {
+            Object.assign(dashboardData.kpis, kpis);
+            saveData();
+            updateKPIs();
+        };
+
+        // Daily Motivational Quotes
+        const motivationalQuotes = [
+            { text: "A leader is one who knows the way, goes the way, and shows the way.", author: "John C. Maxwell" },
+            { text: "The greatest leader is not necessarily one who does the greatest things, but who gets people to do the greatest things.", author: "Ronald Reagan" },
+            { text: "People don't care how much you know until they know how much you care.", author: "John C. Maxwell" },
+            { text: "Stop selling. Start helping.", author: "Zig Ziglar" },
+            { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+            { text: "Every sale has five basic obstacles: no need, no money, no hurry, no desire, no trust.", author: "Zig Ziglar" },
+            { text: "People buy from people they trust. They trust people they like. They like people who make them feel good.", author: "Jeffrey Gitomer" },
+            { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+            { text: "Leadership is not about being in charge. It's about taking care of those in your charge.", author: "Simon Sinek" },
+            { text: "People don't buy what you do, they buy why you do it.", author: "Simon Sinek" },
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "Your attitude, not your aptitude, will determine your altitude.", author: "Zig Ziglar" },
+            { text: "If you are not taking care of your customer, your competitor will.", author: "Bob Hooey" },
+            { text: "Make a customer, not a sale.", author: "Katherine Barchetti" },
+            { text: "Success usually comes to those who are too busy to be looking for it.", author: "Henry David Thoreau" },
+            { text: "The key to successful leadership today is influence, not authority.", author: "Ken Blanchard" },
+            { text: "Become the person who would attract the results you seek.", author: "Jim Cathcart" },
+            { text: "Setting goals is the first step in turning the invisible into the visible.", author: "Tony Robbins" },
+            { text: "It's not about having the right opportunities. It's about handling the opportunities right.", author: "Mark Hunter" },
+            { text: "Don't find customers for your products, find products for your customers.", author: "Seth Godin" },
+            { text: "Leaders become great not because of their power, but because of their ability to empower others.", author: "John C. Maxwell" },
+            { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+            { text: "Quality performance starts with a positive attitude.", author: "Jeffrey Gitomer" },
+            { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Rohn" },
+            { text: "Success is walking from failure to failure with no loss of enthusiasm.", author: "Winston Churchill" },
+            { text: "The best salespeople know that their expertise can become their enemy in selling.", author: "Mike Bosworth" },
+            { text: "Great things in business are never done by one person. They're done by a team of people.", author: "Steve Jobs" },
+            { text: "The purpose of life is not to win. The purpose of life is to grow and to share.", author: "Harold Kushner" },
+            { text: "Customer service is not a department, it's everyone's job.", author: "Anonymous" },
+            { text: "A goal is a dream with a deadline.", author: "Napoleon Hill" }
+        ];
+
+        function setDailyQuote() {
+            // Use the date to get a consistent quote for the whole day
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            const quoteIndex = dayOfYear % motivationalQuotes.length;
+            const quote = motivationalQuotes[quoteIndex];
+            
+            document.getElementById('quoteText').textContent = quote.text;
+            document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initDashboard();
+            setDailyQuote();
+        });
+    </script>
+</body>
+</html>

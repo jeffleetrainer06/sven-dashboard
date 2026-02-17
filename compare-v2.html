@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Compare | Jeff Lee - Pedersen Toyota</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #b82d39;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --toyota-red: #eb0a1e;
+            --best-value: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white !important; color: black !important; font-size: 11px; }
+            .no-print { display: none !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; }
+            .comparison-section { border: none !important; padding: 0 !important; }
+            .comparison-table { box-shadow: none !important; }
+            .comparison-table th { background: #f0f0f0 !important; color: black !important; border: 1px solid #ccc !important; padding: 8px !important; }
+            .comparison-table td { background: white !important; color: black !important; border: 1px solid #ccc !important; padding: 6px 8px !important; }
+            .comparison-table td.toyota-col { background: #fff8f8 !important; }
+            .comparison-table th.toyota-col { background: #ffe5e5 !important; }
+            .spec-category { background: #333 !important; color: white !important; }
+            .print-header { display: block !important; margin-bottom: 15px; }
+            .best-value { color: #16a34a !important; font-weight: 700 !important; }
+            .print-footer { display: block !important; margin-top: 20px; }
+            @page { margin: 0.5in; size: landscape; }
+        }
+
+        .print-header { display: none; text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .print-header h1 { font-size: 22px; margin-bottom: 3px; }
+        .print-header p { color: #666; font-size: 12px; }
+        .print-footer { display: none; text-align: center; color: #666; font-size: 10px; border-top: 1px solid #ccc; padding-top: 10px; }
+
+        /* Layout */
+        .app-container { display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border-color); }
+        .logo-main { font-size: 24px; font-weight: 800; letter-spacing: 2px; }
+        .logo-sub { font-size: 10px; color: var(--text-secondary); letter-spacing: 0.5px; }
+
+        .nav-section { padding: 16px 12px; flex: 1; overflow-y: auto; }
+        .nav-label { font-size: 9px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 12px; }
+        .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; color: var(--text-secondary); text-decoration: none; border-radius: 6px; margin-bottom: 2px; font-size: 13px; transition: all 0.2s; }
+        .nav-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .nav-item.active { background: var(--primary-red); color: white; }
+        .nav-item i { width: 18px; text-align: center; }
+
+        /* Main Content */
+        .main-content { flex: 1; margin-left: 260px; padding: 24px; }
+
+        .page-header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .page-title { font-size: 28px; font-weight: 700; }
+        .page-subtitle { color: var(--text-secondary); font-size: 13px; }
+
+        /* Quick Presets Bar */
+        .quick-bar {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .quick-bar-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-right: 8px;
+        }
+
+        .quick-preset {
+            padding: 8px 14px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .quick-preset:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--text-muted);
+        }
+
+        .quick-preset.toyota {
+            border-left: 3px solid var(--toyota-red);
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .category-tab {
+            flex: 1;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .category-tab:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .category-tab.active { background: var(--primary-red); color: white; }
+
+        /* Selection Panel */
+        .selection-panel {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .vehicle-list {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .vehicle-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vehicle-list-title { font-size: 14px; font-weight: 600; }
+
+        .vehicle-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: 4px;
+        }
+
+        .vehicle-item:hover { background: var(--bg-card-hover); }
+        .vehicle-item.selected { background: rgba(230, 57, 70, 0.15); }
+        .vehicle-item.toyota { border-left: 3px solid var(--toyota-red); margin-left: -12px; padding-left: 21px; }
+
+        .vehicle-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+
+        .vehicle-item.selected .vehicle-checkbox {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+        }
+
+        .vehicle-checkbox i { font-size: 10px; color: white; display: none; }
+        .vehicle-item.selected .vehicle-checkbox i { display: block; }
+
+        .vehicle-info { flex: 1; min-width: 0; }
+        .vehicle-name { font-size: 13px; font-weight: 600; }
+        .vehicle-brand { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .vehicle-item.toyota .vehicle-brand { color: var(--toyota-red); }
+        .vehicle-price { font-size: 12px; color: var(--success); font-weight: 600; }
+
+        /* Preview Panel */
+        .preview-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .preview-title { font-size: 14px; font-weight: 600; }
+        .selected-count { font-size: 12px; color: var(--text-secondary); }
+        .selected-count span { color: var(--primary-red); font-weight: 600; }
+
+        .preview-actions { display: flex; gap: 8px; }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+        }
+
+        .btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .btn.primary { background: var(--primary-red); border-color: var(--primary-red); color: white; }
+        .btn.primary:hover { background: var(--dark-red); }
+        .btn i { margin-right: 6px; }
+
+        /* Quick Selected Pills */
+        .selected-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            min-height: 36px;
+        }
+
+        .selected-pill {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .selected-pill.toyota { border-color: var(--toyota-red); background: rgba(235, 10, 30, 0.1); }
+        .selected-pill button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .selected-pill button:hover { color: var(--primary-red); }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        .empty-state i { font-size: 40px; margin-bottom: 12px; color: var(--text-muted); }
+        .empty-state h3 { font-size: 16px; margin-bottom: 6px; color: var(--text-primary); }
+
+        /* Comparison Table */
+        .comparison-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .comparison-title { font-size: 18px; font-weight: 600; }
+
+        .export-actions { display: flex; gap: 8px; }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .comparison-table th {
+            background: var(--bg-dark);
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+        }
+
+        .comparison-table th.toyota-col {
+            background: rgba(235, 10, 30, 0.15);
+            border-top: 3px solid var(--toyota-red);
+        }
+
+        .comparison-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        .comparison-table td.toyota-col { background: rgba(235, 10, 30, 0.05); }
+        .comparison-table tr:hover td { background: var(--bg-card-hover); }
+        .comparison-table tr:hover td.toyota-col { background: rgba(235, 10, 30, 0.12); }
+
+        .spec-label { font-weight: 600; color: var(--text-secondary); min-width: 140px; }
+
+        .spec-category {
+            background: var(--primary-red) !important;
+            color: white !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 10px;
+        }
+
+        .best-value { color: var(--best-value) !important; font-weight: 700; }
+        .best-value::after { content: " ★"; font-size: 9px; }
+
+        .hybrid-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            background: var(--success);
+            color: white;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 600;
+            vertical-align: middle;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .toast.show { display: flex; align-items: center; gap: 10px; }
+        .toast i { color: var(--success); }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 16px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+        .legend-dot.toyota { background: var(--toyota-red); }
+        .legend-dot.best { background: var(--best-value); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; }
+            .selection-panel { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar no-print">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-main">JEFF LEE</div>
+                    <div class="logo-sub">Sales Consultant • Pedersen Toyota</div>
+                </div>
+            </div>
+            <nav class="nav-section">
+                <div class="nav-label">Main</div>
+                <a href="index.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Dashboard</span></a>
+                <a href="clienthub.html" class="nav-item"><i class="fas fa-users"></i><span>Client Hub</span></a>
+                <div class="nav-label" style="margin-top:12px;">Tools</div>
+                <a href="compare-v2.html" class="nav-item active"><i class="fas fa-balance-scale"></i><span>Quick Compare</span></a>
+                <a href="compare.html" class="nav-item"><i class="fas fa-table"></i><span>Full Comparison</span></a>
+                <div class="nav-label" style="margin-top:12px;">Automation</div>
+                <a href="workflows.html" class="nav-item"><i class="fas fa-project-diagram"></i><span>Workflow Studio</span></a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <!-- Print Header -->
+            <div class="print-header">
+                <h1>Vehicle Comparison</h1>
+                <p>Prepared by Jeff Lee | Pedersen Toyota | 720-416-6955 | jlee@pedersentoyota.com</p>
+            </div>
+
+            <div class="page-header no-print">
+                <div>
+                    <h1 class="page-title">Quick Compare</h1>
+                    <p class="page-subtitle">Fast vehicle comparisons for customers • Best values highlighted in green</p>
+                </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="quick-bar no-print">
+                <span class="quick-bar-label">⚡ Quick:</span>
+                <button class="quick-preset toyota" onclick="loadPreset('rav4-vs-competitors')">RAV4 vs Competitors</button>
+                <button class="quick-preset toyota" onclick="loadPreset('highlander-vs-competitors')">Highlander vs Competitors</button>
+                <button class="quick-preset toyota" onclick="loadPreset('tacoma-vs-competitors')">Tacoma vs Competitors</button>
+                <button class="quick-preset toyota" onclick="loadPreset('tundra-vs-competitors')">Tundra vs Competitors</button>
+                <button class="quick-preset" onclick="loadPreset('top-compact-suvs')">Top Compact SUVs</button>
+                <button class="quick-preset" onclick="loadPreset('hybrid-suvs')">Best Hybrid SUVs</button>
+                <button class="quick-preset" onclick="loadPreset('towing-trucks')">Best Towing Trucks</button>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs no-print">
+                <button class="category-tab active" data-category="compact-suv" onclick="selectCategory('compact-suv', this)">Compact SUV</button>
+                <button class="category-tab" data-category="small-suv" onclick="selectCategory('small-suv', this)">Small SUV</button>
+                <button class="category-tab" data-category="midsize-suv" onclick="selectCategory('midsize-suv', this)">Mid-Size SUV</button>
+                <button class="category-tab" data-category="large-suv" onclick="selectCategory('large-suv', this)">Large SUV</button>
+                <button class="category-tab" data-category="midsize-truck" onclick="selectCategory('midsize-truck', this)">Mid-Size Truck</button>
+                <button class="category-tab" data-category="fullsize-truck" onclick="selectCategory('fullsize-truck', this)">Full-Size Truck</button>
+            </div>
+
+            <!-- Selection Panel -->
+            <div class="selection-panel no-print">
+                <div class="vehicle-list">
+                    <div class="vehicle-list-header">
+                        <span class="vehicle-list-title">Select Vehicles</span>
+                        <button class="btn" onclick="clearSelection()"><i class="fas fa-times"></i>Clear</button>
+                    </div>
+                    <div id="vehicleList"></div>
+                </div>
+
+                <div class="preview-panel">
+                    <div class="preview-header">
+                        <div>
+                            <span class="preview-title">Selected for Comparison</span>
+                            <span class="selected-count">(<span id="selectedCount">0</span>/5 selected)</span>
+                        </div>
+                        <div class="preview-actions">
+                            <button class="btn" onclick="selectAllToyota()"><i class="fas fa-star"></i>Add Toyota</button>
+                            <button class="btn primary" onclick="generateComparison()"><i class="fas fa-table"></i>Compare Now</button>
+                        </div>
+                    </div>
+                    <div class="selected-pills" id="selectedPills">
+                        <div class="empty-state" id="emptyPills">
+                            <p>Click vehicles to add them to comparison</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison Results -->
+            <div class="comparison-section" id="comparisonSection" style="display:none;">
+                <div class="comparison-header no-print">
+                    <span class="comparison-title">Side-by-Side Comparison</span>
+                    <div class="export-actions">
+                        <button class="btn" onclick="printComparison()"><i class="fas fa-print"></i>Print</button>
+                        <button class="btn" onclick="copyToClipboard()"><i class="fas fa-copy"></i>Copy</button>
+                        <button class="btn" onclick="emailComparison()"><i class="fas fa-envelope"></i>Email</button>
+                    </div>
+                </div>
+                <table class="comparison-table" id="comparisonTable"></table>
+                <div class="legend no-print">
+                    <div class="legend-item"><div class="legend-dot toyota"></div><span>Toyota</span></div>
+                    <div class="legend-item"><div class="legend-dot best"></div><span>Best in Category ★</span></div>
+                </div>
+            </div>
+
+            <!-- Print Footer -->
+            <div class="print-footer">
+                <p>Pedersen Toyota | 4455 S College Ave, Fort Collins, CO 80525 | 970-226-3000 | pedersentoyota.com</p>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMessage"></span></div>
+
+    <script>
+        // Vehicle Database (comprehensive 2025/2026 data)
+        const vehicleData = {
+            'compact-suv': [
+                { brand: 'Toyota', name: 'Corolla Cross', year: 2025, msrp: 24035, length: 175.6, width: 72.4, height: 64.8, wheelbase: 103.9, groundClearance: 8.1, cargoRear: 24.3, cargoMax: 66.8, passengerVolume: 88.7, seating: 5, mpgCity: 31, mpgHighway: 38, mpgCombined: 34, hybrid: true, hybridMpg: '42 city / 41 hwy', engine: '2.0L 4-cyl', hp: 169, towing: 1500, features: 'TSS 3.0, 8" touchscreen, wireless CarPlay' },
+                { brand: 'Honda', name: 'HR-V', year: 2025, msrp: 25050, length: 179.8, width: 72.4, height: 63.4, wheelbase: 104.5, groundClearance: 7.3, cargoRear: 24.4, cargoMax: 55.1, passengerVolume: 104.4, seating: 5, mpgCity: 26, mpgHighway: 32, mpgCombined: 28, hybrid: false, engine: '2.0L 4-cyl', hp: 158, towing: 0, features: 'Honda Sensing, 9" touchscreen' },
+                { brand: 'Mazda', name: 'CX-30', year: 2025, msrp: 24725, length: 173.0, width: 70.7, height: 60.6, wheelbase: 104.5, groundClearance: 6.9, cargoRear: 20.2, cargoMax: 45.2, passengerVolume: 97.1, seating: 5, mpgCity: 26, mpgHighway: 33, mpgCombined: 29, hybrid: false, engine: '2.5L 4-cyl', hp: 191, towing: 0, features: 'i-Activsense, 10.25" display' },
+                { brand: 'Hyundai', name: 'Kona', year: 2025, msrp: 26100, length: 171.9, width: 73.4, height: 63.0, wheelbase: 104.5, groundClearance: 6.7, cargoRear: 27.2, cargoMax: 63.7, passengerVolume: 100.7, seating: 5, mpgCity: 28, mpgHighway: 35, mpgCombined: 30, hybrid: true, hybridMpg: '52 city / 45 hwy', engine: '2.0L 4-cyl', hp: 147, towing: 0, features: 'SmartSense, 12.3" display' },
+                { brand: 'Kia', name: 'Seltos', year: 2025, msrp: 25490, length: 172.6, width: 70.9, height: 64.4, wheelbase: 103.5, groundClearance: 7.2, cargoRear: 26.6, cargoMax: 62.8, passengerVolume: 99.6, seating: 5, mpgCity: 28, mpgHighway: 34, mpgCombined: 31, hybrid: false, engine: '2.0L 4-cyl', hp: 146, towing: 2000, features: 'Drive Wise, 10.25" display' },
+                { brand: 'Subaru', name: 'Crosstrek', year: 2025, msrp: 26695, length: 176.4, width: 71.9, height: 63.0, wheelbase: 104.9, groundClearance: 8.7, cargoRear: 22.0, cargoMax: 55.5, passengerVolume: 100.6, seating: 5, mpgCity: 28, mpgHighway: 34, mpgCombined: 30, hybrid: true, hybridMpg: '33 city / 35 hwy', engine: '2.0L Boxer', hp: 152, towing: 3500, features: 'EyeSight, 11.6" display, std AWD' },
+                { brand: 'Ford', name: 'Bronco Sport', year: 2025, msrp: 31995, length: 172.7, width: 74.3, height: 70.2, wheelbase: 105.1, groundClearance: 8.8, cargoRear: 29.4, cargoMax: 65.2, passengerVolume: 99.8, seating: 5, mpgCity: 25, mpgHighway: 28, mpgCombined: 26, hybrid: false, engine: '1.5L Turbo', hp: 181, towing: 2200, features: 'Co-Pilot360, off-road capable' },
+                { brand: 'Chevrolet', name: 'Trax', year: 2025, msrp: 22895, length: 178.5, width: 70.4, height: 64.5, wheelbase: 106.3, groundClearance: 7.8, cargoRear: 25.6, cargoMax: 54.1, passengerVolume: 98.2, seating: 5, mpgCity: 28, mpgHighway: 32, mpgCombined: 30, hybrid: false, engine: '1.2L Turbo', hp: 137, towing: 0, features: 'Safety Assist, 11" touchscreen' },
+                { brand: 'Nissan', name: 'Kicks', year: 2025, msrp: 22880, length: 169.1, width: 69.3, height: 63.3, wheelbase: 103.1, groundClearance: 7.1, cargoRear: 25.3, cargoMax: 53.1, passengerVolume: 98.2, seating: 5, mpgCity: 31, mpgHighway: 36, mpgCombined: 33, hybrid: false, engine: '1.6L 4-cyl', hp: 122, towing: 0, features: 'Safety Shield 360, 8" touchscreen' }
+            ],
+            'small-suv': [
+                { brand: 'Toyota', name: 'RAV4', year: 2025, msrp: 31825, length: 180.9, width: 73.4, height: 67.0, wheelbase: 105.9, groundClearance: 8.4, cargoRear: 37.5, cargoMax: 69.8, passengerVolume: 98.9, seating: 5, mpgCity: 27, mpgHighway: 35, mpgCombined: 30, hybrid: true, hybridMpg: '41 city / 38 hwy', engine: '2.5L 4-cyl', hp: 203, towing: 3500, features: 'TSS 3.0, 10.5" touchscreen, TRD Off-Road avail' },
+                { brand: 'Honda', name: 'CR-V', year: 2025, msrp: 32450, length: 184.8, width: 73.4, height: 67.5, wheelbase: 106.3, groundClearance: 7.8, cargoRear: 36.3, cargoMax: 76.5, passengerVolume: 107.1, seating: 5, mpgCity: 28, mpgHighway: 34, mpgCombined: 30, hybrid: true, hybridMpg: '40 city / 34 hwy', engine: '1.5L Turbo', hp: 190, towing: 1500, features: 'Honda Sensing, 9" touchscreen' },
+                { brand: 'Mazda', name: 'CX-50', year: 2025, msrp: 31300, length: 185.8, width: 72.8, height: 65.7, wheelbase: 110.8, groundClearance: 9.1, cargoRear: 31.4, cargoMax: 56.6, passengerVolume: 102.8, seating: 5, mpgCity: 24, mpgHighway: 30, mpgCombined: 26, hybrid: true, hybridMpg: '33 city / 35 hwy', engine: '2.5L 4-cyl', hp: 187, towing: 3500, features: 'i-Activsense, outdoor-focused' },
+                { brand: 'Hyundai', name: 'Tucson', year: 2025, msrp: 31850, length: 182.3, width: 73.4, height: 66.7, wheelbase: 108.5, groundClearance: 8.3, cargoRear: 38.7, cargoMax: 80.3, passengerVolume: 108.2, seating: 5, mpgCity: 26, mpgHighway: 33, mpgCombined: 29, hybrid: true, hybridMpg: '38 city / 38 hwy', engine: '2.5L 4-cyl', hp: 187, towing: 2000, features: 'SmartSense, 10.25" display' },
+                { brand: 'Kia', name: 'Sportage', year: 2025, msrp: 32090, length: 183.5, width: 73.4, height: 66.1, wheelbase: 108.5, groundClearance: 8.3, cargoRear: 39.6, cargoMax: 74.1, passengerVolume: 107.8, seating: 5, mpgCity: 26, mpgHighway: 32, mpgCombined: 29, hybrid: true, hybridMpg: '42 city / 44 hwy', engine: '2.5L 4-cyl', hp: 187, towing: 2500, features: 'Drive Wise, dual 12.3" displays' },
+                { brand: 'Subaru', name: 'Forester', year: 2025, msrp: 33695, length: 182.7, width: 72.2, height: 68.1, wheelbase: 105.1, groundClearance: 9.2, cargoRear: 29.6, cargoMax: 74.2, passengerVolume: 111.0, seating: 5, mpgCity: 26, mpgHighway: 33, mpgCombined: 29, hybrid: false, engine: '2.5L Boxer', hp: 180, towing: 3000, features: 'EyeSight, std AWD, best visibility' },
+                { brand: 'Ford', name: 'Escape', year: 2025, msrp: 31495, length: 180.5, width: 74.1, height: 66.7, wheelbase: 106.7, groundClearance: 7.8, cargoRear: 33.5, cargoMax: 65.4, passengerVolume: 104.7, seating: 5, mpgCity: 28, mpgHighway: 34, mpgCombined: 30, hybrid: true, hybridMpg: '42 city / 36 hwy', engine: '1.5L Turbo', hp: 180, towing: 3500, features: 'Co-Pilot360, 13.2" touchscreen' },
+                { brand: 'Chevrolet', name: 'Equinox', year: 2025, msrp: 32495, length: 183.1, width: 73.0, height: 65.8, wheelbase: 107.4, groundClearance: 7.9, cargoRear: 29.9, cargoMax: 63.5, passengerVolume: 103.5, seating: 5, mpgCity: 26, mpgHighway: 31, mpgCombined: 28, hybrid: false, engine: '1.5L Turbo', hp: 175, towing: 1500, features: 'Safety Assist, 11.2" touchscreen' },
+                { brand: 'Nissan', name: 'Rogue', year: 2025, msrp: 32560, length: 183.0, width: 72.4, height: 67.1, wheelbase: 106.5, groundClearance: 8.4, cargoRear: 36.5, cargoMax: 74.1, passengerVolume: 105.8, seating: 5, mpgCity: 30, mpgHighway: 37, mpgCombined: 33, hybrid: false, engine: '1.5L Turbo', hp: 201, towing: 0, features: 'Safety Shield 360, ProPILOT' }
+            ],
+            'midsize-suv': [
+                { brand: 'Toyota', name: 'Highlander', year: 2025, msrp: 42070, length: 194.9, width: 76.0, height: 68.1, wheelbase: 112.2, groundClearance: 8.0, cargoRow3: 16.0, cargoRow2: 48.4, cargoMax: 84.3, passengerVolume: 144.9, seating: 8, mpgCity: 21, mpgHighway: 29, mpgCombined: 24, hybrid: true, hybridMpg: '36 city / 35 hwy', engine: '2.4L Turbo', hp: 265, towing: 5000, features: 'TSS 3.0, 12.3" touchscreen' },
+                { brand: 'Toyota', name: 'Grand Highlander', year: 2025, msrp: 46990, length: 201.4, width: 78.3, height: 70.1, wheelbase: 116.1, groundClearance: 8.0, cargoRow3: 19.2, cargoRow2: 54.5, cargoMax: 97.5, passengerVolume: 163.8, seating: 8, mpgCity: 21, mpgHighway: 28, mpgCombined: 23, hybrid: true, hybridMpg: '36 city / 32 hwy MAX', engine: '2.4L Turbo', hp: 265, towing: 5000, features: 'TSS 3.0, 12.3" display, most 3rd row space' },
+                { brand: 'Honda', name: 'Pilot', year: 2025, msrp: 42400, length: 198.8, width: 78.5, height: 72.4, wheelbase: 113.0, groundClearance: 7.3, cargoRow3: 18.6, cargoRow2: 47.7, cargoMax: 87.0, passengerVolume: 152.9, seating: 8, mpgCity: 19, mpgHighway: 27, mpgCombined: 22, hybrid: false, engine: '3.5L V6', hp: 285, towing: 5000, features: 'Honda Sensing, 9" touchscreen' },
+                { brand: 'Hyundai', name: 'Palisade', year: 2025, msrp: 38750, length: 196.9, width: 77.8, height: 69.3, wheelbase: 114.2, groundClearance: 7.9, cargoRow3: 18.0, cargoRow2: 45.8, cargoMax: 86.4, passengerVolume: 155.3, seating: 8, mpgCity: 19, mpgHighway: 26, mpgCombined: 22, hybrid: false, engine: '3.8L V6', hp: 291, towing: 5000, features: 'SmartSense, 12.3" display' },
+                { brand: 'Kia', name: 'Telluride', year: 2025, msrp: 37490, length: 196.9, width: 78.3, height: 69.9, wheelbase: 114.2, groundClearance: 8.0, cargoRow3: 21.0, cargoRow2: 46.0, cargoMax: 87.0, passengerVolume: 178.1, seating: 8, mpgCity: 20, mpgHighway: 26, mpgCombined: 23, hybrid: false, engine: '3.8L V6', hp: 291, towing: 5500, features: 'Drive Wise, dual 12.3" displays' },
+                { brand: 'Mazda', name: 'CX-90', year: 2025, msrp: 42775, length: 201.6, width: 77.5, height: 68.9, wheelbase: 115.3, groundClearance: 8.0, cargoRow3: 14.9, cargoRow2: 40.0, cargoMax: 74.2, passengerVolume: 154.6, seating: 8, mpgCity: 21, mpgHighway: 28, mpgCombined: 24, hybrid: true, hybridMpg: '26 city / 28 hwy PHEV', engine: '3.3L Turbo I6', hp: 340, towing: 5000, features: 'i-Activsense, inline-6 turbo' },
+                { brand: 'Ford', name: 'Explorer', year: 2025, msrp: 41230, length: 198.8, width: 78.9, height: 70.0, wheelbase: 119.1, groundClearance: 7.9, cargoRow3: 18.2, cargoRow2: 47.9, cargoMax: 87.8, passengerVolume: 152.7, seating: 7, mpgCity: 20, mpgHighway: 28, mpgCombined: 23, hybrid: true, hybridMpg: '27 city / 29 hwy', engine: '2.3L Turbo', hp: 300, towing: 5600, features: 'Co-Pilot360, 13.2" touchscreen' },
+                { brand: 'Chevrolet', name: 'Traverse', year: 2025, msrp: 38195, length: 204.3, width: 78.6, height: 70.7, wheelbase: 121.9, groundClearance: 7.3, cargoRow3: 23.4, cargoRow2: 57.8, cargoMax: 98.5, passengerVolume: 158.1, seating: 8, mpgCity: 18, mpgHighway: 27, mpgCombined: 21, hybrid: false, engine: '2.5L Turbo', hp: 315, towing: 5000, features: 'Safety Assist, 17.7" display' },
+                { brand: 'Subaru', name: 'Ascent', year: 2025, msrp: 37695, length: 196.8, width: 76.0, height: 72.0, wheelbase: 113.8, groundClearance: 8.7, cargoRow3: 17.6, cargoRow2: 47.5, cargoMax: 86.5, passengerVolume: 153.5, seating: 8, mpgCity: 21, mpgHighway: 27, mpgCombined: 23, hybrid: false, engine: '2.4L Turbo', hp: 260, towing: 5000, features: 'EyeSight, std AWD' }
+            ],
+            'large-suv': [
+                { brand: 'Toyota', name: 'Sequoia', year: 2025, msrp: 62900, length: 208.1, width: 79.6, height: 75.2, wheelbase: 122.0, groundClearance: 9.0, cargoRow3: 22.4, cargoRow2: 49.0, cargoMax: 86.9, passengerVolume: 160.1, seating: 8, mpgCity: 19, mpgHighway: 22, mpgCombined: 20, hybrid: true, hybridMpg: 'i-Force MAX std', engine: '3.4L TT V6 Hybrid', hp: 437, towing: 9520, features: 'TSS 2.5+, 14" touchscreen, i-Force MAX' },
+                { brand: 'Toyota', name: 'Land Cruiser', year: 2025, msrp: 58575, length: 196.9, width: 78.0, height: 73.2, wheelbase: 112.2, groundClearance: 8.7, cargoRow3: 0, cargoRow2: 41.7, cargoMax: 72.6, passengerVolume: 131.1, seating: 5, mpgCity: 19, mpgHighway: 22, mpgCombined: 20, hybrid: true, hybridMpg: 'i-Force MAX std', engine: '2.4L Turbo Hybrid', hp: 326, towing: 6000, features: 'TSS 3.0, heritage design, off-road legend' },
+                { brand: 'Ford', name: 'Expedition', year: 2025, msrp: 63500, length: 210.0, width: 79.9, height: 76.6, wheelbase: 122.5, groundClearance: 9.7, cargoRow3: 19.3, cargoRow2: 57.5, cargoMax: 104.6, passengerVolume: 172.8, seating: 8, mpgCity: 16, mpgHighway: 22, mpgCombined: 18, hybrid: false, engine: '3.5L TT V6', hp: 400, towing: 9300, features: 'Co-Pilot360, 15.5" touchscreen' },
+                { brand: 'Chevrolet', name: 'Tahoe', year: 2025, msrp: 58300, length: 210.7, width: 81.0, height: 75.8, wheelbase: 120.9, groundClearance: 8.0, cargoRow3: 25.5, cargoRow2: 72.6, cargoMax: 122.9, passengerVolume: 168.0, seating: 9, mpgCity: 16, mpgHighway: 20, mpgCombined: 17, hybrid: false, engine: '5.3L V8', hp: 355, towing: 8400, features: 'Safety Assist, 13.4" display' },
+                { brand: 'Chevrolet', name: 'Suburban', year: 2025, msrp: 60900, length: 225.7, width: 81.0, height: 75.8, wheelbase: 134.1, groundClearance: 8.0, cargoRow3: 41.5, cargoRow2: 93.8, cargoMax: 144.7, passengerVolume: 168.5, seating: 9, mpgCity: 15, mpgHighway: 20, mpgCombined: 17, hybrid: false, engine: '5.3L V8', hp: 355, towing: 8300, features: 'Biggest cargo in class' },
+                { brand: 'GMC', name: 'Yukon', year: 2025, msrp: 62000, length: 210.0, width: 81.0, height: 75.8, wheelbase: 120.9, groundClearance: 8.0, cargoRow3: 25.5, cargoRow2: 72.6, cargoMax: 122.9, passengerVolume: 168.0, seating: 9, mpgCity: 15, mpgHighway: 20, mpgCombined: 17, hybrid: false, engine: '5.3L V8', hp: 355, towing: 8400, features: 'ProGrade safety, Denali avail' },
+                { brand: 'Nissan', name: 'Armada', year: 2025, msrp: 56650, length: 210.2, width: 79.9, height: 75.8, wheelbase: 121.1, groundClearance: 9.2, cargoRow3: 16.5, cargoRow2: 49.9, cargoMax: 97.0, passengerVolume: 162.4, seating: 8, mpgCity: 14, mpgHighway: 19, mpgCombined: 16, hybrid: false, engine: '5.6L V8', hp: 400, towing: 8500, features: 'Safety Shield 360, redesigned' },
+                { brand: 'Jeep', name: 'Wagoneer', year: 2025, msrp: 64995, length: 214.7, width: 83.6, height: 75.6, wheelbase: 123.0, groundClearance: 8.0, cargoRow3: 27.4, cargoRow2: 70.9, cargoMax: 116.7, passengerVolume: 179.2, seating: 8, mpgCity: 15, mpgHighway: 20, mpgCombined: 17, hybrid: true, hybridMpg: '48 MPGe 4xe', engine: '3.0L TT I6', hp: 420, towing: 10000, features: 'McIntosh audio, premium luxury' }
+            ],
+            'midsize-truck': [
+                { brand: 'Toyota', name: 'Tacoma', year: 2025, msrp: 33250, length: 212.3, width: 75.2, height: 71.5, wheelbase: 127.4, groundClearance: 9.4, bedLength: "5' / 6'", payload: 1685, passengerVolume: 103.1, seating: 5, mpgCity: 19, mpgHighway: 24, mpgCombined: 21, hybrid: true, hybridMpg: '20/23 i-Force MAX', engine: '2.4L Turbo', hp: 278, towing: 6500, features: 'TSS 3.0, all-new 2024, TRD Pro avail' },
+                { brand: 'Ford', name: 'Ranger', year: 2025, msrp: 36500, length: 210.8, width: 73.3, height: 71.0, wheelbase: 126.8, groundClearance: 8.9, bedLength: "5' / 6'", payload: 1805, passengerVolume: 98.5, seating: 5, mpgCity: 22, mpgHighway: 27, mpgCombined: 24, hybrid: false, engine: '2.3L Turbo', hp: 270, towing: 7500, features: 'Co-Pilot360, 12" touchscreen' },
+                { brand: 'Chevrolet', name: 'Colorado', year: 2025, msrp: 32495, length: 212.7, width: 74.8, height: 70.6, wheelbase: 131.4, groundClearance: 8.9, bedLength: "5' / 6'", payload: 1684, passengerVolume: 99.2, seating: 5, mpgCity: 19, mpgHighway: 25, mpgCombined: 21, hybrid: false, engine: '2.7L Turbo', hp: 310, towing: 7700, features: 'Safety Assist, ZR2 off-road' },
+                { brand: 'GMC', name: 'Canyon', year: 2025, msrp: 35995, length: 212.7, width: 74.8, height: 70.6, wheelbase: 131.4, groundClearance: 10.7, bedLength: "5' / 6'", payload: 1610, passengerVolume: 99.2, seating: 5, mpgCity: 18, mpgHighway: 24, mpgCombined: 20, hybrid: false, engine: '2.7L Turbo', hp: 310, towing: 7700, features: 'ProGrade safety, AT4X avail' },
+                { brand: 'Honda', name: 'Ridgeline', year: 2025, msrp: 41845, length: 210.2, width: 78.6, height: 70.8, wheelbase: 125.2, groundClearance: 7.6, bedLength: "5.3'", payload: 1583, passengerVolume: 109.9, seating: 5, mpgCity: 18, mpgHighway: 24, mpgCombined: 21, hybrid: false, engine: '3.5L V6', hp: 280, towing: 5000, features: 'Honda Sensing, in-bed trunk, std AWD' },
+                { brand: 'Nissan', name: 'Frontier', year: 2025, msrp: 33040, length: 210.2, width: 73.0, height: 72.8, wheelbase: 126.0, groundClearance: 9.4, bedLength: "5' / 6'", payload: 1610, passengerVolume: 101.9, seating: 5, mpgCity: 17, mpgHighway: 22, mpgCombined: 19, hybrid: false, engine: '3.8L V6', hp: 310, towing: 6720, features: 'Safety Shield 360, PRO-4X' },
+                { brand: 'Jeep', name: 'Gladiator', year: 2025, msrp: 41475, length: 218.0, width: 73.8, height: 75.5, wheelbase: 137.3, groundClearance: 11.1, bedLength: "5'", payload: 1700, passengerVolume: 95.6, seating: 5, mpgCity: 17, mpgHighway: 22, mpgCombined: 19, hybrid: false, engine: '3.6L V6', hp: 285, towing: 7650, features: 'Removable top/doors, Rubicon avail' },
+                { brand: 'Hyundai', name: 'Santa Cruz', year: 2025, msrp: 29200, length: 195.7, width: 75.0, height: 66.7, wheelbase: 118.3, groundClearance: 8.6, bedLength: "4.3'", payload: 1748, passengerVolume: 102.8, seating: 5, mpgCity: 21, mpgHighway: 27, mpgCombined: 23, hybrid: false, engine: '2.5L Turbo', hp: 281, towing: 5000, features: 'SmartSense, Sport Adventure lifestyle' }
+            ],
+            'fullsize-truck': [
+                { brand: 'Toyota', name: 'Tundra', year: 2025, msrp: 43525, length: 233.6, width: 80.2, height: 78.0, wheelbase: 145.7, groundClearance: 10.6, bedLength: "5.5' / 6.5' / 8.1'", payload: 1940, passengerVolume: 125.8, seating: 6, mpgCity: 18, mpgHighway: 24, mpgCombined: 20, hybrid: true, hybridMpg: '20/24 i-Force MAX', engine: '3.4L TT V6', hp: 389, towing: 12000, features: 'TSS 2.5+, 14" touchscreen, TRD Pro' },
+                { brand: 'Ford', name: 'F-150', year: 2025, msrp: 40165, length: 231.7, width: 79.9, height: 77.2, wheelbase: 145.4, groundClearance: 9.4, bedLength: "5.5' / 6.5' / 8'", payload: 2455, passengerVolume: 128.2, seating: 6, mpgCity: 20, mpgHighway: 26, mpgCombined: 22, hybrid: true, hybridMpg: '25 city / 26 hwy PowerBoost', engine: '3.5L TT V6', hp: 400, towing: 13500, features: 'Co-Pilot360, Pro Power Onboard' },
+                { brand: 'Chevrolet', name: 'Silverado 1500', year: 2025, msrp: 40500, length: 231.7, width: 81.2, height: 75.8, wheelbase: 147.4, groundClearance: 9.9, bedLength: "5'8\" / 6'6\" / 8'2\"", payload: 2280, passengerVolume: 125.9, seating: 6, mpgCity: 16, mpgHighway: 22, mpgCombined: 18, hybrid: false, engine: '5.3L V8', hp: 355, towing: 13300, features: 'Safety Assist, Multi-Flex tailgate' },
+                { brand: 'GMC', name: 'Sierra 1500', year: 2025, msrp: 44500, length: 231.0, width: 81.2, height: 76.3, wheelbase: 147.4, groundClearance: 9.9, bedLength: "5'8\" / 6'6\" / 8'2\"", payload: 2240, passengerVolume: 125.9, seating: 6, mpgCity: 16, mpgHighway: 22, mpgCombined: 18, hybrid: false, engine: '5.3L V8', hp: 355, towing: 13200, features: 'ProGrade safety, CarbonPro bed avail' },
+                { brand: 'Ram', name: '1500', year: 2025, msrp: 43250, length: 232.9, width: 82.1, height: 77.6, wheelbase: 144.6, groundClearance: 10.3, bedLength: "5'7\" / 6'4\"", payload: 2300, passengerVolume: 125.3, seating: 6, mpgCity: 15, mpgHighway: 22, mpgCombined: 18, hybrid: true, hybridMpg: 'eTorque mild hybrid', engine: '5.7L V8', hp: 395, towing: 12750, features: 'Best interior, 12" Uconnect' },
+                { brand: 'Nissan', name: 'Titan', year: 2025, msrp: 47460, length: 228.2, width: 80.2, height: 77.8, wheelbase: 139.8, groundClearance: 9.7, bedLength: "5.5' / 6.5'", payload: 1680, passengerVolume: 122.4, seating: 6, mpgCity: 15, mpgHighway: 21, mpgCombined: 17, hybrid: false, engine: '5.6L V8', hp: 400, towing: 9660, features: 'Safety Shield 360, PRO-4X' }
+            ]
+        };
+
+        // State
+        let currentCategory = 'compact-suv';
+        let selectedVehicles = new Set();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVehicleList();
+        });
+
+        // Category selection
+        function selectCategory(category, btn) {
+            currentCategory = category;
+            selectedVehicles.clear();
+            
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            
+            renderVehicleList();
+            updateSelectedPills();
+            document.getElementById('comparisonSection').style.display = 'none';
+        }
+
+        // Render vehicle list
+        function renderVehicleList() {
+            const list = document.getElementById('vehicleList');
+            const vehicles = vehicleData[currentCategory];
+            
+            list.innerHTML = vehicles.map((v, idx) => `
+                <div class="vehicle-item ${v.brand === 'Toyota' ? 'toyota' : ''} ${selectedVehicles.has(idx) ? 'selected' : ''}" onclick="toggleVehicle(${idx})">
+                    <div class="vehicle-checkbox"><i class="fas fa-check"></i></div>
+                    <div class="vehicle-info">
+                        <div class="vehicle-brand">${v.brand}</div>
+                        <div class="vehicle-name">${v.year} ${v.name}</div>
+                    </div>
+                    <div class="vehicle-price">$${v.msrp.toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle vehicle selection
+        function toggleVehicle(idx) {
+            if (selectedVehicles.has(idx)) {
+                selectedVehicles.delete(idx);
+            } else if (selectedVehicles.size < 5) {
+                selectedVehicles.add(idx);
+            } else {
+                showToast('Maximum 5 vehicles for comparison');
+                return;
+            }
+            renderVehicleList();
+            updateSelectedPills();
+        }
+
+        // Update selected pills
+        function updateSelectedPills() {
+            const container = document.getElementById('selectedPills');
+            const vehicles = vehicleData[currentCategory];
+            const count = document.getElementById('selectedCount');
+            
+            count.textContent = selectedVehicles.size;
+            
+            if (selectedVehicles.size === 0) {
+                container.innerHTML = '<div class="empty-state" id="emptyPills"><p>Click vehicles to add them to comparison</p></div>';
+                return;
+            }
+            
+            container.innerHTML = Array.from(selectedVehicles).map(idx => {
+                const v = vehicles[idx];
+                return `
+                    <div class="selected-pill ${v.brand === 'Toyota' ? 'toyota' : ''}">
+                        <span>${v.brand} ${v.name}</span>
+                        <button onclick="event.stopPropagation(); toggleVehicle(${idx})"><i class="fas fa-times"></i></button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Select all Toyota
+        function selectAllToyota() {
+            const vehicles = vehicleData[currentCategory];
+            vehicles.forEach((v, idx) => {
+                if (v.brand === 'Toyota' && selectedVehicles.size < 5) {
+                    selectedVehicles.add(idx);
+                }
+            });
+            renderVehicleList();
+            updateSelectedPills();
+        }
+
+        // Clear selection
+        function clearSelection() {
+            selectedVehicles.clear();
+            renderVehicleList();
+            updateSelectedPills();
+            document.getElementById('comparisonSection').style.display = 'none';
+        }
+
+        // Quick presets
+        function loadPreset(preset) {
+            selectedVehicles.clear();
+            const vehicles = vehicleData[currentCategory];
+            
+            const presets = {
+                'rav4-vs-competitors': { category: 'small-suv', names: ['RAV4', 'CR-V', 'Tucson', 'Sportage'] },
+                'highlander-vs-competitors': { category: 'midsize-suv', names: ['Highlander', 'Pilot', 'Palisade', 'Telluride'] },
+                'tacoma-vs-competitors': { category: 'midsize-truck', names: ['Tacoma', 'Ranger', 'Colorado', 'Frontier'] },
+                'tundra-vs-competitors': { category: 'fullsize-truck', names: ['Tundra', 'F-150', 'Silverado 1500', 'Ram 1500'] },
+                'top-compact-suvs': { category: 'compact-suv', names: ['Corolla Cross', 'HR-V', 'Kona', 'Seltos'] },
+                'hybrid-suvs': { category: 'small-suv', names: ['RAV4', 'CR-V', 'Tucson', 'Escape'] },
+                'towing-trucks': { category: 'fullsize-truck', names: ['Tundra', 'F-150', 'Silverado 1500', 'Ram 1500'] }
+            };
+            
+            const p = presets[preset];
+            if (!p) return;
+            
+            // Switch category if needed
+            if (currentCategory !== p.category) {
+                currentCategory = p.category;
+                document.querySelectorAll('.category-tab').forEach(t => {
+                    t.classList.toggle('active', t.dataset.category === p.category);
+                });
+            }
+            
+            // Select vehicles
+            const catVehicles = vehicleData[currentCategory];
+            p.names.forEach(name => {
+                const idx = catVehicles.findIndex(v => v.name === name);
+                if (idx >= 0) selectedVehicles.add(idx);
+            });
+            
+            renderVehicleList();
+            updateSelectedPills();
+            generateComparison();
+        }
+
+        // Generate comparison with best-value highlighting
+        function generateComparison() {
+            if (selectedVehicles.size < 2) {
+                showToast('Please select at least 2 vehicles');
+                return;
+            }
+
+            const vehicles = vehicleData[currentCategory];
+            const selected = Array.from(selectedVehicles).map(idx => vehicles[idx]);
+            const isTruck = currentCategory.includes('truck');
+            const isThreeRow = currentCategory === 'midsize-suv' || currentCategory === 'large-suv';
+
+            // Calculate best values
+            const best = {
+                msrp: Math.min(...selected.map(v => v.msrp)),
+                mpgCombined: Math.max(...selected.map(v => v.mpgCombined)),
+                groundClearance: Math.max(...selected.map(v => v.groundClearance)),
+                hp: Math.max(...selected.map(v => v.hp)),
+                towing: Math.max(...selected.filter(v => typeof v.towing === 'number').map(v => v.towing)),
+                cargoMax: Math.max(...selected.map(v => v.cargoMax || 0)),
+                payload: isTruck ? Math.max(...selected.map(v => v.payload || 0)) : 0,
+                passengerVolume: Math.max(...selected.map(v => v.passengerVolume || 0))
+            };
+
+            // Helper for highlighting
+            const highlight = (val, bestVal, lower = false) => {
+                if (typeof val !== 'number') return val;
+                const isBest = lower ? val === bestVal : val === bestVal;
+                return isBest ? `<span class="best-value">${val.toLocaleString()}</span>` : val.toLocaleString();
+            };
+
+            let html = `
+                <tr>
+                    <th class="spec-label">Specification</th>
+                    ${selected.map(v => `<th class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.brand}<br>${v.year} ${v.name}</th>`).join('')}
+                </tr>
+                <tr><td colspan="${selected.length + 1}" class="spec-category">Pricing</td></tr>
+                <tr>
+                    <td class="spec-label">Starting MSRP</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">$${v.msrp === best.msrp ? `<span class="best-value">${v.msrp.toLocaleString()}</span>` : v.msrp.toLocaleString()}</td>`).join('')}
+                </tr>
+                <tr><td colspan="${selected.length + 1}" class="spec-category">Exterior Dimensions</td></tr>
+                <tr>
+                    <td class="spec-label">Length (in)</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.length}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td class="spec-label">Width (in)</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.width}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td class="spec-label">Height (in)</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.height}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td class="spec-label">Wheelbase (in)</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.wheelbase}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td class="spec-label">Ground Clearance (in)</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.groundClearance === best.groundClearance ? `<span class="best-value">${v.groundClearance}</span>` : v.groundClearance}</td>`).join('')}
+                </tr>
+            `;
+
+            if (isTruck) {
+                html += `
+                    <tr>
+                        <td class="spec-label">Bed Length</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.bedLength}</td>`).join('')}
+                    </tr>
+                    <tr><td colspan="${selected.length + 1}" class="spec-category">Capability</td></tr>
+                    <tr>
+                        <td class="spec-label">Payload (lbs)</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.payload === best.payload ? `<span class="best-value">${v.payload.toLocaleString()}</span>` : v.payload.toLocaleString()}</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td class="spec-label">Max Towing (lbs)</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.towing === best.towing ? `<span class="best-value">${v.towing.toLocaleString()}</span>` : v.towing.toLocaleString()}</td>`).join('')}
+                    </tr>
+                `;
+            } else if (isThreeRow) {
+                html += `
+                    <tr><td colspan="${selected.length + 1}" class="spec-category">Interior Space</td></tr>
+                    <tr>
+                        <td class="spec-label">Cargo (3rd row up, cu ft)</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.cargoRow3 || 'N/A'}</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td class="spec-label">Cargo (2nd row down, cu ft)</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.cargoRow2}</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td class="spec-label">Cargo Max (cu ft)</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.cargoMax === best.cargoMax ? `<span class="best-value">${v.cargoMax}</span>` : v.cargoMax}</td>`).join('')}
+                    </tr>
+                `;
+            } else {
+                html += `
+                    <tr><td colspan="${selected.length + 1}" class="spec-category">Interior Space</td></tr>
+                    <tr>
+                        <td class="spec-label">Cargo (rear seat up, cu ft)</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.cargoRear}</td>`).join('')}
+                    </tr>
+                    <tr>
+                        <td class="spec-label">Cargo Max (cu ft)</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.cargoMax === best.cargoMax ? `<span class="best-value">${v.cargoMax}</span>` : v.cargoMax}</td>`).join('')}
+                    </tr>
+                `;
+            }
+
+            html += `
+                <tr>
+                    <td class="spec-label">Passenger Volume (cu ft)</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.passengerVolume === best.passengerVolume ? `<span class="best-value">${v.passengerVolume}</span>` : v.passengerVolume}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td class="spec-label">Seating</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.seating}</td>`).join('')}
+                </tr>
+                <tr><td colspan="${selected.length + 1}" class="spec-category">Performance & Efficiency</td></tr>
+                <tr>
+                    <td class="spec-label">Engine</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.engine}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td class="spec-label">Horsepower</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.hp === best.hp ? `<span class="best-value">${v.hp}</span>` : v.hp} hp</td>`).join('')}
+                </tr>
+                <tr>
+                    <td class="spec-label">MPG (City/Hwy/Combined)</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.mpgCity}/${v.mpgHighway}/${v.mpgCombined === best.mpgCombined ? `<span class="best-value">${v.mpgCombined}</span>` : v.mpgCombined}</td>`).join('')}
+                </tr>
+                <tr>
+                    <td class="spec-label">Hybrid Available</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.hybrid ? `<span class="hybrid-badge">HYBRID</span>${v.hybridMpg ? '<br><small>' + v.hybridMpg + '</small>' : ''}` : '—'}</td>`).join('')}
+                </tr>
+            `;
+
+            if (!isTruck) {
+                html += `
+                    <tr>
+                        <td class="spec-label">Max Towing (lbs)</td>
+                        ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${typeof v.towing === 'number' ? (v.towing === best.towing ? `<span class="best-value">${v.towing.toLocaleString()}</span>` : v.towing.toLocaleString()) : v.towing}</td>`).join('')}
+                    </tr>
+                `;
+            }
+
+            html += `
+                <tr><td colspan="${selected.length + 1}" class="spec-category">Key Features</td></tr>
+                <tr>
+                    <td class="spec-label">Highlights</td>
+                    ${selected.map(v => `<td class="${v.brand === 'Toyota' ? 'toyota-col' : ''}">${v.features}</td>`).join('')}
+                </tr>
+            `;
+
+            document.getElementById('comparisonTable').innerHTML = html;
+            document.getElementById('comparisonSection').style.display = 'block';
+            document.getElementById('comparisonSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Export functions
+        function printComparison() { window.print(); }
+
+        function copyToClipboard() {
+            const vehicles = vehicleData[currentCategory];
+            const selected = Array.from(selectedVehicles).map(idx => vehicles[idx]);
+            const isTruck = currentCategory.includes('truck');
+            
+            let text = `VEHICLE COMPARISON\nJeff Lee | Pedersen Toyota | 720-416-6955\n${'═'.repeat(50)}\n\n`;
+            text += 'Vehicle'.padEnd(18) + selected.map(v => `${v.brand} ${v.name}`.substring(0,15).padEnd(16)).join('') + '\n';
+            text += '─'.repeat(18 + selected.length * 16) + '\n';
+            text += 'MSRP'.padEnd(18) + selected.map(v => ('$' + v.msrp.toLocaleString()).padEnd(16)).join('') + '\n';
+            text += 'MPG Combined'.padEnd(18) + selected.map(v => String(v.mpgCombined).padEnd(16)).join('') + '\n';
+            text += 'Horsepower'.padEnd(18) + selected.map(v => (v.hp + ' hp').padEnd(16)).join('') + '\n';
+            text += 'Ground Clear'.padEnd(18) + selected.map(v => (v.groundClearance + '"').padEnd(16)).join('') + '\n';
+            if (isTruck) {
+                text += 'Towing'.padEnd(18) + selected.map(v => (v.towing.toLocaleString() + ' lbs').padEnd(16)).join('') + '\n';
+                text += 'Payload'.padEnd(18) + selected.map(v => (v.payload.toLocaleString() + ' lbs').padEnd(16)).join('') + '\n';
+            } else {
+                text += 'Cargo Max'.padEnd(18) + selected.map(v => (v.cargoMax + ' cu ft').padEnd(16)).join('') + '\n';
+            }
+            text += 'Hybrid'.padEnd(18) + selected.map(v => (v.hybrid ? 'Yes ✓' : 'No').padEnd(16)).join('') + '\n';
+            
+            navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
+        }
+
+        function emailComparison() {
+            const vehicles = vehicleData[currentCategory];
+            const selected = Array.from(selectedVehicles).map(idx => vehicles[idx]);
+            const names = selected.map(v => `${v.brand} ${v.name}`).join(' vs ');
+            
+            const subject = encodeURIComponent(`Vehicle Comparison: ${names}`);
+            let body = `Hi,\n\nHere's the vehicle comparison you requested:\n\n${names}\n\n`;
+            selected.forEach(v => {
+                body += `${v.year} ${v.brand} ${v.name}\n`;
+                body += `• Starting at $${v.msrp.toLocaleString()}\n`;
+                body += `• ${v.mpgCombined} MPG combined\n`;
+                body += `• ${v.hp} horsepower\n`;
+                body += `• ${v.hybrid ? 'Hybrid available' : 'Gas only'}\n\n`;
+            });
+            body += `Let me know if you'd like to schedule a test drive!\n\nJeff Lee\nSales Consultant | Pedersen Toyota\n720-416-6955\njlee@pedersentoyota.com`;
+            
+            window.open(`mailto:?subject=${subject}&body=${encodeURIComponent(body)}`);
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

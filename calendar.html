@@ -1,0 +1,2346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar & Reserved Vehicles | SVEN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #b82d39;
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --border-color: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.03;
+            background: 
+                linear-gradient(90deg, var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px,
+                linear-gradient(var(--primary-red) 1px, transparent 1px) 0 0 / 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .logo-main {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            text-decoration: none;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 16px 8px;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sven-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-text strong {
+            color: var(--text-primary);
+            display: block;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 24px;
+            max-width: calc(100% - 280px);
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-red);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-muted);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1ea34d;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            background: var(--bg-card);
+            padding: 4px;
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            background: var(--primary-red);
+            color: white;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 24px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary-red);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Calendar */
+        .calendar-container {
+            width: 100%;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .calendar-nav button {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-nav button:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary-red);
+        }
+
+        .calendar-month {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .calendar-day-header {
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .calendar-day {
+            min-height: 80px;
+            padding: 8px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.3;
+        }
+
+        .calendar-day.today {
+            background: rgba(230, 57, 70, 0.15);
+            border: 1px solid var(--primary-red);
+        }
+
+        .calendar-day.selected {
+            background: rgba(230, 57, 70, 0.3);
+        }
+
+        .day-number {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .day-events {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .day-event {
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .day-event.personal {
+            background: var(--info);
+            color: white;
+        }
+
+        .day-event.customer {
+            background: var(--success);
+            color: white;
+        }
+
+        .day-event.reserved {
+            background: var(--warning);
+            color: black;
+        }
+
+        .day-event.training {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .more-events {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Day Detail Panel */
+        .day-detail {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .selected-date {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .event-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .event-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-red);
+        }
+
+        .event-item.personal {
+            border-left-color: var(--info);
+        }
+
+        .event-item.customer {
+            border-left-color: var(--success);
+        }
+
+        .event-item.reserved {
+            border-left-color: var(--warning);
+        }
+
+        .event-item.training {
+            border-left-color: #8b5cf6;
+        }
+
+        .event-time {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 60px;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .event-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .event-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: none;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .event-action:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .event-action.delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .no-events {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .no-events i {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Reserved Vehicles Tab */
+        .reserved-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .reserved-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reserved-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--warning);
+        }
+
+        .reserved-card.arriving-soon::before {
+            background: var(--success);
+            animation: pulseGreen 1.5s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .reserved-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .reserved-customer {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .reserved-contact {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .reserved-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .reserved-status.in-transit {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .reserved-status.arriving-soon {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--success);
+        }
+
+        .reserved-status.arrived {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--info);
+        }
+
+        .reserved-vehicle {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-dark);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .vehicle-image {
+            width: 80px;
+            height: 60px;
+            background: var(--bg-card);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .vehicle-info {
+            flex: 1;
+        }
+
+        .vehicle-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .vehicle-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .reserved-timeline {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .timeline-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .timeline-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .timeline-connector {
+            flex: 2;
+            height: 2px;
+            background: var(--border-color);
+            position: relative;
+        }
+
+        .timeline-connector::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: var(--warning);
+            width: var(--progress, 0%);
+        }
+
+        .reserved-followups {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .followup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .followup-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .followup-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .followup-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .followup-item.sent {
+            opacity: 0.5;
+        }
+
+        .followup-item.sent .followup-check {
+            color: var(--success);
+        }
+
+        .followup-check {
+            color: var(--text-muted);
+        }
+
+        .followup-date {
+            min-width: 80px;
+            font-weight: 500;
+        }
+
+        .followup-message {
+            flex: 1;
+            color: var(--text-secondary);
+        }
+
+        .followup-action {
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: none;
+            background: var(--primary-red);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .followup-action:hover {
+            background: var(--dark-red);
+        }
+
+        .reserved-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        /* ICS Sync Panel */
+        .ics-panel {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .ics-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .ics-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--info);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .ics-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .ics-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .ics-url {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .ics-url input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .ics-instructions {
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .ics-instructions ol {
+            margin-top: 8px;
+            padding-left: 20px;
+        }
+
+        .ics-instructions li {
+            margin-bottom: 4px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.open .modal {
+            transform: translateY(0);
+        }
+
+        .modal.wide {
+            max-width: 700px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary-red);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Type Selector */
+        .type-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .type-option {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .type-option:hover {
+            border-color: var(--text-muted);
+        }
+
+        .type-option.selected {
+            border-color: var(--primary-red);
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--text-primary);
+        }
+
+        .type-option i {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .type-option span {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Mobile */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            border: none;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .calendar-day {
+                min-height: 60px;
+                padding: 4px;
+            }
+
+            .day-number {
+                font-size: 12px;
+            }
+
+            .day-events {
+                display: none;
+            }
+        }
+
+        /* Notification Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 10px;
+            background: var(--primary-red);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Quick Send Button */
+        .quick-send {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--success);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 22px;
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .quick-send:hover {
+            transform: scale(1.1);
+            background: #1ea34d;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-main">SVEN</div>
+                    <div class="logo-sub">Jeff's Personal Assistant</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="clienthub.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Jeff's Client Hub</span>
+                </a>
+                <a href="calendar.html" class="nav-item active">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Lead Follow Up')">
+                    <i class="fas fa-user-clock"></i>
+                    <span>Lead Follow Up</span>
+                </a>
+                <a href="vehicle-comparison.html" class="nav-item">
+                    <i class="fas fa-balance-scale"></i>
+                    <span>Vehicle Comparison</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Request')">
+                    <i class="fas fa-search-dollar"></i>
+                    <span>Vehicle Request</span>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="workflows.html" class="nav-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Multi-Agent Tools</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Memory')">
+                    <i class="fas fa-brain"></i>
+                    <span>Memory</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Budget Monitor')">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>Budget Monitor</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Brochure Library')">
+                    <i class="fas fa-book-open"></i>
+                    <span>Brochure Library</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sven-status">
+                    <div class="status-indicator"></div>
+                    <div class="status-text">
+                        <strong>Sven Online</strong>
+                        Ready to assist
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <h1 class="page-title">Calendar & Reservations</h1>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="showIcsModal()">
+                        <i class="fas fa-mobile-alt"></i> Sync to iPhone
+                    </button>
+                    <button class="btn btn-secondary" onclick="openAppointmentModal()">
+                        <i class="fas fa-plus"></i> Add Appointment
+                    </button>
+                    <button class="btn btn-primary" onclick="openReservedModal()">
+                        <i class="fas fa-car"></i> Add Reserved Vehicle
+                    </button>
+                </div>
+            </header>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('calendar')">
+                    <i class="fas fa-calendar"></i> Calendar
+                </button>
+                <button class="tab" onclick="switchTab('reserved')">
+                    <i class="fas fa-truck"></i> Reserved Vehicles
+                    <span class="badge" id="reservedCount">0</span>
+                </button>
+            </div>
+
+            <!-- Calendar Tab -->
+            <div id="calendarTab">
+                <div class="content-grid">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="calendar-container">
+                                <div class="calendar-header">
+                                    <span class="calendar-month" id="calendarMonth">February 2026</span>
+                                    <div class="calendar-nav">
+                                        <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                                        <button onclick="goToToday()">Today</button>
+                                        <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                                <div class="calendar-grid" id="calendarGrid">
+                                    <!-- Calendar populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-list"></i>
+                                    <span id="selectedDateTitle">Select a Date</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="day-detail" id="dayDetail">
+                                    <div class="no-events">
+                                        <i class="fas fa-calendar-day"></i>
+                                        Click a date to view appointments
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="card" style="margin-top: 16px;">
+                            <div class="card-body" style="padding: 16px;">
+                                <div style="font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px;">LEGEND</div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
+                                        <div style="width: 12px; height: 12px; background: var(--info); border-radius: 3px;"></div>
+                                        Personal
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
+                                        <div style="width: 12px; height: 12px; background: var(--success); border-radius: 3px;"></div>
+                                        Customer
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
+                                        <div style="width: 12px; height: 12px; background: var(--warning); border-radius: 3px;"></div>
+                                        Vehicle Delivery
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
+                                        <div style="width: 12px; height: 12px; background: #8b5cf6; border-radius: 3px;"></div>
+                                        Training
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- iPhone Sync -->
+                        <div class="ics-panel">
+                            <div class="ics-header">
+                                <div class="ics-icon">
+                                    <i class="fab fa-apple"></i>
+                                </div>
+                                <div>
+                                    <div class="ics-title">Sync to iPhone</div>
+                                    <div class="ics-subtitle">See all appointments in your iPhone Calendar</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="showIcsModal()" style="width: 100%;">
+                                <i class="fas fa-link"></i> Get Calendar Link
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reserved Vehicles Tab -->
+            <div id="reservedTab" style="display: none;">
+                <div class="reserved-grid" id="reservedGrid">
+                    <!-- Reserved vehicles populated by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Quick Send FAB -->
+    <button class="quick-send" onclick="openQuickSendModal()" title="Send Quick Message">
+        <i class="fas fa-paper-plane"></i>
+    </button>
+
+    <!-- Add Appointment Modal -->
+    <div class="modal-overlay" id="appointmentModal" onclick="closeModal('appointmentModal', event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Add Appointment</h3>
+                <button class="modal-close" onclick="closeModal('appointmentModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Type</label>
+                    <div class="type-selector">
+                        <button class="type-option selected" data-type="personal" onclick="selectType(this)">
+                            <i class="fas fa-user"></i>
+                            <span>Personal</span>
+                        </button>
+                        <button class="type-option" data-type="customer" onclick="selectType(this)">
+                            <i class="fas fa-handshake"></i>
+                            <span>Customer</span>
+                        </button>
+                        <button class="type-option" data-type="training" onclick="selectType(this)">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Training</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="apptTitle" placeholder="e.g., Doctor appointment, Test drive with John">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="apptDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Time</label>
+                        <input type="time" id="apptTime">
+                    </div>
+                </div>
+                <div class="form-group" id="customerNameGroup" style="display: none;">
+                    <label>Customer Name</label>
+                    <input type="text" id="apptCustomerName" placeholder="Customer name">
+                </div>
+                <div class="form-group" id="customerPhoneGroup" style="display: none;">
+                    <label>Customer Phone</label>
+                    <input type="tel" id="apptCustomerPhone" placeholder="(720) 555-1234">
+                </div>
+                <div class="form-group">
+                    <label>Notes (optional)</label>
+                    <textarea id="apptNotes" placeholder="Any additional details..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('appointmentModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAppointment()">Save Appointment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Reserved Vehicle Modal -->
+    <div class="modal-overlay" id="reservedModal" onclick="closeModal('reservedModal', event)">
+        <div class="modal wide" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Add Reserved Vehicle</h3>
+                <button class="modal-close" onclick="closeModal('reservedModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="resCustomerName" placeholder="Customer name">
+                    </div>
+                    <div class="form-group">
+                        <label>Customer Phone</label>
+                        <input type="tel" id="resCustomerPhone" placeholder="(720) 555-1234">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Customer Email (optional)</label>
+                    <input type="email" id="resCustomerEmail" placeholder="customer@email.com">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Vehicle Year</label>
+                        <input type="text" id="resVehicleYear" placeholder="2025">
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Model</label>
+                        <input type="text" id="resVehicleModel" placeholder="RAV4 Hybrid XLE">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Stock # / VIN (optional)</label>
+                    <input type="text" id="resVehicleVin" placeholder="Stock # or last 6 of VIN">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Order Date</label>
+                        <input type="date" id="resOrderDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Arrival</label>
+                        <input type="date" id="resArrivalDate">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Follow-up Schedule</label>
+                    <select id="resFollowupSchedule">
+                        <option value="weekly">Weekly Check-ins</option>
+                        <option value="biweekly">Every 2 Weeks</option>
+                        <option value="custom">Custom Schedule</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="resNotes" placeholder="Customer preferences, special requests, deposit info..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('reservedModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveReservedVehicle()">Add Reservation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Send Modal -->
+    <div class="modal-overlay" id="quickSendModal" onclick="closeModal('quickSendModal', event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Quick Message</h3>
+                <button class="modal-close" onclick="closeModal('quickSendModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select Customer</label>
+                    <select id="quickSendCustomer">
+                        <option value="">Choose a customer...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Message Template</label>
+                    <select id="quickSendTemplate" onchange="loadTemplate()">
+                        <option value="">Custom message...</option>
+                        <option value="update">Vehicle Update</option>
+                        <option value="arrival">Vehicle Has Arrived!</option>
+                        <option value="checkin">Quick Check-in</option>
+                        <option value="paperwork">Paperwork Reminder</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="quickSendMessage" rows="4" placeholder="Type your message..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('quickSendModal')">Cancel</button>
+                <button class="btn btn-success" onclick="sendQuickMessage()">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ICS Sync Modal -->
+    <div class="modal-overlay" id="icsModal" onclick="closeModal('icsModal', event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Sync to iPhone Calendar</h3>
+                <button class="modal-close" onclick="closeModal('icsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="ics-header" style="margin-bottom: 20px;">
+                    <div class="ics-icon">
+                        <i class="fab fa-apple"></i>
+                    </div>
+                    <div>
+                        <div class="ics-title">Your Calendar Feed</div>
+                        <div class="ics-subtitle">Subscribe to see all appointments on your iPhone</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Calendar URL</label>
+                    <div class="ics-url">
+                        <input type="text" id="icsUrl" readonly value="Loading...">
+                        <button class="btn btn-primary" onclick="copyIcsUrl()">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ics-instructions">
+                    <strong>How to subscribe on iPhone:</strong>
+                    <ol>
+                        <li>Copy the URL above</li>
+                        <li>Open <strong>Settings</strong> on your iPhone</li>
+                        <li>Tap <strong>Calendar</strong> → <strong>Accounts</strong></li>
+                        <li>Tap <strong>Add Account</strong> → <strong>Other</strong></li>
+                        <li>Tap <strong>Add Subscribed Calendar</strong></li>
+                        <li>Paste the URL and tap <strong>Next</strong></li>
+                        <li>Name it "Jeff's Work Calendar" and tap <strong>Save</strong></li>
+                    </ol>
+                    <p style="margin-top: 12px; color: var(--warning);">
+                        <i class="fas fa-info-circle"></i> Your iPhone will automatically refresh this calendar periodically.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('icsModal')">Close</button>
+                <button class="btn btn-primary" onclick="copyIcsUrl()">
+                    <i class="fas fa-copy"></i> Copy URL
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================== DATA MANAGEMENT ==================
+        let calendarData = JSON.parse(localStorage.getItem('jeffCalendar')) || {
+            appointments: [],
+            reservedVehicles: []
+        };
+
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedAppointmentType = 'personal';
+
+        // ================== INITIALIZATION ==================
+        function init() {
+            renderCalendar();
+            renderReservedVehicles();
+            updateReservedCount();
+            generateIcsUrl();
+            
+            // Set default date to today
+            const today = new Date();
+            document.getElementById('apptDate').value = today.toISOString().split('T')[0];
+            document.getElementById('resOrderDate').value = today.toISOString().split('T')[0];
+        }
+
+        // ================== CALENDAR RENDERING ==================
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startPadding = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+            
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+            
+            let html = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                .map(day => `<div class="calendar-day-header">${day}</div>`).join('');
+            
+            // Previous month padding
+            const prevMonth = new Date(year, month, 0);
+            const prevMonthDays = prevMonth.getDate();
+            for (let i = startPadding - 1; i >= 0; i--) {
+                const day = prevMonthDays - i;
+                const dateStr = formatDateStr(year, month - 1, day);
+                html += `<div class="calendar-day other-month" onclick="selectDay('${dateStr}')">
+                    <div class="day-number">${day}</div>
+                </div>`;
+            }
+            
+            // Current month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = isCurrentMonth && today.getDate() === day;
+                const dateStr = formatDateStr(year, month, day);
+                const events = getEventsForDate(dateStr);
+                const isSelected = selectedDate === dateStr;
+                
+                let eventsHtml = '';
+                if (events.length > 0) {
+                    const maxShow = 2;
+                    events.slice(0, maxShow).forEach(event => {
+                        eventsHtml += `<div class="day-event ${event.type}">${event.title}</div>`;
+                    });
+                    if (events.length > maxShow) {
+                        eventsHtml += `<div class="more-events">+${events.length - maxShow} more</div>`;
+                    }
+                }
+                
+                html += `<div class="calendar-day${isToday ? ' today' : ''}${isSelected ? ' selected' : ''}" 
+                             onclick="selectDay('${dateStr}')">
+                    <div class="day-number">${day}</div>
+                    <div class="day-events">${eventsHtml}</div>
+                </div>`;
+            }
+            
+            // Next month padding
+            const totalCells = startPadding + daysInMonth;
+            const remainingCells = Math.ceil(totalCells / 7) * 7 - totalCells;
+            for (let i = 1; i <= remainingCells; i++) {
+                const dateStr = formatDateStr(year, month + 1, i);
+                html += `<div class="calendar-day other-month" onclick="selectDay('${dateStr}')">
+                    <div class="day-number">${i}</div>
+                </div>`;
+            }
+            
+            document.getElementById('calendarGrid').innerHTML = html;
+        }
+
+        function formatDateStr(year, month, day) {
+            // Handle month overflow
+            const date = new Date(year, month, day);
+            return date.toISOString().split('T')[0];
+        }
+
+        function getEventsForDate(dateStr) {
+            const events = [];
+            
+            // Regular appointments
+            calendarData.appointments.forEach(appt => {
+                if (appt.date === dateStr) {
+                    events.push({
+                        id: appt.id,
+                        title: appt.title,
+                        time: appt.time,
+                        type: appt.type,
+                        ...appt
+                    });
+                }
+            });
+            
+            // Reserved vehicle deliveries
+            calendarData.reservedVehicles.forEach(res => {
+                if (res.arrivalDate === dateStr) {
+                    events.push({
+                        id: res.id,
+                        title: `🚗 ${res.vehicleModel} - ${res.customerName}`,
+                        time: '09:00',
+                        type: 'reserved',
+                        isDelivery: true,
+                        ...res
+                    });
+                }
+            });
+            
+            // Sort by time
+            events.sort((a, b) => (a.time || '00:00').localeCompare(b.time || '00:00'));
+            
+            return events;
+        }
+
+        function selectDay(dateStr) {
+            selectedDate = dateStr;
+            renderCalendar();
+            renderDayDetail(dateStr);
+        }
+
+        function renderDayDetail(dateStr) {
+            const events = getEventsForDate(dateStr);
+            const date = new Date(dateStr + 'T12:00:00');
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            
+            document.getElementById('selectedDateTitle').textContent = date.toLocaleDateString('en-US', options);
+            
+            const detailEl = document.getElementById('dayDetail');
+            
+            if (events.length === 0) {
+                detailEl.innerHTML = `
+                    <div class="no-events">
+                        <i class="fas fa-calendar-check"></i>
+                        No appointments scheduled
+                        <br><br>
+                        <button class="btn btn-primary btn-small" onclick="openAppointmentModalForDate('${dateStr}')">
+                            <i class="fas fa-plus"></i> Add Appointment
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<div class="event-list">';
+            events.forEach(event => {
+                const timeDisplay = event.time ? formatTime(event.time) : 'All Day';
+                html += `
+                    <div class="event-item ${event.type}">
+                        <div class="event-time">${timeDisplay}</div>
+                        <div class="event-details">
+                            <div class="event-title">${event.title}</div>
+                            ${event.notes ? `<div class="event-description">${event.notes}</div>` : ''}
+                            ${event.customerName && !event.isDelivery ? `<div class="event-description"><i class="fas fa-user"></i> ${event.customerName}</div>` : ''}
+                            ${event.customerPhone ? `<div class="event-description"><i class="fas fa-phone"></i> ${event.customerPhone}</div>` : ''}
+                        </div>
+                        <div class="event-actions">
+                            ${event.customerPhone ? `<button class="event-action" onclick="callCustomer('${event.customerPhone}')" title="Call"><i class="fas fa-phone"></i></button>` : ''}
+                            <button class="event-action delete" onclick="deleteEvent('${event.id}', ${event.isDelivery || false})" title="Delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            detailEl.innerHTML = html;
+        }
+
+        function formatTime(time24) {
+            const [hours, minutes] = time24.split(':');
+            const h = parseInt(hours);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12 = h % 12 || 12;
+            return `${h12}:${minutes} ${ampm}`;
+        }
+
+        function changeMonth(delta) {
+            currentDate.setMonth(currentDate.getMonth() + delta);
+            renderCalendar();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            selectedDate = currentDate.toISOString().split('T')[0];
+            renderCalendar();
+            renderDayDetail(selectedDate);
+        }
+
+        // ================== RESERVED VEHICLES ==================
+        function renderReservedVehicles() {
+            const grid = document.getElementById('reservedGrid');
+            
+            if (calendarData.reservedVehicles.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-truck"></i>
+                        <h3>No Reserved Vehicles</h3>
+                        <p>Add customers who have vehicles on order or incoming inventory</p>
+                        <button class="btn btn-primary" onclick="openReservedModal()">
+                            <i class="fas fa-plus"></i> Add Reserved Vehicle
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            calendarData.reservedVehicles.forEach(res => {
+                const status = getDeliveryStatus(res);
+                const progress = getDeliveryProgress(res);
+                const followups = generateFollowups(res);
+                
+                html += `
+                    <div class="reserved-card ${status.class}">
+                        <div class="reserved-header">
+                            <div>
+                                <div class="reserved-customer">${res.customerName}</div>
+                                <div class="reserved-contact">
+                                    <i class="fas fa-phone"></i> ${res.customerPhone}
+                                    ${res.customerEmail ? `&nbsp;&nbsp;<i class="fas fa-envelope"></i> ${res.customerEmail}` : ''}
+                                </div>
+                            </div>
+                            <span class="reserved-status ${status.class}">${status.label}</span>
+                        </div>
+                        
+                        <div class="reserved-vehicle">
+                            <div class="vehicle-image">🚗</div>
+                            <div class="vehicle-info">
+                                <div class="vehicle-name">${res.vehicleYear} ${res.vehicleModel}</div>
+                                <div class="vehicle-details">
+                                    ${res.vehicleVin ? `Stock/VIN: ${res.vehicleVin}` : 'No stock # assigned'}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="reserved-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-date">${formatShortDate(res.orderDate)}</div>
+                                <div class="timeline-label">Ordered</div>
+                            </div>
+                            <div class="timeline-connector" style="--progress: ${progress}%"></div>
+                            <div class="timeline-item">
+                                <div class="timeline-date">${formatShortDate(res.arrivalDate)}</div>
+                                <div class="timeline-label">Expected</div>
+                            </div>
+                        </div>
+                        
+                        <div class="reserved-followups">
+                            <div class="followup-header">
+                                <span class="followup-title">Automated Follow-ups</span>
+                                <button class="btn btn-small btn-secondary" onclick="openQuickSendForCustomer('${res.id}')">
+                                    <i class="fas fa-paper-plane"></i> Send Now
+                                </button>
+                            </div>
+                            <div class="followup-list">
+                                ${followups.map(f => `
+                                    <div class="followup-item ${f.sent ? 'sent' : ''}">
+                                        <i class="fas fa-${f.sent ? 'check-circle' : 'circle'} followup-check"></i>
+                                        <span class="followup-date">${formatShortDate(f.date)}</span>
+                                        <span class="followup-message">${f.message}</span>
+                                        ${!f.sent && isToday(f.date) ? `<button class="followup-action" onclick="sendFollowup('${res.id}', '${f.id}')">Send</button>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        
+                        <div class="reserved-actions">
+                            <button class="btn btn-small btn-secondary" onclick="editReserved('${res.id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-small btn-secondary" onclick="callCustomer('${res.customerPhone}')">
+                                <i class="fas fa-phone"></i> Call
+                            </button>
+                            <button class="btn btn-small btn-success" onclick="markArrived('${res.id}')">
+                                <i class="fas fa-check"></i> Mark Arrived
+                            </button>
+                            <button class="btn btn-small btn-secondary" onclick="deleteReserved('${res.id}')" style="margin-left: auto;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+        }
+
+        function getDeliveryStatus(res) {
+            const today = new Date();
+            const arrival = new Date(res.arrivalDate);
+            const daysUntil = Math.ceil((arrival - today) / (1000 * 60 * 60 * 24));
+            
+            if (daysUntil <= 0) {
+                return { label: 'Arrived', class: 'arrived' };
+            } else if (daysUntil <= 7) {
+                return { label: 'Arriving Soon', class: 'arriving-soon' };
+            } else {
+                return { label: 'In Transit', class: 'in-transit' };
+            }
+        }
+
+        function getDeliveryProgress(res) {
+            const order = new Date(res.orderDate);
+            const arrival = new Date(res.arrivalDate);
+            const today = new Date();
+            
+            const totalDays = (arrival - order) / (1000 * 60 * 60 * 24);
+            const elapsedDays = (today - order) / (1000 * 60 * 60 * 24);
+            
+            return Math.min(100, Math.max(0, (elapsedDays / totalDays) * 100));
+        }
+
+        function generateFollowups(res) {
+            const followups = [];
+            const order = new Date(res.orderDate);
+            const arrival = new Date(res.arrivalDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const sentFollowups = res.sentFollowups || [];
+            
+            // Week 1 check-in
+            const week1 = new Date(order);
+            week1.setDate(week1.getDate() + 7);
+            if (week1 < arrival) {
+                followups.push({
+                    id: 'week1',
+                    date: week1.toISOString().split('T')[0],
+                    message: 'Week 1 check-in',
+                    sent: sentFollowups.includes('week1') || week1 < today
+                });
+            }
+            
+            // Week 2 check-in
+            const week2 = new Date(order);
+            week2.setDate(week2.getDate() + 14);
+            if (week2 < arrival) {
+                followups.push({
+                    id: 'week2',
+                    date: week2.toISOString().split('T')[0],
+                    message: 'Week 2 update',
+                    sent: sentFollowups.includes('week2') || week2 < today
+                });
+            }
+            
+            // 3 days before
+            const threeDays = new Date(arrival);
+            threeDays.setDate(threeDays.getDate() - 3);
+            if (threeDays > order) {
+                followups.push({
+                    id: '3days',
+                    date: threeDays.toISOString().split('T')[0],
+                    message: 'Almost here! Paperwork reminder',
+                    sent: sentFollowups.includes('3days') || threeDays < today
+                });
+            }
+            
+            // Arrival day
+            followups.push({
+                id: 'arrival',
+                date: res.arrivalDate,
+                message: 'Vehicle has arrived! 🎉',
+                sent: sentFollowups.includes('arrival') || arrival < today
+            });
+            
+            return followups;
+        }
+
+        function isToday(dateStr) {
+            const today = new Date().toISOString().split('T')[0];
+            return dateStr === today;
+        }
+
+        function formatShortDate(dateStr) {
+            const date = new Date(dateStr + 'T12:00:00');
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // ================== TAB SWITCHING ==================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.tab').classList.add('active');
+            
+            document.getElementById('calendarTab').style.display = tab === 'calendar' ? 'block' : 'none';
+            document.getElementById('reservedTab').style.display = tab === 'reserved' ? 'block' : 'none';
+        }
+
+        // ================== MODALS ==================
+        function openAppointmentModal() {
+            document.getElementById('appointmentModal').classList.add('open');
+        }
+
+        function openAppointmentModalForDate(dateStr) {
+            document.getElementById('apptDate').value = dateStr;
+            openAppointmentModal();
+        }
+
+        function openReservedModal() {
+            document.getElementById('reservedModal').classList.add('open');
+        }
+
+        function openQuickSendModal() {
+            populateCustomerSelect();
+            document.getElementById('quickSendModal').classList.add('open');
+        }
+
+        function openQuickSendForCustomer(resId) {
+            populateCustomerSelect();
+            document.getElementById('quickSendCustomer').value = resId;
+            document.getElementById('quickSendModal').classList.add('open');
+        }
+
+        function showIcsModal() {
+            generateIcsUrl();
+            document.getElementById('icsModal').classList.add('open');
+        }
+
+        function closeModal(modalId, event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById(modalId).classList.remove('open');
+        }
+
+        function selectType(btn) {
+            document.querySelectorAll('.type-option').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedAppointmentType = btn.dataset.type;
+            
+            // Show/hide customer fields
+            const showCustomer = selectedAppointmentType === 'customer';
+            document.getElementById('customerNameGroup').style.display = showCustomer ? 'block' : 'none';
+            document.getElementById('customerPhoneGroup').style.display = showCustomer ? 'block' : 'none';
+        }
+
+        // ================== SAVE FUNCTIONS ==================
+        function saveAppointment() {
+            const title = document.getElementById('apptTitle').value.trim();
+            const date = document.getElementById('apptDate').value;
+            const time = document.getElementById('apptTime').value;
+            const notes = document.getElementById('apptNotes').value.trim();
+            const customerName = document.getElementById('apptCustomerName').value.trim();
+            const customerPhone = document.getElementById('apptCustomerPhone').value.trim();
+            
+            if (!title || !date) {
+                alert('Please enter a title and date');
+                return;
+            }
+            
+            const appointment = {
+                id: Date.now().toString(),
+                title,
+                date,
+                time,
+                type: selectedAppointmentType,
+                notes,
+                customerName: selectedAppointmentType === 'customer' ? customerName : null,
+                customerPhone: selectedAppointmentType === 'customer' ? customerPhone : null,
+                createdAt: new Date().toISOString()
+            };
+            
+            calendarData.appointments.push(appointment);
+            saveData();
+            
+            // Reset form
+            document.getElementById('apptTitle').value = '';
+            document.getElementById('apptTime').value = '';
+            document.getElementById('apptNotes').value = '';
+            document.getElementById('apptCustomerName').value = '';
+            document.getElementById('apptCustomerPhone').value = '';
+            
+            closeModal('appointmentModal');
+            renderCalendar();
+            if (selectedDate) renderDayDetail(selectedDate);
+        }
+
+        function saveReservedVehicle() {
+            const customerName = document.getElementById('resCustomerName').value.trim();
+            const customerPhone = document.getElementById('resCustomerPhone').value.trim();
+            const customerEmail = document.getElementById('resCustomerEmail').value.trim();
+            const vehicleYear = document.getElementById('resVehicleYear').value.trim();
+            const vehicleModel = document.getElementById('resVehicleModel').value.trim();
+            const vehicleVin = document.getElementById('resVehicleVin').value.trim();
+            const orderDate = document.getElementById('resOrderDate').value;
+            const arrivalDate = document.getElementById('resArrivalDate').value;
+            const followupSchedule = document.getElementById('resFollowupSchedule').value;
+            const notes = document.getElementById('resNotes').value.trim();
+            
+            if (!customerName || !customerPhone || !vehicleModel || !arrivalDate) {
+                alert('Please fill in customer name, phone, vehicle model, and expected arrival date');
+                return;
+            }
+            
+            const reserved = {
+                id: Date.now().toString(),
+                customerName,
+                customerPhone,
+                customerEmail,
+                vehicleYear,
+                vehicleModel,
+                vehicleVin,
+                orderDate: orderDate || new Date().toISOString().split('T')[0],
+                arrivalDate,
+                followupSchedule,
+                notes,
+                sentFollowups: [],
+                createdAt: new Date().toISOString()
+            };
+            
+            calendarData.reservedVehicles.push(reserved);
+            saveData();
+            
+            // Reset form
+            document.getElementById('resCustomerName').value = '';
+            document.getElementById('resCustomerPhone').value = '';
+            document.getElementById('resCustomerEmail').value = '';
+            document.getElementById('resVehicleYear').value = '';
+            document.getElementById('resVehicleModel').value = '';
+            document.getElementById('resVehicleVin').value = '';
+            document.getElementById('resNotes').value = '';
+            
+            closeModal('reservedModal');
+            renderReservedVehicles();
+            renderCalendar();
+            updateReservedCount();
+        }
+
+        // ================== ACTIONS ==================
+        function deleteEvent(id, isDelivery) {
+            if (!confirm('Delete this appointment?')) return;
+            
+            if (isDelivery) {
+                calendarData.reservedVehicles = calendarData.reservedVehicles.filter(r => r.id !== id);
+            } else {
+                calendarData.appointments = calendarData.appointments.filter(a => a.id !== id);
+            }
+            
+            saveData();
+            renderCalendar();
+            renderReservedVehicles();
+            updateReservedCount();
+            if (selectedDate) renderDayDetail(selectedDate);
+        }
+
+        function deleteReserved(id) {
+            if (!confirm('Delete this reserved vehicle?')) return;
+            
+            calendarData.reservedVehicles = calendarData.reservedVehicles.filter(r => r.id !== id);
+            saveData();
+            renderReservedVehicles();
+            renderCalendar();
+            updateReservedCount();
+        }
+
+        function markArrived(id) {
+            const res = calendarData.reservedVehicles.find(r => r.id === id);
+            if (res) {
+                res.arrivedAt = new Date().toISOString();
+                // Could move to a "completed" list or archive
+                alert(`Great news! ${res.customerName}'s ${res.vehicleYear} ${res.vehicleModel} is marked as arrived! Time to schedule delivery.`);
+                saveData();
+                renderReservedVehicles();
+            }
+        }
+
+        function callCustomer(phone) {
+            window.location.href = `tel:${phone.replace(/\D/g, '')}`;
+        }
+
+        function sendFollowup(resId, followupId) {
+            const res = calendarData.reservedVehicles.find(r => r.id === resId);
+            if (res) {
+                // Mark as sent
+                if (!res.sentFollowups) res.sentFollowups = [];
+                res.sentFollowups.push(followupId);
+                saveData();
+                
+                // Open quick send with pre-filled message
+                openQuickSendForCustomer(resId);
+                
+                const templates = {
+                    'week1': `Hi ${res.customerName}! Just checking in on your ${res.vehicleYear} ${res.vehicleModel}. It's still on track for delivery around ${formatShortDate(res.arrivalDate)}. Let me know if you have any questions!`,
+                    'week2': `Hey ${res.customerName}! Quick update - your ${res.vehicleModel} is making its way to us. Still looking at ${formatShortDate(res.arrivalDate)} for arrival. Getting excited?`,
+                    '3days': `Great news, ${res.customerName}! Your ${res.vehicleYear} ${res.vehicleModel} should be here in just a few days! Let's get your paperwork squared away. When's a good time to come in?`,
+                    'arrival': `🎉 ${res.customerName}, your ${res.vehicleYear} ${res.vehicleModel} has arrived! When would you like to come pick it up? I can't wait to hand you the keys!`
+                };
+                
+                document.getElementById('quickSendMessage').value = templates[followupId] || '';
+                renderReservedVehicles();
+            }
+        }
+
+        // ================== QUICK SEND ==================
+        function populateCustomerSelect() {
+            const select = document.getElementById('quickSendCustomer');
+            select.innerHTML = '<option value="">Choose a customer...</option>';
+            
+            calendarData.reservedVehicles.forEach(res => {
+                select.innerHTML += `<option value="${res.id}">${res.customerName} - ${res.vehicleModel}</option>`;
+            });
+        }
+
+        function loadTemplate() {
+            const template = document.getElementById('quickSendTemplate').value;
+            const customerId = document.getElementById('quickSendCustomer').value;
+            const res = calendarData.reservedVehicles.find(r => r.id === customerId);
+            
+            if (!res) {
+                document.getElementById('quickSendMessage').value = '';
+                return;
+            }
+            
+            const templates = {
+                'update': `Hi ${res.customerName}! Just wanted to give you a quick update on your ${res.vehicleYear} ${res.vehicleModel}. Everything is on track for ${formatShortDate(res.arrivalDate)}. Let me know if you have any questions!`,
+                'arrival': `🎉 Great news, ${res.customerName}! Your ${res.vehicleYear} ${res.vehicleModel} has arrived at Pedersen Toyota! When would you like to come pick it up?`,
+                'checkin': `Hey ${res.customerName}! Just checking in - how are you doing? Any questions about your upcoming ${res.vehicleModel}?`,
+                'paperwork': `Hi ${res.customerName}! Your ${res.vehicleModel} will be here soon. Let's get ahead on paperwork - do you have time to come in this week to get everything ready?`
+            };
+            
+            document.getElementById('quickSendMessage').value = templates[template] || '';
+        }
+
+        function sendQuickMessage() {
+            const customerId = document.getElementById('quickSendCustomer').value;
+            const message = document.getElementById('quickSendMessage').value.trim();
+            
+            if (!customerId || !message) {
+                alert('Please select a customer and enter a message');
+                return;
+            }
+            
+            const res = calendarData.reservedVehicles.find(r => r.id === customerId);
+            if (res) {
+                // In a real app, this would send via SMS/text
+                // For now, we'll copy to clipboard and open the phone app
+                navigator.clipboard.writeText(message).then(() => {
+                    alert(`Message copied to clipboard!\n\nSending to: ${res.customerName}\nPhone: ${res.customerPhone}\n\nOpen your messaging app to send.`);
+                    window.location.href = `sms:${res.customerPhone.replace(/\D/g, '')}`;
+                });
+            }
+            
+            closeModal('quickSendModal');
+        }
+
+        // ================== ICS CALENDAR ==================
+        function generateIcsUrl() {
+            // Generate a unique calendar URL based on data
+            // In production, this would be a server endpoint
+            const baseUrl = window.location.origin + window.location.pathname.replace('calendar.html', '');
+            const calendarId = btoa(JSON.stringify({ user: 'jeff', timestamp: Date.now() })).slice(0, 20);
+            
+            // For demo, we'll use a downloadable ICS approach
+            const url = `${baseUrl}calendar.ics?id=${calendarId}`;
+            document.getElementById('icsUrl').value = url;
+            
+            // Also generate and store the ICS content for download
+            generateIcsContent();
+        }
+
+        function generateIcsContent() {
+            let ics = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Jeff Lee//Pedersen Toyota Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Jeff's Work Calendar
+X-WR-TIMEZONE:America/Denver
+`;
+            
+            // Add appointments
+            calendarData.appointments.forEach(appt => {
+                const uid = `${appt.id}@pedersen-toyota`;
+                const dtstart = appt.time 
+                    ? `${appt.date.replace(/-/g, '')}T${appt.time.replace(':', '')}00`
+                    : `${appt.date.replace(/-/g, '')}`;
+                
+                ics += `BEGIN:VEVENT
+UID:${uid}
+DTSTART:${dtstart}
+SUMMARY:${escapeIcs(appt.title)}
+${appt.notes ? `DESCRIPTION:${escapeIcs(appt.notes)}` : ''}
+END:VEVENT
+`;
+            });
+            
+            // Add reserved vehicle arrivals
+            calendarData.reservedVehicles.forEach(res => {
+                const uid = `delivery-${res.id}@pedersen-toyota`;
+                const dtstart = `${res.arrivalDate.replace(/-/g, '')}`;
+                
+                ics += `BEGIN:VEVENT
+UID:${uid}
+DTSTART;VALUE=DATE:${dtstart}
+SUMMARY:🚗 ${escapeIcs(res.vehicleYear + ' ' + res.vehicleModel)} - ${escapeIcs(res.customerName)}
+DESCRIPTION:Customer: ${escapeIcs(res.customerName)}\\nPhone: ${escapeIcs(res.customerPhone)}
+END:VEVENT
+`;
+            });
+            
+            ics += 'END:VCALENDAR';
+            
+            // Store for download
+            window.icsContent = ics;
+        }
+
+        function escapeIcs(str) {
+            return str.replace(/[,;\\]/g, '\\$&').replace(/\n/g, '\\n');
+        }
+
+        function copyIcsUrl() {
+            // For demo, offer to download the ICS file instead
+            const blob = new Blob([window.icsContent || ''], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'jeff-calendar.ics';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Calendar file downloaded! You can import this into your iPhone calendar or any calendar app.');
+        }
+
+        // ================== UTILITIES ==================
+        function saveData() {
+            localStorage.setItem('jeffCalendar', JSON.stringify(calendarData));
+            generateIcsContent(); // Regenerate ICS when data changes
+        }
+
+        function updateReservedCount() {
+            document.getElementById('reservedCount').textContent = calendarData.reservedVehicles.length;
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function showComingSoon(feature) {
+            alert(`${feature} is coming soon!`);
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
