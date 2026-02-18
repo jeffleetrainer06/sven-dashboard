@@ -1245,17 +1245,13 @@
                     <i class="fas fa-user-clock"></i>
                     <span>Lead Follow Up</span>
                 </a>
-                <a href="vehicle-comparison.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Comparison')">
                     <i class="fas fa-car-side"></i>
                     <span>Vehicle Comparison</span>
                 </a>
-                <a href="vehicle-request.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Request')">
                     <i class="fas fa-search-dollar"></i>
                     <span>Vehicle Request</span>
-                </a>
-                <a href="brochures.html" class="nav-item">
-                    <i class="fas fa-book-open"></i>
-                    <span>Brochure Library</span>
                 </a>
 
                 <div class="nav-divider"></div>
@@ -1271,6 +1267,10 @@
                 <a href="#" class="nav-item" onclick="showComingSoon('Budget Monitor')">
                     <i class="fas fa-dollar-sign"></i>
                     <span>Budget Monitor</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showComingSoon('Brochure Library')">
+                    <i class="fas fa-book-open"></i>
+                    <span>Brochure Library</span>
                 </a>
             </nav>
 
@@ -1408,12 +1408,6 @@
                                 <button class="action-btn secondary" onclick="showComingSoon('Daily Report')">
                                     <i class="fas fa-chart-bar"></i> Generate Daily Report
                                 </button>
-                                <a href="brochures.html" target="_blank" class="action-btn secondary" style="text-decoration: none;">
-                                    <i class="fas fa-book-open"></i> Brochure Library
-                                </a>
-                                <a href="vehicle-comparison.html" class="action-btn secondary" style="text-decoration: none;">
-                                    <i class="fas fa-balance-scale"></i> Vehicle Comparison
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -2030,6 +2024,11 @@
             document.getElementById('chatToggle').classList.remove('hidden');
         }
 
+        function retryLastMessage(message) {
+            document.getElementById('chatInput').value = message;
+            sendChatMessage();
+        }
+
         async function sendChatMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
@@ -2050,6 +2049,10 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
             try {
+                // Create AbortController for timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+                
                 const response = await fetch(API_BASE + '/api/openclaw-ui/chat', {
                     method: 'POST',
                     headers: {
@@ -2058,8 +2061,11 @@
                     body: JSON.stringify({
                         message: message,
                         session_id: chatSessionId
-                    })
+                    }),
+                    signal: controller.signal
                 });
+                
+                clearTimeout(timeoutId);
 
                 const data = await response.json();
                 
@@ -2080,7 +2086,17 @@
                 if (typingEl) typingEl.remove();
                 
                 console.error('Chat error:', error);
-                messagesDiv.innerHTML += '<div class="chat-message sven" style="color: #ef4444;">Sorry, I couldn\'t connect to the server. Please check your internet connection and try again.</div>';
+                
+                // Provide more helpful error message
+                let errorMsg = 'Sorry, I couldn\'t connect to the server.';
+                if (error.name === 'AbortError') {
+                    errorMsg = 'The request timed out. Sven might be busy - please try again.';
+                } else if (!navigator.onLine) {
+                    errorMsg = 'You appear to be offline. Please check your internet connection.';
+                }
+                errorMsg += ' <button onclick="retryLastMessage(\'' + escapeHtml(message).replace(/'/g, "\\'") + '\')" style="background: var(--primary-red); color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; margin-left: 8px;">Retry</button>';
+                
+                messagesDiv.innerHTML += '<div class="chat-message sven" style="color: #ef4444;">' + errorMsg + '</div>';
             }
 
             isWaitingForResponse = false;
