@@ -161,8 +161,8 @@
         /* Vehicle Grid */
         .vehicle-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
             margin-bottom: 40px;
         }
 
@@ -182,8 +182,8 @@
         }
 
         .vehicle-image {
-            height: 160px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+            height: 180px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -192,9 +192,14 @@
         }
 
         .vehicle-image img {
-            max-width: 90%;
-            max-height: 90%;
+            max-width: 95%;
+            max-height: 95%;
             object-fit: contain;
+            transition: transform 0.3s;
+        }
+
+        .vehicle-card:hover .vehicle-image img {
+            transform: scale(1.05);
         }
 
         .vehicle-image .placeholder-icon {
@@ -233,6 +238,43 @@
             color: var(--text-secondary);
             font-size: 13px;
             margin-bottom: 12px;
+        }
+
+        /* Color Swatches on Card */
+        .card-color-swatches {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .card-color-swatch {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .card-color-swatch:hover {
+            transform: scale(1.2);
+            border-color: var(--primary-red);
+        }
+
+        .card-color-swatch.active {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.3);
+        }
+
+        .card-color-swatch.more {
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            color: var(--text-secondary);
         }
 
         .vehicle-quick-specs {
@@ -285,7 +327,7 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             position: relative;
             animation: modalSlide 0.3s ease;
         }
@@ -328,34 +370,134 @@
         .modal-header {
             padding: 30px;
             border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-vehicle-showcase {
             display: flex;
-            gap: 24px;
+            gap: 30px;
             align-items: flex-start;
         }
 
-        .modal-image {
-            width: 200px;
-            height: 140px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+        .modal-image-section {
+            flex: 1;
+            max-width: 450px;
+        }
+
+        .modal-main-image {
+            background: linear-gradient(135deg, #1a1a1a 0%, #252525 100%);
             border-radius: 12px;
+            height: 260px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 16px;
         }
 
-        .modal-image img {
-            max-width: 90%;
-            max-height: 90%;
+        .modal-main-image img {
+            max-width: 95%;
+            max-height: 95%;
             object-fit: contain;
+            transition: opacity 0.3s;
         }
 
-        .modal-image .placeholder-icon {
-            font-size: 48px;
+        .modal-main-image .placeholder-icon {
+            font-size: 64px;
             color: var(--text-muted);
         }
 
-        .modal-title-section {
+        .modal-main-image .image-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--text-muted);
+        }
+
+        /* Color Gallery */
+        .color-gallery {
+            background: var(--bg-dark);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .color-gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .color-gallery-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .color-gallery-count {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .color-swatches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.15);
+        }
+
+        .color-swatch.active {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.3);
+        }
+
+        .color-swatch::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .color-name-display {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-name-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .color-name-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .modal-info-section {
             flex: 1;
         }
 
@@ -383,8 +525,9 @@
             align-items: center;
             gap: 8px;
             background: var(--bg-dark);
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 8px;
+            margin-bottom: 20px;
         }
 
         .modal-price-label {
@@ -393,9 +536,37 @@
         }
 
         .modal-price {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             color: var(--success);
+        }
+
+        .modal-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .modal-badge {
+            padding: 6px 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .modal-badge.hybrid {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .modal-badge.featured {
+            background: rgba(230, 57, 70, 0.1);
+            border-color: var(--primary-red);
+            color: var(--primary-red);
         }
 
         .modal-body {
@@ -416,6 +587,11 @@
             margin-bottom: 16px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border-color);
+        }
+
+        .specs-title i {
+            margin-right: 8px;
+            color: var(--primary-red);
         }
 
         .specs-grid {
@@ -644,7 +820,7 @@
                 color: black !important;
             }
             
-            .header, .modal-close, .modal-actions, .category-tabs, .vehicle-grid, .email-modal-overlay, .toast {
+            .header, .modal-close, .modal-actions, .category-tabs, .vehicle-grid, .email-modal-overlay, .toast, .color-gallery {
                 display: none !important;
             }
             
@@ -667,7 +843,7 @@
                 background: white !important;
             }
 
-            .modal-image {
+            .modal-main-image {
                 background: #f5f5f5 !important;
             }
 
@@ -757,6 +933,16 @@
         }
 
         /* Responsive */
+        @media (max-width: 900px) {
+            .modal-vehicle-showcase {
+                flex-direction: column;
+            }
+
+            .modal-image-section {
+                max-width: 100%;
+            }
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 16px 20px;
@@ -773,11 +959,7 @@
             }
 
             .modal-header {
-                flex-direction: column;
-            }
-
-            .modal-image {
-                width: 100%;
+                padding: 20px;
             }
 
             .modal-actions {
@@ -786,6 +968,10 @@
 
             .action-btn {
                 justify-content: center;
+            }
+
+            .vehicle-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -798,7 +984,7 @@
                 Command Center
             </a>
             <h1 class="page-title">Toyota <span>Brochure Library</span></h1>
-            <span class="model-year-badge">2026 Models</span>
+            <span class="model-year-badge">2025-2026 Models</span>
         </div>
         <div class="header-right">
             <div class="search-box">
@@ -837,23 +1023,44 @@
             <button class="modal-close" onclick="closeModal()">
                 <i class="fas fa-times"></i>
             </button>
+
             <div class="modal-header">
-                <div class="modal-image">
-                    <i class="fas fa-car placeholder-icon"></i>
-                </div>
-                <div class="modal-title-section">
-                    <div class="modal-year" id="modalYear">2026</div>
-                    <h2 class="modal-title" id="modalTitle">Vehicle Name</h2>
-                    <p class="modal-tagline" id="modalTagline">Tagline here</p>
-                    <div class="modal-price-range">
-                        <span class="modal-price-label">Starting MSRP</span>
-                        <span class="modal-price" id="modalPrice">$00,000</span>
+                <div class="modal-vehicle-showcase">
+                    <div class="modal-image-section">
+                        <div class="modal-main-image" id="modalMainImage">
+                            <i class="fas fa-car placeholder-icon"></i>
+                        </div>
+                        <div class="color-gallery" id="colorGallery">
+                            <div class="color-gallery-header">
+                                <span class="color-gallery-title"><i class="fas fa-palette"></i> Exterior Colors</span>
+                                <span class="color-gallery-count" id="colorCount">0 colors</span>
+                            </div>
+                            <div class="color-swatches" id="colorSwatches">
+                                <!-- Color swatches populated by JS -->
+                            </div>
+                            <div class="color-name-display" id="colorNameDisplay">
+                                <div class="color-name-swatch" id="colorNameSwatch"></div>
+                                <span class="color-name-text" id="colorNameText">Select a color</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-info-section">
+                        <div class="modal-year" id="modalYear">2026</div>
+                        <h2 class="modal-title" id="modalTitle">Vehicle Name</h2>
+                        <p class="modal-tagline" id="modalTagline">Tagline here</p>
+                        <div class="modal-price-range">
+                            <span class="modal-price-label">Starting MSRP</span>
+                            <span class="modal-price" id="modalPrice">$00,000</span>
+                        </div>
+                        <div class="modal-badges" id="modalBadges"></div>
                     </div>
                 </div>
             </div>
+
             <div class="modal-body" id="modalBody">
                 <!-- Specs populated by JS -->
             </div>
+
             <div class="modal-actions">
                 <button class="action-btn primary" onclick="printBrochure()">
                     <i class="fas fa-file-pdf"></i>
@@ -866,6 +1073,10 @@
                 <a class="action-btn secondary" id="toyotaLink" href="#" target="_blank">
                     <i class="fas fa-external-link-alt"></i>
                     View on Toyota.com
+                </a>
+                <a class="action-btn secondary" id="configuratorLink" href="#" target="_blank">
+                    <i class="fas fa-sliders-h"></i>
+                    Build & Price
                 </a>
                 <button class="action-btn secondary" onclick="copySpecs()">
                     <i class="fas fa-copy"></i>
@@ -906,7 +1117,116 @@
     </div>
 
     <script>
-        // Toyota Vehicle Database - 2026 Models
+        // ===========================================
+        // TOYOTA EXTERIOR COLORS DATABASE
+        // ===========================================
+        // Color codes and hex values for UI swatches
+        // Images loaded from Toyota's CDN
+        
+        const colorDatabase = {
+            // Standard Toyota Colors (available across multiple models)
+            'supersonic-red': { name: 'Supersonic Red', hex: '#C41E3A', code: '3U5' },
+            'wind-chill-pearl': { name: 'Wind Chill Pearl', hex: '#F5F5F5', code: '089' },
+            'midnight-black-metallic': { name: 'Midnight Black Metallic', hex: '#1C1C1C', code: '218' },
+            'magnetic-gray-metallic': { name: 'Magnetic Gray Metallic', hex: '#5A5A5A', code: '1G3' },
+            'celestial-silver-metallic': { name: 'Celestial Silver Metallic', hex: '#A8A8A8', code: '1J9' },
+            'blueprint': { name: 'Blueprint', hex: '#1B365D', code: '8X8' },
+            'ice-cap': { name: 'Ice Cap', hex: '#E8E8E8', code: '083' },
+            'underground': { name: 'Underground', hex: '#4A4A4A', code: '6X3' },
+            'cavalry-blue': { name: 'Cavalry Blue', hex: '#284B63', code: '8W2' },
+            'ruby-flare-pearl': { name: 'Ruby Flare Pearl', hex: '#7B2D3B', code: '3T3' },
+            'white': { name: 'Super White', hex: '#FFFFFF', code: '040' },
+            'bronze-oxide': { name: 'Bronze Oxide', hex: '#6B4423', code: '4X6' },
+            'reservoir-blue': { name: 'Reservoir Blue', hex: '#3A5F77', code: '8Y6' },
+            'solar-shift': { name: 'Solar Shift', hex: '#B87333', code: '4Y9' },
+            'heavy-metal': { name: 'Heavy Metal', hex: '#3E4347', code: '1H5' },
+            
+            // RAV4 / SUV specific
+            'lunar-rock': { name: 'Lunar Rock', hex: '#B5B5A5', code: '6X3' },
+            'army-green': { name: 'Army Green', hex: '#4B5320', code: '6V7' },
+            'urban-khaki': { name: 'Urban Khaki', hex: '#8B7355', code: '4V8' },
+            
+            // Tacoma / Truck specific
+            'trail-hunter': { name: 'Trail Hunter', hex: '#6B8E23', code: '6W2' },
+            'lime-rush': { name: 'Lime Rush', hex: '#32CD32', code: '588' },
+            'terra': { name: 'Terra', hex: '#B5651D', code: '4V6' },
+            'oxide-bronze': { name: 'Oxide Bronze', hex: '#7B5544', code: '4X7' },
+            
+            // Camry / Sedan specific
+            'predawn-gray-mica': { name: 'Predawn Gray Mica', hex: '#4F4F4F', code: '1H1' },
+            'reservoir-blue-2': { name: 'Reservoir Blue', hex: '#3B6E8F', code: '8Y6' },
+            'underground-2': { name: 'Underground', hex: '#3E3E3E', code: '1K4' },
+            
+            // Crown specific
+            'oxygen-white': { name: 'Oxygen White', hex: '#F0F0F0', code: '093' },
+            'precious-bronze': { name: 'Precious Bronze', hex: '#8B7355', code: '4X8' },
+            'cutting-edge': { name: 'Cutting Edge', hex: '#2F4F4F', code: '1L9' },
+            
+            // GR specific
+            'track-brat-red': { name: 'Track bRed', hex: '#FF2400', code: '3U1' },
+            'halo': { name: 'Halo', hex: '#E0E0E0', code: '084' },
+            'stratosphere-blue': { name: 'Stratosphere Blue', hex: '#4169E1', code: '8Y7' },
+            'renaissance-red': { name: 'Renaissance Red 2.0', hex: '#A91B0D', code: 'A96' },
+            'nitro-yellow': { name: 'Nitro Yellow', hex: '#FFD700', code: '5A3' },
+            'phantom': { name: 'Phantom', hex: '#363636', code: '1K2' },
+            'absolute-zero': { name: 'Absolute Zero', hex: '#E8E8E8', code: '094' },
+            'turbulence-gray': { name: 'Turbulence Gray', hex: '#6C6C6C', code: 'PCK' },
+            
+            // Prius specific
+            'electric-storm-blue': { name: 'Electric Storm Blue', hex: '#4682B4', code: '8X9' },
+            'wind-chill-pearl-prius': { name: 'Wind Chill Pearl', hex: '#F8F8F8', code: '089' },
+            
+            // 4Runner / Off-road specific
+            'mud-pie': { name: 'Mud Pie', hex: '#6B4226', code: '4X4' },
+            'everest': { name: 'Everest', hex: '#E5E5DC', code: '082' },
+            
+            // EV specific
+            'elemental-silver': { name: 'Elemental Silver', hex: '#C0C0C0', code: '1J2' },
+            'black': { name: 'Black', hex: '#000000', code: '202' },
+            'celestite-gray': { name: 'Celestite Gray', hex: '#9B9B9B', code: '1K5' },
+            
+            // Sienna specific
+            'predawn-gray-mica-sienna': { name: 'Predawn Gray Mica', hex: '#505050', code: '1H1' },
+            'celestial-silver': { name: 'Celestial Silver', hex: '#B0B0B0', code: '1J9' },
+            'opulent-amber': { name: 'Opulent Amber', hex: '#CC7722', code: '4X5' },
+            
+            // Highlander specific
+            'cypress': { name: 'Cypress', hex: '#355E3B', code: '6V4' },
+            'moon-dust': { name: 'Moon Dust', hex: '#C4BCAD', code: '4X1' },
+        };
+
+        // Vehicle-specific color availability
+        const vehicleColors = {
+            'corolla': ['supersonic-red', 'wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'blueprint', 'ice-cap'],
+            'camry': ['supersonic-red', 'wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'underground', 'reservoir-blue', 'ice-cap', 'heavy-metal'],
+            'crown': ['oxygen-white', 'midnight-black-metallic', 'magnetic-gray-metallic', 'supersonic-red', 'precious-bronze', 'cutting-edge', 'heavy-metal', 'blueprint'],
+            'crownsignia': ['oxygen-white', 'midnight-black-metallic', 'magnetic-gray-metallic', 'supersonic-red', 'precious-bronze', 'cutting-edge', 'heavy-metal'],
+            'prius': ['wind-chill-pearl', 'midnight-black-metallic', 'electric-storm-blue', 'magnetic-gray-metallic', 'supersonic-red', 'blueprint', 'heavy-metal', 'reservoir-blue'],
+            'corollahatchback': ['supersonic-red', 'wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'blueprint', 'ice-cap', 'heavy-metal'],
+            'corollacross': ['supersonic-red', 'wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'cavalry-blue', 'ice-cap', 'urban-khaki', 'blueprint'],
+            'rav4': ['supersonic-red', 'wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'cavalry-blue', 'lunar-rock', 'urban-khaki', 'blueprint', 'ruby-flare-pearl', 'ice-cap', 'silver-sky-metallic'],
+            'venza': ['wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'ruby-flare-pearl', 'cavalry-blue', 'blueprint'],
+            'highlander': ['wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'supersonic-red', 'blueprint', 'cypress', 'moon-dust', 'ruby-flare-pearl'],
+            'grandhighlander': ['wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'supersonic-red', 'blueprint', 'cypress', 'moon-dust'],
+            '4runner': ['white', 'midnight-black-metallic', 'magnetic-gray-metallic', 'lunar-rock', 'army-green', 'bronze-oxide', 'supersonic-red', 'mud-pie', 'everest', 'blueprint'],
+            'sequoia': ['wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'supersonic-red', 'blueprint', 'lunar-rock', 'heavy-metal'],
+            'landcruiser': ['white', 'midnight-black-metallic', 'magnetic-gray-metallic', 'underground', 'bronze-oxide', 'army-green', 'everest', 'heritage-blue'],
+            'bz4x': ['wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'elemental-silver', 'cavalry-blue', 'heavy-metal', 'supersonic-red'],
+            'tacoma': ['supersonic-red', 'white', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'ice-cap', 'cavalry-blue', 'army-green', 'bronze-oxide', 'underground', 'solar-shift', 'terra', 'lime-rush'],
+            'tundra': ['white', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'supersonic-red', 'army-green', 'blueprint', 'lunar-rock', 'solar-shift', 'heavy-metal'],
+            'sienna': ['wind-chill-pearl', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'supersonic-red', 'blueprint', 'predawn-gray-mica', 'opulent-amber', 'cypress'],
+            'gr86': ['supersonic-red', 'halo', 'midnight-black-metallic', 'stratosphere-blue', 'track-brat-red', 'neptune', 'ice-cap', 'turbulence-gray'],
+            'grsupra': ['renaissance-red', 'absolute-zero', 'midnight-black-metallic', 'nitro-yellow', 'phantom', 'turbulence-gray', 'stratosphere-blue'],
+            'grcorollamorizo': ['supersonic-red', 'halo', 'midnight-black-metallic', 'heavy-metal', 'ice-cap', 'underground']
+        };
+
+        // Add fallback colors for vehicles not in the list
+        const defaultColors = ['white', 'midnight-black-metallic', 'magnetic-gray-metallic', 'celestial-silver-metallic', 'supersonic-red'];
+
+        // ===========================================
+        // VEHICLE DATABASE
+        // ===========================================
+
         const vehicles = [
             // SEDANS
             {
@@ -914,7 +1234,7 @@
                 name: 'Corolla',
                 category: 'sedan',
                 tagline: "America's best-selling compact sedan",
-                year: 2026,
+                year: 2025,
                 msrp: 24100,
                 msrpRange: '$24,100 - $29,800',
                 hybrid: true,
@@ -969,7 +1289,7 @@
                 name: 'Camry',
                 category: 'sedan',
                 tagline: "America's best-selling midsize sedan - All Hybrid",
-                year: 2026,
+                year: 2025,
                 msrp: 30200,
                 msrpRange: '$30,200 - $37,500',
                 hybrid: true,
@@ -1017,7 +1337,7 @@
                 name: 'Crown',
                 category: 'sedan',
                 tagline: 'Bold design meets hybrid efficiency',
-                year: 2026,
+                year: 2025,
                 msrp: 44700,
                 msrpRange: '$44,700 - $57,500',
                 hybrid: true,
@@ -1062,7 +1382,7 @@
                 name: 'Crown Signia',
                 category: 'suv',
                 tagline: 'Premium crossover with Crown DNA',
-                year: 2026,
+                year: 2025,
                 msrp: 45500,
                 msrpRange: '$45,500 - $56,000',
                 hybrid: true,
@@ -1108,7 +1428,7 @@
                 name: 'Prius',
                 category: 'hatchback',
                 tagline: 'The original hybrid, reimagined',
-                year: 2026,
+                year: 2025,
                 msrp: 30600,
                 msrpRange: '$30,600 - $42,000',
                 hybrid: true,
@@ -1162,7 +1482,7 @@
                 name: 'Corolla Hatchback',
                 category: 'hatchback',
                 tagline: 'Sporty, versatile, and fun to drive',
-                year: 2026,
+                year: 2025,
                 msrp: 24950,
                 msrpRange: '$24,950 - $31,200',
                 hybrid: true,
@@ -1219,7 +1539,7 @@
                 name: 'Corolla Cross',
                 category: 'suv',
                 tagline: 'Compact crossover with big versatility',
-                year: 2026,
+                year: 2025,
                 msrp: 25100,
                 msrpRange: '$25,100 - $34,500',
                 hybrid: true,
@@ -1275,7 +1595,7 @@
                 name: 'RAV4',
                 category: 'suv',
                 tagline: "America's best-selling SUV",
-                year: 2026,
+                year: 2025,
                 msrp: 33400,
                 msrpRange: '$33,400 - $44,500',
                 hybrid: true,
@@ -1339,7 +1659,7 @@
                 name: 'Venza',
                 category: 'suv',
                 tagline: 'Stylish hybrid crossover',
-                year: 2026,
+                year: 2025,
                 msrp: 37800,
                 msrpRange: '$37,800 - $46,600',
                 hybrid: true,
@@ -1385,7 +1705,7 @@
                 name: 'Highlander',
                 category: 'suv',
                 tagline: 'The 3-row family favorite',
-                year: 2026,
+                year: 2025,
                 msrp: 42900,
                 msrpRange: '$42,900 - $56,500',
                 hybrid: true,
@@ -1443,7 +1763,7 @@
                 name: 'Grand Highlander',
                 category: 'suv',
                 tagline: 'More room for everything',
-                year: 2026,
+                year: 2025,
                 msrp: 47200,
                 msrpRange: '$47,200 - $63,000',
                 hybrid: true,
@@ -1507,11 +1827,11 @@
                 name: '4Runner',
                 category: 'suv',
                 tagline: 'Legendary off-road capability',
-                year: 2026,
+                year: 2025,
                 msrp: 45800,
                 msrpRange: '$45,800 - $71,000',
                 hybrid: true,
-                badges: ['Off-Road'],
+                badges: ['Off-Road', 'Redesigned'],
                 specs: {
                     dimensions: {
                         length: '190.0"',
@@ -1568,7 +1888,7 @@
                 name: 'Sequoia',
                 category: 'suv',
                 tagline: 'Full-size capability, hybrid efficiency',
-                year: 2026,
+                year: 2025,
                 msrp: 64400,
                 msrpRange: '$64,400 - $83,500',
                 hybrid: true,
@@ -1619,7 +1939,7 @@
                 name: 'Land Cruiser',
                 category: 'suv',
                 tagline: 'Legendary. Reimagined.',
-                year: 2026,
+                year: 2025,
                 msrp: 59900,
                 msrpRange: '$59,900 - $79,500',
                 hybrid: true,
@@ -1674,7 +1994,7 @@
                 name: 'bZ4X',
                 category: 'suv',
                 tagline: 'All-electric adventure',
-                year: 2026,
+                year: 2025,
                 msrp: 45000,
                 msrpRange: '$45,000 - $51,500',
                 hybrid: false,
@@ -1721,7 +2041,7 @@
                 name: 'Tacoma',
                 category: 'truck',
                 tagline: 'Built for adventure',
-                year: 2026,
+                year: 2025,
                 msrp: 34500,
                 msrpRange: '$34,500 - $72,000',
                 hybrid: true,
@@ -1780,7 +2100,7 @@
                 name: 'Tundra',
                 category: 'truck',
                 tagline: 'Full-size, fully capable',
-                year: 2026,
+                year: 2025,
                 msrp: 43400,
                 msrpRange: '$43,400 - $81,500',
                 hybrid: true,
@@ -1840,7 +2160,7 @@
                 name: 'Sienna',
                 category: 'van',
                 tagline: 'The hybrid family mover',
-                year: 2026,
+                year: 2025,
                 msrp: 41500,
                 msrpRange: '$41,500 - $56,500',
                 hybrid: true,
@@ -1894,7 +2214,7 @@
                 name: 'GR86',
                 category: 'sports',
                 tagline: 'Pure driving excitement',
-                year: 2026,
+                year: 2025,
                 msrp: 31500,
                 msrpRange: '$31,500 - $36,800',
                 hybrid: false,
@@ -1938,7 +2258,7 @@
                 name: 'GR Supra',
                 category: 'sports',
                 tagline: 'Legend reborn',
-                year: 2026,
+                year: 2025,
                 msrp: 47600,
                 msrpRange: '$47,600 - $67,500',
                 hybrid: false,
@@ -1983,7 +2303,7 @@
                 name: 'GR Corolla',
                 category: 'sports',
                 tagline: 'Born from motorsports',
-                year: 2026,
+                year: 2025,
                 msrp: 39200,
                 msrpRange: '$39,200 - $61,500',
                 hybrid: false,
@@ -2027,12 +2347,68 @@
             }
         ];
 
-        // Current vehicle for email
+        // ===========================================
+        // STATE
+        // ===========================================
         let currentVehicle = null;
-
-        // Category filter
+        let currentColorIndex = 0;
         let currentCategory = 'all';
         let searchQuery = '';
+
+        // ===========================================
+        // HELPER FUNCTIONS
+        // ===========================================
+        
+        function getVehicleColors(vehicleId) {
+            return vehicleColors[vehicleId] || defaultColors;
+        }
+
+        function getColorData(colorKey) {
+            return colorDatabase[colorKey] || { name: colorKey, hex: '#888888', code: 'UNK' };
+        }
+
+        // Toyota's official image CDN
+        const TOYOTA_CDN = 'https://tmna.aemassets.toyota.com/is/image/toyota/toyota/jellies';
+        
+        // Model configuration for CDN image URLs
+        const modelImageConfig = {
+            'corolla': { grade: 'le', modelCode: '1852' },
+            'camry': { grade: 'le', modelCode: '2552' },
+            'crown': { grade: 'xle', modelCode: '2540' },
+            'crownsignia': { grade: 'xle', modelCode: '6260' },
+            'prius': { grade: 'le', modelCode: '1223' },
+            'corollahatchback': { grade: 'se', modelCode: '6271' },
+            'corollacross': { grade: 'le', modelCode: '4430' },
+            'rav4': { grade: 'le', modelCode: '4521' },
+            'venza': { grade: 'le', modelCode: '2820' },
+            'highlander': { grade: 'le', modelCode: '6946' },
+            'grandhighlander': { grade: 'xle', modelCode: '6980' },
+            '4runner': { grade: 'sr5', modelCode: '8664' },
+            'sequoia': { grade: 'sr5', modelCode: '7921' },
+            'landcruiser': { grade: '1958', modelCode: '7732' },
+            'bz4x': { grade: 'xle', modelCode: '7502' },
+            'tacoma': { grade: 'sr5', modelCode: '7540' },
+            'tundra': { grade: 'sr5', modelCode: '8371' },
+            'sienna': { grade: 'le', modelCode: '5401' },
+            'gr86': { grade: 'base', modelCode: '6252' },
+            'grsupra': { grade: '30', modelCode: '2551' },
+            'grcorollamorizo': { grade: 'core', modelCode: '6275' }
+        };
+
+        function getVehicleImageUrl(vehicleId, year) {
+            // Return base image URL for grid display
+            return `${TOYOTA_CDN}/relative/${year}/${vehicleId}/base.png`;
+        }
+        
+        function getColorImageUrl(vehicleId, colorCode, year = 2026) {
+            const config = modelImageConfig[vehicleId];
+            if (!config) {
+                // Fallback to base image
+                return `${TOYOTA_CDN}/relative/${year}/${vehicleId}/base.png`;
+            }
+            // Build full color-specific URL
+            return `${TOYOTA_CDN}/max/${year}/${vehicleId}/${config.grade}/${config.modelCode}/${colorCode}/1.png?bg=fff&fmt=png&qlt=90&wid=600`;
+        }
 
         function filterVehicles() {
             return vehicles.filter(v => {
@@ -2045,20 +2421,53 @@
             });
         }
 
+        function formatLabel(key) {
+            return key
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^./, str => str.toUpperCase())
+                .replace('Mpg', 'MPG')
+                .replace('3rd', '3rd Row')
+                .replace('Zero To Sixty', '0-60 MPH');
+        }
+
+        // ===========================================
+        // RENDER FUNCTIONS
+        // ===========================================
+
         function renderGrid() {
             const grid = document.getElementById('vehicleGrid');
             const filtered = filterVehicles();
             
-            grid.innerHTML = filtered.map(v => `
+            grid.innerHTML = filtered.map(v => {
+                const colors = getVehicleColors(v.id);
+                const displayColors = colors.slice(0, 6);
+                const moreCount = colors.length - 6;
+                const firstColor = getColorData(colors[0]);
+                const baseImageUrl = getVehicleImageUrl(v.id, v.year);
+
+                return `
                 <div class="vehicle-card" onclick="openModal('${v.id}')">
-                    <div class="vehicle-image">
-                        <i class="fas fa-car placeholder-icon"></i>
+                    <div class="vehicle-image" id="cardImage-${v.id}">
+                        <img src="${baseImageUrl}" 
+                             alt="${v.name}"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <i class="fas fa-car placeholder-icon" style="display: none;"></i>
                         ${v.badges.map(b => `<span class="vehicle-badge ${b.toLowerCase().includes('hybrid') || b.toLowerCase().includes('electric') ? 'hybrid' : ''}">${b}</span>`).join('')}
                         ${v.hybrid && !v.badges.some(b => b.toLowerCase().includes('hybrid') || b.toLowerCase().includes('electric')) ? '<span class="vehicle-badge hybrid">Hybrid</span>' : ''}
                     </div>
                     <div class="vehicle-info">
                         <div class="vehicle-name">${v.name}</div>
                         <div class="vehicle-tagline">${v.tagline}</div>
+                        <div class="card-color-swatches">
+                            ${displayColors.map((colorKey, index) => {
+                                const color = getColorData(colorKey);
+                                return `<div class="card-color-swatch ${index === 0 ? 'active' : ''}" 
+                                            style="background: ${color.hex};" 
+                                            title="${color.name}"
+                                            onclick="event.stopPropagation(); selectCardColor('${v.id}', ${index})"></div>`;
+                            }).join('')}
+                            ${moreCount > 0 ? `<div class="card-color-swatch more">+${moreCount}</div>` : ''}
+                        </div>
                         <div class="vehicle-quick-specs">
                             <div class="quick-spec">
                                 <span class="quick-spec-label">Starting</span>
@@ -2071,7 +2480,23 @@
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+        }
+
+        function selectCardColor(vehicleId, colorIndex) {
+            const v = vehicles.find(x => x.id === vehicleId);
+            const colors = getVehicleColors(vehicleId);
+            const colorKey = colors[colorIndex];
+            const color = getColorData(colorKey);
+
+            // Update swatch active states
+            const card = document.querySelector(`#cardImage-${vehicleId}`).parentElement;
+            card.querySelectorAll('.card-color-swatch').forEach((swatch, idx) => {
+                swatch.classList.toggle('active', idx === colorIndex);
+            });
+
+            // Note: In a full implementation, we'd update the card image here
+            // For now, the swatches provide visual feedback
         }
 
         function openModal(vehicleId) {
@@ -2079,13 +2504,87 @@
             if (!v) return;
 
             currentVehicle = v;
+            currentColorIndex = 0;
 
+            // Set basic info
             document.getElementById('modalYear').textContent = v.year;
             document.getElementById('modalTitle').textContent = v.name;
             document.getElementById('modalTagline').textContent = v.tagline;
             document.getElementById('modalPrice').textContent = v.msrpRange;
-            document.getElementById('toyotaLink').href = `https://www.toyota.com/${v.id.replace('gr', '-gr-').replace('corolla', '-corolla')}`;
+            document.getElementById('toyotaLink').href = `https://www.toyota.com/${v.id.replace('gr', 'gr-').replace('morizo', '')}`;
+            document.getElementById('configuratorLink').href = `https://www.toyota.com/configurator/${v.id.replace('gr', 'gr-').replace('morizo', '')}`;
 
+            // Render badges
+            let badgesHtml = '';
+            v.badges.forEach(b => {
+                const isHybrid = b.toLowerCase().includes('hybrid') || b.toLowerCase().includes('electric');
+                badgesHtml += `<span class="modal-badge ${isHybrid ? 'hybrid' : 'featured'}">${b}</span>`;
+            });
+            if (v.hybrid && !v.badges.some(b => b.toLowerCase().includes('hybrid'))) {
+                badgesHtml += `<span class="modal-badge hybrid">Hybrid Available</span>`;
+            }
+            document.getElementById('modalBadges').innerHTML = badgesHtml;
+
+            // Render color gallery
+            renderColorGallery(vehicleId);
+
+            // Render specs
+            renderSpecs(v);
+
+            // Show modal
+            document.getElementById('vehicleModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function renderColorGallery(vehicleId) {
+            const colors = getVehicleColors(vehicleId);
+            const swatchesEl = document.getElementById('colorSwatches');
+            const countEl = document.getElementById('colorCount');
+
+            countEl.textContent = `${colors.length} colors available`;
+
+            swatchesEl.innerHTML = colors.map((colorKey, index) => {
+                const color = getColorData(colorKey);
+                return `<div class="color-swatch ${index === 0 ? 'active' : ''}" 
+                            style="background: ${color.hex};" 
+                            title="${color.name}"
+                            onclick="selectColor(${index})"></div>`;
+            }).join('');
+
+            // Set initial color
+            selectColor(0);
+        }
+
+        function selectColor(index) {
+            currentColorIndex = index;
+            const v = currentVehicle;
+            const colors = getVehicleColors(v.id);
+            const colorKey = colors[index];
+            const color = getColorData(colorKey);
+
+            // Update swatch active states
+            document.querySelectorAll('#colorSwatches .color-swatch').forEach((swatch, idx) => {
+                swatch.classList.toggle('active', idx === index);
+            });
+
+            // Update color name display
+            document.getElementById('colorNameSwatch').style.background = color.hex;
+            document.getElementById('colorNameText').textContent = color.name;
+
+            // Update main image using Toyota's CDN with color code
+            const mainImageEl = document.getElementById('modalMainImage');
+            const colorCode = color.code || '040'; // Default to Ice Cap (white) if no code
+            const imgUrl = getColorImageUrl(v.id, colorCode, v.year);
+            
+            mainImageEl.innerHTML = `
+                <img src="${imgUrl}" 
+                     alt="${v.name} in ${color.name}"
+                     onerror="this.onerror=null; this.src='${getVehicleImageUrl(v.id, v.year)}'; this.style.opacity='0.8';">
+                <i class="fas fa-car placeholder-icon" style="display: none;"></i>
+            `;
+        }
+
+        function renderSpecs(v) {
             let bodyHtml = '';
 
             // Dimensions
@@ -2216,23 +2715,12 @@
             }
 
             document.getElementById('modalBody').innerHTML = bodyHtml;
-            document.getElementById('vehicleModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
         }
 
         function closeModal() {
             document.getElementById('vehicleModal').classList.remove('active');
             document.body.style.overflow = '';
             currentVehicle = null;
-        }
-
-        function formatLabel(key) {
-            return key
-                .replace(/([A-Z])/g, ' $1')
-                .replace(/^./, str => str.toUpperCase())
-                .replace('Mpg', 'MPG')
-                .replace('3rd', '3rd Row')
-                .replace('Zero To Sixty', '0-60 MPH');
         }
 
         function printBrochure() {
@@ -2242,10 +2730,16 @@
         function copySpecs() {
             if (!currentVehicle) return;
             const v = currentVehicle;
+            const colors = getVehicleColors(v.id);
+            const colorNames = colors.map(c => getColorData(c).name).join(', ');
             
             let text = `${v.year} Toyota ${v.name}\n${'='.repeat(40)}\n`;
             text += `${v.tagline}\n`;
             text += `Starting MSRP: ${v.msrpRange}\n\n`;
+
+            // Colors
+            text += `AVAILABLE COLORS\n${'-'.repeat(30)}\n`;
+            text += `${colorNames}\n\n`;
 
             // Dimensions
             text += `DIMENSIONS\n${'-'.repeat(30)}\n`;
@@ -2288,6 +2782,9 @@
             if (!currentVehicle) return;
             
             const v = currentVehicle;
+            const colors = getVehicleColors(v.id);
+            const selectedColor = getColorData(colors[currentColorIndex]);
+
             const defaultMessage = `Hi,
 
 Thank you for your interest in the ${v.year} Toyota ${v.name}!
@@ -2295,8 +2792,11 @@ Thank you for your interest in the ${v.year} Toyota ${v.name}!
 I've attached the complete spec sheet for this vehicle. Here are some highlights:
 
 • Starting MSRP: ${v.msrpRange}
+• Color shown: ${selectedColor.name}
 • ${v.specs.performance.mpgCombined ? `Fuel Economy: ${v.specs.performance.mpgCombined} MPG combined` : v.specs.performance.range ? `Range: ${v.specs.performance.range}` : ''}
 • ${v.features ? v.features.slice(0, 3).join('\n• ') : ''}
+
+Available colors include: ${colors.slice(0, 5).map(c => getColorData(c).name).join(', ')}${colors.length > 5 ? ` and ${colors.length - 5} more` : ''}.
 
 I'd love to schedule a test drive so you can experience it yourself. What day works best for you?
 
@@ -2347,7 +2847,10 @@ Sales Consultant | Pedersen Toyota
             }, 3000);
         }
 
-        // Event listeners
+        // ===========================================
+        // EVENT LISTENERS
+        // ===========================================
+        
         document.querySelectorAll('.category-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
