@@ -640,6 +640,52 @@
             transform: translateX(4px);
         }
 
+        /* Mode Selector Buttons */
+        .mode-btn, .model-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 6px 12px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mode-btn:hover, .model-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary-red);
+            color: var(--text-primary);
+        }
+
+        .mode-btn.active, .model-btn.active {
+            background: var(--primary-red);
+            border-color: var(--primary-red);
+            color: white;
+        }
+
+        .cost-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .cost-dot.low {
+            background: #22c55e;
+        }
+
+        .cost-dot.medium {
+            background: #f59e0b;
+        }
+
+        .cost-dot.high {
+            background: #ef4444;
+        }
+
         /* Chat Panel */
         .chat-panel {
             position: fixed;
@@ -1237,7 +1283,7 @@
                     <i class="fas fa-users"></i>
                     <span>Jeff's Client Hub</span>
                 </a>
-                <a href="calendar.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('Calendar')">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Calendar</span>
                 </a>
@@ -1245,11 +1291,11 @@
                     <i class="fas fa-user-clock"></i>
                     <span>Lead Follow Up</span>
                 </a>
-                <a href="vehicle-comparison.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Comparison')">
                     <i class="fas fa-car-side"></i>
                     <span>Vehicle Comparison</span>
                 </a>
-                <a href="vehicle-request.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Request')">
                     <i class="fas fa-search-dollar"></i>
                     <span>Vehicle Request</span>
                 </a>
@@ -1268,7 +1314,7 @@
                     <i class="fas fa-dollar-sign"></i>
                     <span>Budget Monitor</span>
                 </a>
-                <a href="brochures.html" class="nav-item">
+                <a href="#" class="nav-item" onclick="showComingSoon('Brochure Library')">
                     <i class="fas fa-book-open"></i>
                     <span>Brochure Library</span>
                 </a>
@@ -1428,10 +1474,13 @@
                 <div class="chat-avatar">🦉</div>
                 <div class="chat-header-text">
                     <h3>Sven</h3>
-                    <span>Your AI Assistant</span>
+                    <span id="currentModeLabel">Quick Chat Mode</span>
                 </div>
             </div>
             <div style="display: flex; gap: 8px;">
+                <button class="chat-close" onclick="toggleModeSelector()" title="Change AI mode" style="background: rgba(255,255,255,0.1);">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
                 <button class="chat-close" onclick="clearChatHistory()" title="Clear chat history" style="background: rgba(255,255,255,0.1);">
                     <i class="fas fa-trash"></i>
                 </button>
@@ -1439,6 +1488,44 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+        </div>
+        <!-- Mode Selector Bar -->
+        <div class="mode-selector" id="modeSelector" style="display: none; background: var(--bg-card); border-bottom: 1px solid var(--border-color); padding: 12px;">
+            <div style="margin-bottom: 8px;">
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Select Mode</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <button class="mode-btn active" data-mode="quick_chat" onclick="setMode('quick_chat')">
+                    <i class="fas fa-comments"></i> Quick Chat
+                </button>
+                <button class="mode-btn" data-mode="deep_analysis" onclick="setMode('deep_analysis')">
+                    <i class="fas fa-brain"></i> Deep Analysis
+                </button>
+                <button class="mode-btn" data-mode="vehicle_expert" onclick="setMode('vehicle_expert')">
+                    <i class="fas fa-car"></i> Vehicle Expert
+                </button>
+                <button class="mode-btn" data-mode="sales_coach" onclick="setMode('sales_coach')">
+                    <i class="fas fa-chart-line"></i> Sales Coach
+                </button>
+            </div>
+            <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Or Select Model</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                <button class="model-btn" data-model="sonnet" onclick="setModel('sonnet')">
+                    <span class="cost-dot low"></span> Sonnet 4 <span style="color: var(--text-muted); font-size: 10px;">(Fast)</span>
+                </button>
+                <button class="model-btn" data-model="opus" onclick="setModel('opus')">
+                    <span class="cost-dot high"></span> Opus 4 <span style="color: var(--text-muted); font-size: 10px;">(Best)</span>
+                </button>
+                <button class="model-btn active" data-model="default" onclick="setModel('default')">
+                    <span class="cost-dot medium"></span> Default
+                </button>
+            </div>
+            <p id="modeDescription" style="margin-top: 12px; font-size: 12px; color: var(--text-secondary); padding: 8px; background: rgba(230, 57, 70, 0.1); border-radius: 6px;">
+                <i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 6px;"></i>
+                Fast responses for simple questions
+            </p>
         </div>
         <div class="chat-quick-actions" id="chatQuickActions">
             <button class="quick-chip" onclick="sendQuickAction('Find me the best Toyota vehicles for a family of 4 with a budget of $40,000')">
@@ -2003,6 +2090,115 @@
             chatSessionId = 'sven-command-center-' + Date.now();
             localStorage.setItem('svenChatSessionId', chatSessionId);
         }
+        
+        // Mode and Model settings
+        let currentMode = localStorage.getItem('svenMode') || 'quick_chat';
+        let currentModel = localStorage.getItem('svenModel') || 'default';
+        
+        const modeDescriptions = {
+            'quick_chat': 'Fast responses for simple questions - uses Sonnet for cost efficiency',
+            'deep_analysis': 'Thorough analysis for complex tasks - uses Opus for maximum capability',
+            'vehicle_expert': 'Toyota specialist mode - focused on vehicle specs and comparisons',
+            'sales_coach': 'Sales strategies, objection handling, and closing techniques'
+        };
+        
+        const modeLabels = {
+            'quick_chat': 'Quick Chat Mode',
+            'deep_analysis': 'Deep Analysis Mode',
+            'vehicle_expert': 'Vehicle Expert Mode',
+            'sales_coach': 'Sales Coach Mode'
+        };
+        
+        function toggleModeSelector() {
+            const selector = document.getElementById('modeSelector');
+            if (selector.style.display === 'none') {
+                selector.style.display = 'block';
+                updateModeUI();
+            } else {
+                selector.style.display = 'none';
+            }
+        }
+        
+        function setMode(mode) {
+            currentMode = mode;
+            currentModel = null; // Clear model when mode is selected
+            localStorage.setItem('svenMode', mode);
+            localStorage.removeItem('svenModel');
+            updateModeUI();
+            
+            // Update the chat header label
+            document.getElementById('currentModeLabel').textContent = modeLabels[mode] || 'Quick Chat Mode';
+            
+            // Show confirmation in chat
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML += '<div class="chat-message sven" style="background: rgba(230, 57, 70, 0.1); border-left: 3px solid var(--primary-red);">Switched to <strong>' + modeLabels[mode] + '</strong>. ' + modeDescriptions[mode] + '</div>';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function setModel(model) {
+            currentModel = model;
+            currentMode = null; // Clear mode when model is selected
+            localStorage.setItem('svenModel', model);
+            localStorage.removeItem('svenMode');
+            updateModeUI();
+            
+            const modelNames = {
+                'sonnet': 'Claude Sonnet 4',
+                'opus': 'Claude Opus 4',
+                'gpt4o': 'GPT-4o',
+                'default': 'Default Model'
+            };
+            
+            // Update the chat header label
+            document.getElementById('currentModeLabel').textContent = modelNames[model] || model;
+            
+            // Show confirmation in chat
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML += '<div class="chat-message sven" style="background: rgba(230, 57, 70, 0.1); border-left: 3px solid var(--primary-red);">Now using <strong>' + modelNames[model] + '</strong></div>';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function updateModeUI() {
+            // Update mode buttons
+            document.querySelectorAll('.mode-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+                if (btn.dataset.mode === currentMode) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update model buttons
+            document.querySelectorAll('.model-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+                if (btn.dataset.model === currentModel) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update description
+            const descEl = document.getElementById('modeDescription');
+            if (currentMode && modeDescriptions[currentMode]) {
+                descEl.innerHTML = '<i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 6px;"></i>' + modeDescriptions[currentMode];
+            } else if (currentModel) {
+                const modelDescs = {
+                    'sonnet': 'Claude Sonnet 4 - Fast and cost-effective ($3/M input)',
+                    'opus': 'Claude Opus 4 - Most capable for complex tasks ($15/M input)',
+                    'default': 'Your configured default model'
+                };
+                descEl.innerHTML = '<i class="fas fa-info-circle" style="color: var(--primary-red); margin-right: 6px;"></i>' + (modelDescs[currentModel] || 'Custom model');
+            }
+        }
+        
+        // Initialize mode label on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentMode) {
+                document.getElementById('currentModeLabel').textContent = modeLabels[currentMode] || 'Quick Chat Mode';
+            } else if (currentModel) {
+                const modelNames = { 'sonnet': 'Claude Sonnet 4', 'opus': 'Claude Opus 4', 'default': 'Default Model' };
+                document.getElementById('currentModeLabel').textContent = modelNames[currentModel] || currentModel;
+            }
+        });
+        }
         let isWaitingForResponse = false;
 
         function toggleChatPanel() {
@@ -2060,7 +2256,9 @@
                     },
                     body: JSON.stringify({
                         message: message,
-                        session_id: chatSessionId
+                        session_id: chatSessionId,
+                        mode: currentMode || undefined,
+                        model: currentModel || undefined
                     }),
                     signal: controller.signal
                 });
