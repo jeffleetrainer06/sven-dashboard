@@ -1283,19 +1283,19 @@
                     <i class="fas fa-users"></i>
                     <span>Jeff's Client Hub</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showComingSoon('Calendar')">
+                <a href="#" class="nav-item" onclick="scrollToCalendar()">
                     <i class="fas fa-calendar-alt"></i>
                     <span>Calendar</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showComingSoon('Lead Follow Up')">
+                <a href="#" class="nav-item" onclick="openChatWithPrompt('Help me draft a follow-up message for a customer')">
                     <i class="fas fa-user-clock"></i>
                     <span>Lead Follow Up</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Comparison')">
+                <a href="#" class="nav-item" onclick="runWorkflow('compare')">
                     <i class="fas fa-car-side"></i>
                     <span>Vehicle Comparison</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showComingSoon('Vehicle Request')">
+                <a href="#" class="nav-item" onclick="runWorkflow('recommend')">
                     <i class="fas fa-search-dollar"></i>
                     <span>Vehicle Request</span>
                 </a>
@@ -1306,7 +1306,7 @@
                     <i class="fas fa-project-diagram"></i>
                     <span>Multi-Agent Tools</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showComingSoon('Memory')">
+                <a href="#" class="nav-item" onclick="openChatWithPrompt('What do you remember about our recent conversations and customers?')">
                     <i class="fas fa-brain"></i>
                     <span>Memory</span>
                 </a>
@@ -2198,7 +2198,7 @@
                 document.getElementById('currentModeLabel').textContent = modelNames[currentModel] || currentModel;
             }
         });
-        }
+        
         let isWaitingForResponse = false;
 
         function toggleChatPanel() {
@@ -2358,6 +2358,28 @@
         // Sidebar
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Scroll to calendar section
+        function scrollToCalendar() {
+            const calendarSection = document.querySelector('.calendar-wrapper');
+            if (calendarSection) {
+                calendarSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // Open chat panel with a specific prompt
+        function openChatWithPrompt(prompt) {
+            // Open chat panel
+            const panel = document.getElementById('chatPanel');
+            const toggle = document.getElementById('chatToggle');
+            if (!panel.classList.contains('open')) {
+                panel.classList.add('open');
+                if (toggle) toggle.classList.add('hidden');
+            }
+            // Set the prompt in the input
+            document.getElementById('chatInput').value = prompt;
+            document.getElementById('chatInput').focus();
         }
 
         // Coming Soon
