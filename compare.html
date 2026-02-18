@@ -452,6 +452,7 @@
         <p class="page-subtitle">Select up to 4 vehicles to compare side-by-side. Toyota vehicles are highlighted.</p>
 
         <div class="category-tabs" id="categoryTabs">
+            <button class="category-tab" data-category="subcompact-suv">Subcompact SUV</button>
             <button class="category-tab active" data-category="compact-suv">Compact SUV</button>
             <button class="category-tab" data-category="midsize-suv">Mid-Size SUV</button>
             <button class="category-tab" data-category="fullsize-suv">Full-Size SUV</button>
@@ -482,6 +483,144 @@
     <script>
         // Vehicle Database
         const vehicles = {
+            'subcompact-suv': [
+                {
+                    brand: 'Toyota',
+                    name: 'Corolla Cross',
+                    year: 2025,
+                    msrp: 24035,
+                    mpgCity: 31,
+                    mpgHwy: 38,
+                    hp: 169,
+                    torque: 151,
+                    cargo: 24.3,
+                    towing: 1500,
+                    awd: 'Available',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Toyota',
+                    name: 'C-HR',
+                    year: 2025,
+                    msrp: 24595,
+                    mpgCity: 28,
+                    mpgHwy: 32,
+                    hp: 144,
+                    torque: 139,
+                    cargo: 19.0,
+                    towing: 'N/A',
+                    awd: 'No',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: true
+                },
+                {
+                    brand: 'Honda',
+                    name: 'HR-V',
+                    year: 2025,
+                    msrp: 25050,
+                    mpgCity: 26,
+                    mpgHwy: 32,
+                    hp: 158,
+                    torque: 138,
+                    cargo: 24.4,
+                    towing: 'N/A',
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Hyundai',
+                    name: 'Kona',
+                    year: 2025,
+                    msrp: 25500,
+                    mpgCity: 28,
+                    mpgHwy: 33,
+                    hp: 190,
+                    torque: 195,
+                    cargo: 27.2,
+                    towing: 'N/A',
+                    awd: 'Available',
+                    hybrid: 'Available',
+                    warranty: '5yr/60k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Kia',
+                    name: 'Seltos',
+                    year: 2025,
+                    msrp: 24690,
+                    mpgCity: 27,
+                    mpgHwy: 31,
+                    hp: 146,
+                    torque: 132,
+                    cargo: 26.6,
+                    towing: 'N/A',
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '5yr/60k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Mazda',
+                    name: 'CX-30',
+                    year: 2025,
+                    msrp: 28950,
+                    mpgCity: 25,
+                    mpgHwy: 33,
+                    hp: 191,
+                    torque: 186,
+                    cargo: 20.2,
+                    towing: 'N/A',
+                    awd: 'Available',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Subaru',
+                    name: 'Crosstrek',
+                    year: 2025,
+                    msrp: 27295,
+                    mpgCity: 28,
+                    mpgHwy: 34,
+                    hp: 152,
+                    torque: 145,
+                    cargo: 20.8,
+                    towing: 'N/A',
+                    awd: 'Standard',
+                    hybrid: 'Available',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                },
+                {
+                    brand: 'Chevrolet',
+                    name: 'Trax',
+                    year: 2025,
+                    msrp: 22695,
+                    mpgCity: 28,
+                    mpgHwy: 32,
+                    hp: 137,
+                    torque: 162,
+                    cargo: 25.6,
+                    towing: 'N/A',
+                    awd: 'No',
+                    hybrid: 'No',
+                    warranty: '3yr/36k',
+                    safetyRating: '5-Star',
+                    isToyota: false
+                }
+            ],
             'compact-suv': [
                 {
                     brand: 'Toyota',
@@ -1051,7 +1190,7 @@
                             </div>
                             <div class="spec-item">
                                 <div class="spec-label">Towing</div>
-                                <div class="spec-value">${vehicle.towing.toLocaleString()} lbs</div>
+                                <div class="spec-value">${typeof vehicle.towing === 'number' ? vehicle.towing.toLocaleString() + ' lbs' : vehicle.towing}</div>
                             </div>
                             <div class="spec-item">
                                 <div class="spec-label">AWD/4WD</div>
@@ -1116,7 +1255,7 @@
                 { key: 'hp', label: 'Horsepower', format: v => v, best: 'high' },
                 { key: 'torque', label: 'Torque (lb-ft)', format: v => v, best: 'high' },
                 { key: 'cargo', label: 'Cargo Space', format: v => typeof v === 'number' ? `${v} cu.ft.` : v, best: 'high' },
-                { key: 'towing', label: 'Towing Capacity', format: v => `${v.toLocaleString()} lbs`, best: 'high' },
+                { key: 'towing', label: 'Towing Capacity', format: v => typeof v === 'number' ? `${v.toLocaleString()} lbs` : v, best: 'high' },
                 { key: 'awd', label: 'AWD/4WD', format: v => v },
                 { key: 'hybrid', label: 'Hybrid Available', format: v => v },
                 { key: 'warranty', label: 'Warranty', format: v => v },
@@ -1192,7 +1331,7 @@
                 body += `  - Starting MSRP: $${v.msrp.toLocaleString()}\n`;
                 body += `  - MPG: ${v.mpgCity} city / ${v.mpgHwy} hwy\n`;
                 body += `  - Horsepower: ${v.hp} hp\n`;
-                body += `  - Towing: ${v.towing.toLocaleString()} lbs\n\n`;
+                body += `  - Towing: ${typeof v.towing === 'number' ? v.towing.toLocaleString() + ' lbs' : v.towing}\n\n`;
             });
             
             body += '\nLet me know if you have any questions!\n\nJeff Lee\nPedersen Toyota\n720-416-6955';

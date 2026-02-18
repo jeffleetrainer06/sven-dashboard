@@ -537,15 +537,15 @@
             text-align: center;
         }
 
-        /* Back to Command Center */
+        /* Back to Command Center link */
         .back-link {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             color: white;
             text-decoration: none;
-            margin-bottom: 15px;
             font-size: 0.9rem;
+            margin-bottom: 15px;
             opacity: 0.8;
             transition: opacity 0.2s;
         }
@@ -924,7 +924,7 @@
             btn.parentElement.remove();
         }
 
-        // Quick Parse
+        // Quick Parse - Enhanced for Toyota Build & Price formats
         function parseQuickFill() {
             const text = document.getElementById('quickParseText').value;
             if (!text.trim()) {
@@ -937,46 +937,154 @@
             document.getElementById('accessoriesContainer').innerHTML = '';
 
             const lines = text.split('\n');
-            let inPackages = false;
-            let inAccessories = false;
             let packagesFound = [];
             let accessoriesFound = [];
+            let currentSection = 'unknown';
+            
+            // Known Toyota package patterns
+            const knownPackages = [
+                'Premium Package', 'Technology Package', 'Weather Package', 'Cold Weather Package',
+                'Convenience Package', 'Advanced Technology Package', 'Audio Package', 'Navigation Package',
+                'Blackout Package', 'TRD Off-Road Package', 'TRD Sport Package', 'TRD Pro Package',
+                'Panoramic Roof Package', 'Moonroof Package', 'All Weather Package', 'Trailer Tow Package',
+                'JBL Audio', 'JBL Premium Audio', 'Power Package', 'XLE Package', 'Limited Package'
+            ];
+            
+            // Known accessory patterns
+            const knownAccessories = [
+                'All-Weather Floor Liners', 'Floor Mats', 'Cargo Mat', 'Cargo Liner', 'Cargo Tray',
+                'Door Edge Guards', 'Body Side Moldings', 'Mudguards', 'Roof Rack', 'Cross Bars',
+                'Running Boards', 'Predator Steps', 'Tow Hitch', 'Trailer Hitch', 'Bed Mat',
+                'Tonneau Cover', 'Bed Extender', 'Wheel Locks', 'Door Sill Protectors',
+                'First Aid Kit', 'Emergency Kit', 'Paint Protection Film', 'Remote Start',
+                'Dashcam', 'Bed Divider', 'Tailgate Lock', 'Hood Protector', 'Bug Deflector',
+                'Wind Deflectors', 'Window Visors', 'Illuminated Door Sills'
+            ];
 
-            // Common package/accessory code patterns
-            const codePattern = /\b([A-Z0-9]{2,4})\b/;
-
-            for (let line of lines) {
-                line = line.trim();
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
                 if (!line) continue;
 
-                // Skip ToyotaCare
-                if (line.toLowerCase().includes('toyotacare')) continue;
+                // Skip common headers and noise
+                if (line.toLowerCase().includes('toyotacare') ||
+                    line.toLowerCase().includes('your build') ||
+                    line.toLowerCase().includes('total msrp') ||
+                    line.toLowerCase().includes('destination') ||
+                    line.match(/^\$[\d,]+$/) ||
+                    line.match(/^[\d,]+$/) ||
+                    line.length < 3) continue;
 
                 // Detect sections
-                if (line.toLowerCase().includes('package')) {
-                    inPackages = true;
-                    inAccessories = false;
+                const lineLower = line.toLowerCase();
+                if (lineLower.includes('package') && (lineLower.includes('selected') || lineLower === 'packages' || lineLower === 'package')) {
+                    currentSection = 'packages';
                     continue;
                 }
-                if (line.toLowerCase().includes('accessor')) {
-                    inPackages = false;
-                    inAccessories = true;
+                if (lineLower.includes('accessor') && (lineLower.includes('selected') || lineLower === 'accessories' || lineLower === 'accessory')) {
+                    currentSection = 'accessories';
+                    continue;
+                }
+                if (lineLower.includes('exterior color') || lineLower.includes('interior color')) {
+                    currentSection = 'colors';
                     continue;
                 }
 
-                // Look for items with codes
-                const match = line.match(/^(.+?)\s+([A-Z0-9]{2,4})\s*[\$\d,]*$/);
+                // Try to extract code - various formats:
+                // "Premium Package (PP)" or "Premium Package PP" or "PP - Premium Package" or just "Premium Package"
+                // "$1,250" price might be on same line or next line
+                
+                let name = '';
+                let code = '';
+                
+                // Pattern 1: "Name (CODE)" or "Name [CODE]"
+                let match = line.match(/^(.+?)\s*[\(\[]([A-Z0-9]{2,6})[\)\]]\s*(?:\$[\d,]+)?$/i);
                 if (match) {
-                    const name = match[1].trim();
-                    const code = match[2];
+                    name = match[1].trim();
+                    code = match[2].toUpperCase();
+                }
+                
+                // Pattern 2: "CODE - Name" or "CODE: Name"
+                if (!name) {
+                    match = line.match(/^([A-Z0-9]{2,6})\s*[-:]\s*(.+?)(?:\s+\$[\d,]+)?$/i);
+                    if (match) {
+                        code = match[1].toUpperCase();
+                        name = match[2].trim();
+                    }
+                }
+                
+                // Pattern 3: "Name CODE $price" or "Name CODE"
+                if (!name) {
+                    match = line.match(/^(.+?)\s+([A-Z0-9]{2,6})\s*(?:\$[\d,]+)?$/);
+                    if (match && match[1].length > 3) {
+                        name = match[1].trim();
+                        code = match[2];
+                    }
+                }
+                
+                // Pattern 4: Just a name (check against known items)
+                if (!name) {
+                    // Check if line matches known package/accessory
+                    const isKnownPackage = knownPackages.some(p => lineLower.includes(p.toLowerCase()));
+                    const isKnownAccessory = knownAccessories.some(a => lineLower.includes(a.toLowerCase()));
                     
-                    if (inPackages) {
+                    if (isKnownPackage || isKnownAccessory) {
+                        // Clean up the name (remove price if present)
+                        name = line.replace(/\s*\$[\d,]+\s*$/, '').trim();
+                        
+                        // Try to find code on next line
+                        if (i + 1 < lines.length) {
+                            const nextLine = lines[i + 1].trim();
+                            if (nextLine.match(/^[A-Z0-9]{2,6}$/)) {
+                                code = nextLine;
+                                i++; // Skip the code line
+                            }
+                        }
+                        
+                        if (isKnownPackage && currentSection !== 'accessories') {
+                            currentSection = 'packages';
+                        } else if (isKnownAccessory && currentSection !== 'packages') {
+                            currentSection = 'accessories';
+                        }
+                    }
+                }
+                
+                // Pattern 5: Line with price - try to parse "Name $XXX"
+                if (!name && line.includes('$')) {
+                    match = line.match(/^(.+?)\s+\$[\d,]+$/);
+                    if (match && match[1].length > 3) {
+                        name = match[1].trim();
+                    }
+                }
+
+                // If we found something, add it
+                if (name) {
+                    // Clean up name
+                    name = name.replace(/\s+/g, ' ').trim();
+                    
+                    // Determine if it's a package or accessory based on context
+                    const looksLikePackage = name.toLowerCase().includes('package') || 
+                                            name.toLowerCase().includes('jbl') ||
+                                            knownPackages.some(p => name.toLowerCase().includes(p.toLowerCase()));
+                    const looksLikeAccessory = knownAccessories.some(a => name.toLowerCase().includes(a.toLowerCase()));
+                    
+                    if (currentSection === 'packages' || (currentSection === 'unknown' && looksLikePackage)) {
                         packagesFound.push({ name, code });
-                    } else if (inAccessories) {
+                    } else if (currentSection === 'accessories' || looksLikeAccessory) {
+                        accessoriesFound.push({ name, code });
+                    } else if (currentSection === 'unknown') {
+                        // Default to accessories if unsure
                         accessoriesFound.push({ name, code });
                     }
                 }
             }
+
+            // Remove duplicates
+            packagesFound = packagesFound.filter((pkg, idx, arr) => 
+                arr.findIndex(p => p.name.toLowerCase() === pkg.name.toLowerCase()) === idx
+            );
+            accessoriesFound = accessoriesFound.filter((acc, idx, arr) => 
+                arr.findIndex(a => a.name.toLowerCase() === acc.name.toLowerCase()) === idx
+            );
 
             // Add found items
             packagesFound.forEach(pkg => {
@@ -984,8 +1092,8 @@
                 const div = document.createElement('div');
                 div.className = 'item-entry';
                 div.innerHTML = `
-                    <input type="text" placeholder="Package name" class="pkg-name" value="${pkg.name}">
-                    <input type="text" placeholder="Code" class="pkg-code" value="${pkg.code}">
+                    <input type="text" placeholder="Package name" class="pkg-name" value="${escapeHtml(pkg.name)}">
+                    <input type="text" placeholder="Code" class="pkg-code" value="${escapeHtml(pkg.code)}">
                     <button class="btn-remove" onclick="removeItem(this)">×</button>
                 `;
                 container.appendChild(div);
@@ -996,8 +1104,8 @@
                 const div = document.createElement('div');
                 div.className = 'item-entry';
                 div.innerHTML = `
-                    <input type="text" placeholder="Accessory name" class="acc-name" value="${acc.name}">
-                    <input type="text" placeholder="Code" class="acc-code" value="${acc.code}">
+                    <input type="text" placeholder="Accessory name" class="acc-name" value="${escapeHtml(acc.name)}">
+                    <input type="text" placeholder="Code" class="acc-code" value="${escapeHtml(acc.code)}">
                     <button class="btn-remove" onclick="removeItem(this)">×</button>
                 `;
                 container.appendChild(div);
@@ -1007,7 +1115,20 @@
             if (packagesFound.length === 0) addPackage();
             if (accessoriesFound.length === 0) addAccessory();
 
-            showToast(`Found ${packagesFound.length} packages, ${accessoriesFound.length} accessories`);
+            const total = packagesFound.length + accessoriesFound.length;
+            if (total === 0) {
+                showToast('No packages/accessories detected. Try pasting the full build summary.');
+            } else {
+                showToast(`Found ${packagesFound.length} packages, ${accessoriesFound.length} accessories`);
+            }
+        }
+        
+        // Helper to escape HTML in user input
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         // Get form data
@@ -1327,10 +1448,56 @@
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        // Start with empty form
-        window.onload = function() {
-            clearAll();
-        };
+        // Pre-fill example (Jamie Hoover)
+        function loadExample() {
+            document.getElementById('buyerName').value = 'Jamie Hoover';
+            document.getElementById('address').value = '2405 W Lake St';
+            document.getElementById('city').value = 'Fort Collins';
+            document.getElementById('county').value = 'Larimer';
+            document.getElementById('state').value = 'CO';
+            document.getElementById('zip').value = '80521';
+            document.getElementById('email').value = 'jamie.hoover11@gmail.com';
+            
+            document.getElementById('model').value = 'RAV4 Hybrid Woodland|4437';
+            updateModelCode();
+            
+            document.getElementById('exteriorColor').value = 'Storm Cloud|01L6';
+            updateExteriorCode();
+            
+            document.getElementById('interiorColor').value = 'Black SofTex|EE20';
+            updateInteriorCode();
+
+            document.getElementById('packagesContainer').innerHTML = `
+                <div class="item-entry">
+                    <input type="text" placeholder="Package name" class="pkg-name" value="50 State Emissions Moonroof Package">
+                    <input type="text" placeholder="Code" class="pkg-code" value="MR">
+                    <button class="btn-remove" onclick="removeItem(this)">×</button>
+                </div>
+            `;
+
+            document.getElementById('accessoriesContainer').innerHTML = `
+                <div class="item-entry">
+                    <input type="text" placeholder="Accessory name" class="acc-name" value="Door Sill Protectors">
+                    <input type="text" placeholder="Code" class="acc-code" value="D9">
+                    <button class="btn-remove" onclick="removeItem(this)">×</button>
+                </div>
+                <div class="item-entry">
+                    <input type="text" placeholder="Accessory name" class="acc-name" value="Rear Bumper Protector">
+                    <input type="text" placeholder="Code" class="acc-code" value="EG">
+                    <button class="btn-remove" onclick="removeItem(this)">×</button>
+                </div>
+                <div class="item-entry">
+                    <input type="text" placeholder="Accessory name" class="acc-name" value="Toyota Multimedia Screen Protector">
+                    <input type="text" placeholder="Code" class="acc-code" value="87">
+                    <button class="btn-remove" onclick="removeItem(this)">×</button>
+                </div>
+            `;
+
+            showToast('Example loaded: Jamie Hoover');
+        }
+
+        // Load example on page load
+        window.onload = loadExample;
     </script>
 </body>
 </html>

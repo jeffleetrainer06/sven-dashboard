@@ -890,7 +890,7 @@
                     <i class="fas fa-project-diagram"></i>
                     <span>Multi-Agent Tools</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showComingSoon('Brochure Library')">
+                <a href="brochures.html" class="nav-item">
                     <i class="fas fa-book-open"></i>
                     <span>Brochure Library</span>
                 </a>
@@ -1062,6 +1062,24 @@
                         <div class="tool-info">
                             <div class="tool-name">Our Inventory</div>
                             <div class="tool-desc">Current available vehicles</div>
+                        </div>
+                        <i class="fas fa-chevron-right tool-send-icon"></i>
+                    </button>
+
+                    <a href="brochures.html" target="_blank" class="tool-btn highlight" style="text-decoration: none; color: inherit;">
+                        <span class="tool-icon">📚</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Brochure Library</div>
+                            <div class="tool-desc">Vehicle specs & brochures</div>
+                        </div>
+                        <i class="fas fa-external-link-alt tool-send-icon"></i>
+                    </a>
+
+                    <button class="tool-btn" onclick="sendLink('compare')">
+                        <span class="tool-icon">⚖️</span>
+                        <div class="tool-info">
+                            <div class="tool-name">Vehicle Comparison</div>
+                            <div class="tool-desc">Compare models side-by-side</div>
                         </div>
                         <i class="fas fa-chevron-right tool-send-icon"></i>
                     </button>
@@ -1319,6 +1337,11 @@
                 name: 'Accessories',
                 url: 'https://parts.pedersentoyota.com/',
                 description: 'Browse parts and accessories'
+            },
+            compare: {
+                name: 'Vehicle Comparison',
+                url: 'vehicle-comparison.html',
+                description: 'Compare vehicles side-by-side'
             }
         };
 
@@ -1661,6 +1684,10 @@
             renderChatView(state.activeCustomerId);
             renderCustomerList();
             showToast(`${link.name} link sent!`);
+        }
+
+        function openBrochureLibrary() {
+            window.open('brochures.html', '_blank');
         }
 
         function getTextLink() {
